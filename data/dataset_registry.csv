@@ -1,0 +1,10 @@
+dataset_id,agent_support,official_source,status,local_path,panel_note
+fsd50k,acoustic_event_detection,https://fsannotator.upf.edu/fsd/release/FSD50K/,planned,data/raw/fsd50k,Open dataset for broad environmental sound-event training
+urbansound8k,acoustic_event_detection,https://urbansounddataset.weebly.com/urbansound8k.html,planned,data/raw/urbansound8k,Useful for gunshot and siren classes in early baselines
+esc50,acoustic_event_detection,https://github.com/karolpiczak/esc-50,planned,data/raw/esc50,Small benchmark for quick experiments and smoke tests
+audioset_reference,acoustic_event_detection,https://research.google.com/audioset/,planned,data/raw/audioset_reference,Reference ontology and transfer-learning source
+musan,preprocessing_and_speech_gate,https://www.openslr.org/17/,planned,data/raw/musan,Speech music and noise corpus for robustness work
+common_voice,asr_evaluation,https://mozilladatacollective.com/organization/cmfh0j9o10006ns07jq45h7xk,planned,data/raw/common_voice,Open speech corpus for general ASR checks
+ravdess,distress_vocal_cues,https://zenodo.org/records/1188976,planned,data/raw/ravdess,Emotion dataset for distress-style vocal expression support
+custom_threat_speech,risk_and_consensus,manual_collection_and_annotation,planned,data/raw/custom_threat_speech,Project-specific labels for threat scoring and consensus evaluation
+

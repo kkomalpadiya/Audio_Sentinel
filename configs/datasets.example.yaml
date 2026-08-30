@@ -1,0 +1,65 @@
+datasets:
+  - id: fsd50k
+    role: acoustic_event_detection
+    source_url: https://fsannotator.upf.edu/fsd/release/FSD50K/
+    local_path: data/raw/fsd50k
+    license_check: required
+    priority: high
+    notes: "Open sound-event dataset for broad AED baseline work."
+
+  - id: urbansound8k
+    role: acoustic_event_detection
+    source_url: https://urbansounddataset.weebly.com/urbansound8k.html
+    local_path: data/raw/urbansound8k
+    license_check: required
+    priority: high
+    notes: "Useful for gun_shot and siren baseline experiments."
+
+  - id: esc50
+    role: acoustic_event_detection
+    source_url: https://github.com/karolpiczak/esc-50
+    local_path: data/raw/esc50
+    license_check: required
+    priority: medium
+    notes: "Small benchmark for quick validation."
+
+  - id: audioset_reference
+    role: acoustic_event_detection
+    source_url: https://research.google.com/audioset/
+    local_path: data/raw/audioset_reference
+    license_check: required
+    priority: medium
+    notes: "Use as ontology and transfer-learning reference rather than first local download."
+
+  - id: musan
+    role: preprocessing_and_vad
+    source_url: https://www.openslr.org/17/
+    local_path: data/raw/musan
+    license_check: required
+    priority: medium
+    notes: "Speech, music, and noise corpus useful for noise robustness and VAD experiments."
+
+  - id: common_voice
+    role: asr_evaluation
+    source_url: https://mozilladatacollective.com/organization/cmfh0j9o10006ns07jq45h7xk
+    local_path: data/raw/common_voice
+    license_check: required
+    priority: medium
+    notes: "Open multilingual speech dataset for general ASR checks."
+
+  - id: ravdess_or_cremad
+    role: language_and_distress_cues
+    source_url: https://zenodo.org/records/1188976
+    local_path: data/raw/ravdess
+    license_check: required
+    priority: low
+    notes: "Emotion datasets help with distress-related vocal cues, but they are not threat-language datasets."
+
+  - id: custom_threat_speech
+    role: risk_assessment_and_consensus
+    source_url: manual_collection_and_annotation
+    local_path: data/raw/custom_threat_speech
+    license_check: required
+    priority: high
+    notes: "Needed for suspicious phrases, negations, harmless-context speech, and project-specific risk labels."
+
