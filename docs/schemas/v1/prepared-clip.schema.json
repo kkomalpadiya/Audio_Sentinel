@@ -1,0 +1,216 @@
+{
+  "$defs": {
+    "ConsentRecord": {
+      "$id": "https://audio-sentinel.local/schemas/v1/consent-record.schema.json",
+      "additionalProperties": false,
+      "description": "Permission evidence for a clip, without storing personal information.",
+      "properties": {
+        "consent_id": {
+          "description": "Opaque reference to the consent record held outside this manifest.",
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "device_authorized": {
+          "title": "Device Authorized",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "granted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Granted At"
+        },
+        "processing_scope": {
+          "$ref": "#/$defs/ProcessingScope"
+        },
+        "raw_audio_retention_allowed": {
+          "default": false,
+          "title": "Raw Audio Retention Allowed",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/ConsentStatus"
+        }
+      },
+      "required": [
+        "consent_id",
+        "status",
+        "processing_scope",
+        "device_authorized"
+      ],
+      "title": "ConsentRecord",
+      "type": "object"
+    },
+    "ConsentStatus": {
+      "enum": [
+        "granted",
+        "denied",
+        "withdrawn"
+      ],
+      "title": "ConsentStatus",
+      "type": "string"
+    },
+    "EventAnnotation": {
+      "$id": "https://audio-sentinel.local/schemas/v1/event-annotation.schema.json",
+      "additionalProperties": false,
+      "description": "A time-bounded v1 event annotation or model result.",
+      "properties": {
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "risk_level": {
+          "$ref": "#/$defs/RiskLevel"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "risk_level",
+        "start_seconds",
+        "end_seconds",
+        "confidence"
+      ],
+      "title": "EventAnnotation",
+      "type": "object"
+    },
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "ProcessingScope": {
+      "enum": [
+        "none",
+        "acoustic_only",
+        "acoustic_and_speech"
+      ],
+      "title": "ProcessingScope",
+      "type": "string"
+    },
+    "RiskLevel": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/prepared-clip.schema.json",
+  "additionalProperties": false,
+  "description": "A privacy-minimized manifest for a prepared offline audio clip.",
+  "properties": {
+    "annotations": {
+      "items": {
+        "$ref": "#/$defs/EventAnnotation"
+      },
+      "title": "Annotations",
+      "type": "array"
+    },
+    "audio_path": {
+      "description": "Relative path under the approved data root; never a raw audio payload.",
+      "minLength": 1,
+      "title": "Audio Path",
+      "type": "string"
+    },
+    "clip_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Clip Id",
+      "type": "string"
+    },
+    "consent": {
+      "$ref": "#/$defs/ConsentRecord"
+    },
+    "duration_seconds": {
+      "exclusiveMinimum": 0.0,
+      "title": "Duration Seconds",
+      "type": "number"
+    },
+    "sample_rate_hz": {
+      "maximum": 192000,
+      "minimum": 8000,
+      "title": "Sample Rate Hz",
+      "type": "integer"
+    },
+    "schema_version": {
+      "default": "1.0",
+      "pattern": "^1\\.0$",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_dataset": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Source Dataset",
+      "type": "string"
+    }
+  },
+  "required": [
+    "clip_id",
+    "source_dataset",
+    "audio_path",
+    "sample_rate_hz",
+    "duration_seconds",
+    "consent"
+  ],
+  "title": "PreparedClipRecord",
+  "type": "object"
+}

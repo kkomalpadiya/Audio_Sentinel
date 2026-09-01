@@ -1,0 +1,71 @@
+{
+  "$defs": {
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "RiskLevel": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/event-annotation.schema.json",
+  "additionalProperties": false,
+  "description": "A time-bounded v1 event annotation or model result.",
+  "properties": {
+    "confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "end_seconds": {
+      "exclusiveMinimum": 0.0,
+      "title": "End Seconds",
+      "type": "number"
+    },
+    "label": {
+      "$ref": "#/$defs/EventLabel"
+    },
+    "risk_level": {
+      "$ref": "#/$defs/RiskLevel"
+    },
+    "start_seconds": {
+      "minimum": 0.0,
+      "title": "Start Seconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "label",
+    "risk_level",
+    "start_seconds",
+    "end_seconds",
+    "confidence"
+  ],
+  "title": "EventAnnotation",
+  "type": "object"
+}
