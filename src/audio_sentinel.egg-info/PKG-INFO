@@ -1,3 +1,26 @@
+Metadata-Version: 2.4
+Name: audio-sentinel
+Version: 0.1.0
+Summary: Multi-agent audio threat detection prototype.
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1,>=0.115
+Requires-Dist: uvicorn<1,>=0.30
+Requires-Dist: numpy<3,>=1.26
+Requires-Dist: scipy<2,>=1.13
+Requires-Dist: soundfile<1,>=0.12
+Requires-Dist: librosa<1,>=0.10
+Requires-Dist: pydantic<3,>=2.8
+Requires-Dist: pyyaml<7,>=6
+Requires-Dist: typer<1,>=0.12
+Provides-Extra: dev
+Requires-Dist: pytest<9,>=8; extra == "dev"
+Requires-Dist: httpx<1,>=0.27; extra == "dev"
+Provides-Extra: ml
+Requires-Dist: torch<3,>=2.3; extra == "ml"
+Requires-Dist: onnxruntime<2,>=1.19; extra == "ml"
+Requires-Dist: faster-whisper<2,>=1.1; extra == "ml"
+
 # Project 1: Audio Sentinel
 
 This repository contains the implementation plan and starter code for a multi-agent audio threat detection system.
