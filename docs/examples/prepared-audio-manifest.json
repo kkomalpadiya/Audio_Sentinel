@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "preprocessing_version": "1.0",
+  "source": {
+    "audio_path": "example/clip-001.wav",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "format": "WAV",
+    "sample_rate_hz": 48000,
+    "channels": 2,
+    "num_frames": 36000,
+    "size_bytes": 144044
+  },
+  "settings": {
+    "target_sample_rate_hz": 16000,
+    "convert_to_mono": true,
+    "normalize_loudness": true,
+    "normalization_method": "rms",
+    "target_rms_dbfs": -20.0,
+    "peak_ceiling_dbfs": -1.0,
+    "max_gain_db": 20.0,
+    "silence_floor_dbfs": -60.0,
+    "noise_reduction": {
+      "enabled": false,
+      "method": "stationary_spectral_gate",
+      "reduction_strength": 0.5
+    },
+    "accepted_formats": [
+      "WAV",
+      "FLAC"
+    ],
+    "max_input_bytes": 268435456,
+    "max_duration_seconds": 600.0,
+    "max_input_channels": 8,
+    "output_format": "WAV",
+    "output_subtype": "PCM_16",
+    "window_seconds": [
+      1.0,
+      5.0,
+      10.0
+    ],
+    "window_overlap_ratio": 0.5,
+    "tail_policy": "pad"
+  },
+  "clip": {
+    "schema_version": "1.0",
+    "clip_id": "clip-001",
+    "source_dataset": "example",
+    "audio_path": "prepared/clip-001/audio.wav",
+    "sample_rate_hz": 16000,
+    "duration_seconds": 0.75,
+    "consent": {
+      "consent_id": "example-consent-001",
+      "status": "granted",
+      "processing_scope": "acoustic_only",
+      "device_authorized": true,
+      "raw_audio_retention_allowed": false,
+      "granted_at": "2026-09-05T00:00:00Z",
+      "expires_at": null
+    },
+    "annotations": []
+  },
+  "channels": 1,
+  "num_frames": 12000,
+  "windows": [
+    {
+      "window_id": "clip-001-1s-0000",
+      "audio_path": "prepared/clip-001/windows/1s-0000.wav",
+      "window_seconds": 1.0,
+      "start_sample": 0,
+      "end_sample": 12000,
+      "padding_samples": 4000
+    },
+    {
+      "window_id": "clip-001-5s-0000",
+      "audio_path": "prepared/clip-001/windows/5s-0000.wav",
+      "window_seconds": 5.0,
+      "start_sample": 0,
+      "end_sample": 12000,
+      "padding_samples": 68000
+    },
+    {
+      "window_id": "clip-001-10s-0000",
+      "audio_path": "prepared/clip-001/windows/10s-0000.wav",
+      "window_seconds": 10.0,
+      "start_sample": 0,
+      "end_sample": 12000,
+      "padding_samples": 148000
+    }
+  ]
+}

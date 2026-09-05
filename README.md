@@ -52,3 +52,10 @@ pip install -e .[dev]
 ```
 
 The test configuration intentionally collects only `tests/`, so third-party test files included inside downloaded datasets do not affect project verification.
+
+## Audio preparation contract
+
+A1.1 defines validated preprocessing settings and the prepared-audio manifest.
+See [the preparation guide](docs/audio-preparation.md) for defaults, examples,
+window rules, and a beginner-friendly explanation. Audio processing is implemented
+in the following tasks, starting with B1.1 (local loading and input validation).

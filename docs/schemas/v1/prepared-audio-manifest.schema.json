@@ -1,0 +1,561 @@
+{
+  "$defs": {
+    "AudioSettings": {
+      "additionalProperties": false,
+      "description": "Stable preprocessing defaults shared by the first offline pipeline.",
+      "properties": {
+        "accepted_formats": {
+          "default": [
+            "WAV",
+            "FLAC"
+          ],
+          "items": {
+            "enum": [
+              "WAV",
+              "FLAC"
+            ],
+            "type": "string"
+          },
+          "title": "Accepted Formats",
+          "type": "array"
+        },
+        "convert_to_mono": {
+          "default": true,
+          "title": "Convert To Mono",
+          "type": "boolean"
+        },
+        "max_duration_seconds": {
+          "default": 600.0,
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0,
+          "title": "Max Duration Seconds",
+          "type": "number"
+        },
+        "max_gain_db": {
+          "default": 20.0,
+          "maximum": 60.0,
+          "minimum": 0.0,
+          "title": "Max Gain Db",
+          "type": "number"
+        },
+        "max_input_bytes": {
+          "default": 268435456,
+          "exclusiveMinimum": 0,
+          "title": "Max Input Bytes",
+          "type": "integer"
+        },
+        "max_input_channels": {
+          "default": 8,
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Max Input Channels",
+          "type": "integer"
+        },
+        "noise_reduction": {
+          "$ref": "#/$defs/NoiseReductionSettings"
+        },
+        "normalization_method": {
+          "const": "rms",
+          "default": "rms",
+          "enum": [
+            "rms"
+          ],
+          "title": "Normalization Method",
+          "type": "string"
+        },
+        "normalize_loudness": {
+          "default": true,
+          "title": "Normalize Loudness",
+          "type": "boolean"
+        },
+        "output_format": {
+          "const": "WAV",
+          "default": "WAV",
+          "enum": [
+            "WAV"
+          ],
+          "title": "Output Format",
+          "type": "string"
+        },
+        "output_subtype": {
+          "const": "PCM_16",
+          "default": "PCM_16",
+          "enum": [
+            "PCM_16"
+          ],
+          "title": "Output Subtype",
+          "type": "string"
+        },
+        "peak_ceiling_dbfs": {
+          "default": -1.0,
+          "maximum": 0.0,
+          "minimum": -20.0,
+          "title": "Peak Ceiling Dbfs",
+          "type": "number"
+        },
+        "silence_floor_dbfs": {
+          "default": -60.0,
+          "exclusiveMaximum": 0.0,
+          "minimum": -120.0,
+          "title": "Silence Floor Dbfs",
+          "type": "number"
+        },
+        "tail_policy": {
+          "default": "pad",
+          "enum": [
+            "pad",
+            "drop"
+          ],
+          "title": "Tail Policy",
+          "type": "string"
+        },
+        "target_rms_dbfs": {
+          "default": -20.0,
+          "exclusiveMaximum": 0.0,
+          "minimum": -60.0,
+          "title": "Target Rms Dbfs",
+          "type": "number"
+        },
+        "target_sample_rate_hz": {
+          "default": 16000,
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Target Sample Rate Hz",
+          "type": "integer"
+        },
+        "window_overlap_ratio": {
+          "default": 0.5,
+          "exclusiveMaximum": 1.0,
+          "minimum": 0.0,
+          "title": "Window Overlap Ratio",
+          "type": "number"
+        },
+        "window_seconds": {
+          "default": [
+            1.0,
+            5.0,
+            10.0
+          ],
+          "items": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 600.0,
+            "type": "number"
+          },
+          "title": "Window Seconds",
+          "type": "array"
+        }
+      },
+      "title": "AudioSettings",
+      "type": "object"
+    },
+    "ConsentRecord": {
+      "$id": "https://audio-sentinel.local/schemas/v1/consent-record.schema.json",
+      "additionalProperties": false,
+      "description": "Permission evidence for a clip, without storing personal information.",
+      "properties": {
+        "consent_id": {
+          "description": "Opaque reference to the consent record held outside this manifest.",
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "device_authorized": {
+          "title": "Device Authorized",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "granted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Granted At"
+        },
+        "processing_scope": {
+          "$ref": "#/$defs/ProcessingScope"
+        },
+        "raw_audio_retention_allowed": {
+          "default": false,
+          "title": "Raw Audio Retention Allowed",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/ConsentStatus"
+        }
+      },
+      "required": [
+        "consent_id",
+        "status",
+        "processing_scope",
+        "device_authorized"
+      ],
+      "title": "ConsentRecord",
+      "type": "object"
+    },
+    "ConsentStatus": {
+      "enum": [
+        "granted",
+        "denied",
+        "withdrawn"
+      ],
+      "title": "ConsentStatus",
+      "type": "string"
+    },
+    "EventAnnotation": {
+      "$id": "https://audio-sentinel.local/schemas/v1/event-annotation.schema.json",
+      "additionalProperties": false,
+      "description": "A time-bounded v1 event annotation or model result.",
+      "properties": {
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "risk_level": {
+          "$ref": "#/$defs/RiskLevel"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "risk_level",
+        "start_seconds",
+        "end_seconds",
+        "confidence"
+      ],
+      "title": "EventAnnotation",
+      "type": "object"
+    },
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "NoiseReductionSettings": {
+      "additionalProperties": false,
+      "description": "Optional stationary spectral gating; implemented in B1.2.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "method": {
+          "const": "stationary_spectral_gate",
+          "default": "stationary_spectral_gate",
+          "enum": [
+            "stationary_spectral_gate"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "reduction_strength": {
+          "default": 0.5,
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Reduction Strength",
+          "type": "number"
+        }
+      },
+      "title": "NoiseReductionSettings",
+      "type": "object"
+    },
+    "PreparedClipRecord": {
+      "$id": "https://audio-sentinel.local/schemas/v1/prepared-clip.schema.json",
+      "additionalProperties": false,
+      "description": "A privacy-minimized manifest for a prepared offline audio clip.",
+      "properties": {
+        "annotations": {
+          "items": {
+            "$ref": "#/$defs/EventAnnotation"
+          },
+          "title": "Annotations",
+          "type": "array"
+        },
+        "audio_path": {
+          "description": "Relative path under the approved data root; never a raw audio payload.",
+          "minLength": 1,
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "consent": {
+          "$ref": "#/$defs/ConsentRecord"
+        },
+        "duration_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "schema_version": {
+          "default": "1.0",
+          "pattern": "^1\\.0$",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_dataset": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Dataset",
+          "type": "string"
+        }
+      },
+      "required": [
+        "clip_id",
+        "source_dataset",
+        "audio_path",
+        "sample_rate_hz",
+        "duration_seconds",
+        "consent"
+      ],
+      "title": "PreparedClipRecord",
+      "type": "object"
+    },
+    "PreparedWindowRecord": {
+      "additionalProperties": false,
+      "description": "Offsets count frames in the prepared full clip; end_sample is exclusive.",
+      "properties": {
+        "audio_path": {
+          "minLength": 1,
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "padding_samples": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Padding Samples",
+          "type": "integer"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "window_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Window Id",
+          "type": "string"
+        },
+        "window_seconds": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0,
+          "title": "Window Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "window_id",
+        "audio_path",
+        "window_seconds",
+        "start_sample",
+        "end_sample"
+      ],
+      "title": "PreparedWindowRecord",
+      "type": "object"
+    },
+    "ProcessingScope": {
+      "enum": [
+        "none",
+        "acoustic_only",
+        "acoustic_and_speech"
+      ],
+      "title": "ProcessingScope",
+      "type": "string"
+    },
+    "RiskLevel": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    },
+    "SourceAudioMetadata": {
+      "additionalProperties": false,
+      "description": "Original file properties; audio_path is relative to data/raw.",
+      "properties": {
+        "audio_path": {
+          "minLength": 1,
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "channels": {
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "format": {
+          "enum": [
+            "WAV",
+            "FLAC"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "num_frames": {
+          "exclusiveMinimum": 0,
+          "title": "Num Frames",
+          "type": "integer"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Size Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "audio_path",
+        "sha256",
+        "format",
+        "sample_rate_hz",
+        "channels",
+        "num_frames",
+        "size_bytes"
+      ],
+      "title": "SourceAudioMetadata",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/prepared-audio-manifest.schema.json",
+  "additionalProperties": false,
+  "description": "One source, one full prepared clip, and its complete window inventory.",
+  "properties": {
+    "channels": {
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Channels",
+      "type": "integer"
+    },
+    "clip": {
+      "$ref": "#/$defs/PreparedClipRecord"
+    },
+    "num_frames": {
+      "exclusiveMinimum": 0,
+      "title": "Num Frames",
+      "type": "integer"
+    },
+    "preprocessing_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Preprocessing Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "settings": {
+      "$ref": "#/$defs/AudioSettings"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceAudioMetadata"
+    },
+    "windows": {
+      "items": {
+        "$ref": "#/$defs/PreparedWindowRecord"
+      },
+      "title": "Windows",
+      "type": "array"
+    }
+  },
+  "required": [
+    "source",
+    "settings",
+    "clip",
+    "channels",
+    "num_frames",
+    "windows"
+  ],
+  "title": "PreparedAudioManifest",
+  "type": "object"
+}

@@ -3,12 +3,24 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 DEFAULT_SAMPLE_RATE_HZ = 16_000
 DEFAULT_WINDOW_SECONDS = (1.0, 5.0, 10.0)
+WindowSeconds = Annotated[float, Field(gt=0, le=600, allow_inf_nan=False)]
+
+
+class NoiseReductionSettings(BaseModel):
+    """Optional stationary spectral gating; implemented in B1.2."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+
+    enabled: bool = False
+    method: Literal["stationary_spectral_gate"] = "stationary_spectral_gate"
+    reduction_strength: float = Field(default=0.5, gt=0, le=1)
 
 
 class Paths(BaseModel):
@@ -83,12 +95,26 @@ class Paths(BaseModel):
 class AudioSettings(BaseModel):
     """Stable preprocessing defaults shared by the first offline pipeline."""
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
 
     target_sample_rate_hz: int = Field(default=DEFAULT_SAMPLE_RATE_HZ, ge=8_000, le=192_000)
     convert_to_mono: bool = True
     normalize_loudness: bool = True
-    window_seconds: tuple[float, ...] = DEFAULT_WINDOW_SECONDS
+    normalization_method: Literal["rms"] = "rms"
+    target_rms_dbfs: float = Field(default=-20.0, ge=-60, lt=0)
+    peak_ceiling_dbfs: float = Field(default=-1.0, ge=-20, le=0)
+    max_gain_db: float = Field(default=20.0, ge=0, le=60)
+    silence_floor_dbfs: float = Field(default=-60.0, ge=-120, lt=0)
+    noise_reduction: NoiseReductionSettings = Field(default_factory=NoiseReductionSettings)
+    accepted_formats: tuple[Literal["WAV", "FLAC"], ...] = ("WAV", "FLAC")
+    max_input_bytes: int = Field(default=268_435_456, gt=0)
+    max_duration_seconds: float = Field(default=600.0, gt=0, le=600)
+    max_input_channels: int = Field(default=8, ge=1, le=32)
+    output_format: Literal["WAV"] = "WAV"
+    output_subtype: Literal["PCM_16"] = "PCM_16"
+    window_seconds: tuple[WindowSeconds, ...] = DEFAULT_WINDOW_SECONDS
+    window_overlap_ratio: float = Field(default=0.5, ge=0, lt=1)
+    tail_policy: Literal["pad", "drop"] = "pad"
 
     @field_validator("window_seconds")
     @classmethod
@@ -100,6 +126,23 @@ class AudioSettings(BaseModel):
         if tuple(sorted(values)) != values or len(set(values)) != len(values):
             raise ValueError("window_seconds must be unique and ordered from shortest to longest")
         return values
+
+    @model_validator(mode="after")
+    def validate_preprocessing(self) -> "AudioSettings":
+        if not self.accepted_formats or len(set(self.accepted_formats)) != len(self.accepted_formats):
+            raise ValueError("accepted_formats must be nonempty and unique")
+        if not self.silence_floor_dbfs < self.target_rms_dbfs <= self.peak_ceiling_dbfs:
+            raise ValueError("require silence_floor_dbfs < target_rms_dbfs <= peak_ceiling_dbfs")
+        for seconds in self.window_seconds:
+            length, hop = self.window_sample_counts(seconds)
+            if not 1 <= hop <= length:
+                raise ValueError("window length and hop must each span at least one sample")
+        return self
+
+    def window_sample_counts(self, seconds: float) -> tuple[int, int]:
+        """Use Python round (ties to even), then derive hop from rounded length."""
+        length = round(seconds * self.target_sample_rate_hz)
+        return length, round(length * (1 - self.window_overlap_ratio))
 
 
 class AudioSentinelSettings(BaseModel):
@@ -131,7 +174,16 @@ def find_project_root(start: Path | None = None) -> Path:
     raise FileNotFoundError(f"Could not find a project root from {candidate}")
 
 
-def load_settings(project_root: Path | None = None) -> AudioSentinelSettings:
+def load_settings(
+    project_root: Path | None = None, *, audio_config_path: Path | None = None
+) -> AudioSentinelSettings:
     """Build default settings for the supplied or automatically discovered root."""
 
-    return AudioSentinelSettings.from_project_root(project_root or find_project_root(Path(__file__)))
+    root = project_root or find_project_root(Path(__file__))
+    audio = AudioSettings()
+    if audio_config_path is not None:
+        config_path = Path(audio_config_path)
+        if not config_path.is_absolute():
+            config_path = root / config_path
+        audio = AudioSettings.model_validate_json(config_path.read_text(encoding="utf-8"))
+    return AudioSentinelSettings(paths=Paths.from_root(root), audio=audio)

@@ -1,0 +1,31 @@
+{
+  "target_sample_rate_hz": 16000,
+  "convert_to_mono": true,
+  "normalize_loudness": true,
+  "normalization_method": "rms",
+  "target_rms_dbfs": -20.0,
+  "peak_ceiling_dbfs": -1.0,
+  "max_gain_db": 20.0,
+  "silence_floor_dbfs": -60.0,
+  "noise_reduction": {
+    "enabled": false,
+    "method": "stationary_spectral_gate",
+    "reduction_strength": 0.5
+  },
+  "accepted_formats": [
+    "WAV",
+    "FLAC"
+  ],
+  "max_input_bytes": 268435456,
+  "max_duration_seconds": 600.0,
+  "max_input_channels": 8,
+  "output_format": "WAV",
+  "output_subtype": "PCM_16",
+  "window_seconds": [
+    1.0,
+    5.0,
+    10.0
+  ],
+  "window_overlap_ratio": 0.5,
+  "tail_policy": "pad"
+}

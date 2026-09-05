@@ -1,0 +1,180 @@
+{
+  "$defs": {
+    "NoiseReductionSettings": {
+      "additionalProperties": false,
+      "description": "Optional stationary spectral gating; implemented in B1.2.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "method": {
+          "const": "stationary_spectral_gate",
+          "default": "stationary_spectral_gate",
+          "enum": [
+            "stationary_spectral_gate"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "reduction_strength": {
+          "default": 0.5,
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Reduction Strength",
+          "type": "number"
+        }
+      },
+      "title": "NoiseReductionSettings",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/preprocessing-settings.schema.json",
+  "additionalProperties": false,
+  "description": "Stable preprocessing defaults shared by the first offline pipeline.",
+  "properties": {
+    "accepted_formats": {
+      "default": [
+        "WAV",
+        "FLAC"
+      ],
+      "items": {
+        "enum": [
+          "WAV",
+          "FLAC"
+        ],
+        "type": "string"
+      },
+      "title": "Accepted Formats",
+      "type": "array"
+    },
+    "convert_to_mono": {
+      "default": true,
+      "title": "Convert To Mono",
+      "type": "boolean"
+    },
+    "max_duration_seconds": {
+      "default": 600.0,
+      "exclusiveMinimum": 0.0,
+      "maximum": 600.0,
+      "title": "Max Duration Seconds",
+      "type": "number"
+    },
+    "max_gain_db": {
+      "default": 20.0,
+      "maximum": 60.0,
+      "minimum": 0.0,
+      "title": "Max Gain Db",
+      "type": "number"
+    },
+    "max_input_bytes": {
+      "default": 268435456,
+      "exclusiveMinimum": 0,
+      "title": "Max Input Bytes",
+      "type": "integer"
+    },
+    "max_input_channels": {
+      "default": 8,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Max Input Channels",
+      "type": "integer"
+    },
+    "noise_reduction": {
+      "$ref": "#/$defs/NoiseReductionSettings"
+    },
+    "normalization_method": {
+      "const": "rms",
+      "default": "rms",
+      "enum": [
+        "rms"
+      ],
+      "title": "Normalization Method",
+      "type": "string"
+    },
+    "normalize_loudness": {
+      "default": true,
+      "title": "Normalize Loudness",
+      "type": "boolean"
+    },
+    "output_format": {
+      "const": "WAV",
+      "default": "WAV",
+      "enum": [
+        "WAV"
+      ],
+      "title": "Output Format",
+      "type": "string"
+    },
+    "output_subtype": {
+      "const": "PCM_16",
+      "default": "PCM_16",
+      "enum": [
+        "PCM_16"
+      ],
+      "title": "Output Subtype",
+      "type": "string"
+    },
+    "peak_ceiling_dbfs": {
+      "default": -1.0,
+      "maximum": 0.0,
+      "minimum": -20.0,
+      "title": "Peak Ceiling Dbfs",
+      "type": "number"
+    },
+    "silence_floor_dbfs": {
+      "default": -60.0,
+      "exclusiveMaximum": 0.0,
+      "minimum": -120.0,
+      "title": "Silence Floor Dbfs",
+      "type": "number"
+    },
+    "tail_policy": {
+      "default": "pad",
+      "enum": [
+        "pad",
+        "drop"
+      ],
+      "title": "Tail Policy",
+      "type": "string"
+    },
+    "target_rms_dbfs": {
+      "default": -20.0,
+      "exclusiveMaximum": 0.0,
+      "minimum": -60.0,
+      "title": "Target Rms Dbfs",
+      "type": "number"
+    },
+    "target_sample_rate_hz": {
+      "default": 16000,
+      "maximum": 192000,
+      "minimum": 8000,
+      "title": "Target Sample Rate Hz",
+      "type": "integer"
+    },
+    "window_overlap_ratio": {
+      "default": 0.5,
+      "exclusiveMaximum": 1.0,
+      "minimum": 0.0,
+      "title": "Window Overlap Ratio",
+      "type": "number"
+    },
+    "window_seconds": {
+      "default": [
+        1.0,
+        5.0,
+        10.0
+      ],
+      "items": {
+        "exclusiveMinimum": 0.0,
+        "maximum": 600.0,
+        "type": "number"
+      },
+      "title": "Window Seconds",
+      "type": "array"
+    }
+  },
+  "title": "AudioSettings",
+  "type": "object"
+}
