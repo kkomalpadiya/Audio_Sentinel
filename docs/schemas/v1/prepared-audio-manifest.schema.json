@@ -24,6 +24,12 @@
           "title": "Convert To Mono",
           "type": "boolean"
         },
+        "max_decoded_bytes": {
+          "default": 268435456,
+          "exclusiveMinimum": 0,
+          "title": "Max Decoded Bytes",
+          "type": "integer"
+        },
         "max_duration_seconds": {
           "default": 600.0,
           "exclusiveMinimum": 0.0,

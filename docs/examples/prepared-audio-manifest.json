@@ -29,6 +29,7 @@
       "FLAC"
     ],
     "max_input_bytes": 268435456,
+    "max_decoded_bytes": 268435456,
     "max_duration_seconds": 600.0,
     "max_input_channels": 8,
     "output_format": "WAV",

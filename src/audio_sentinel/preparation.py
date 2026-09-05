@@ -94,6 +94,8 @@ class PreparedAudioManifest(PreparationRecord):
             raise ValueError("source format is not accepted by settings")
         if source.size_bytes > settings.max_input_bytes or source.channels > settings.max_input_channels:
             raise ValueError("source exceeds input size or channel limits")
+        if source.num_frames * source.channels * 4 > settings.max_decoded_bytes:
+            raise ValueError("source exceeds the decoded float32 memory limit")
         if source.num_frames / source.sample_rate_hz > settings.max_duration_seconds:
             raise ValueError("source exceeds maximum duration")
         if clip.sample_rate_hz != settings.target_sample_rate_hz:

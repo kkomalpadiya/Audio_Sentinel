@@ -108,6 +108,7 @@ class AudioSettings(BaseModel):
     noise_reduction: NoiseReductionSettings = Field(default_factory=NoiseReductionSettings)
     accepted_formats: tuple[Literal["WAV", "FLAC"], ...] = ("WAV", "FLAC")
     max_input_bytes: int = Field(default=268_435_456, gt=0)
+    max_decoded_bytes: int = Field(default=268_435_456, gt=0)
     max_duration_seconds: float = Field(default=600.0, gt=0, le=600)
     max_input_channels: int = Field(default=8, ge=1, le=32)
     output_format: Literal["WAV"] = "WAV"

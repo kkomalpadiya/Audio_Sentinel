@@ -43,7 +43,7 @@ def test_manifest_roundtrip_preserves_existing_clip_contract(manifest_data):
     {"window_overlap_ratio": 1}, {"window_overlap_ratio": -0.1},
     {"window_overlap_ratio": 0.99999999}, {"target_rms_dbfs": float("nan")},
     {"target_rms_dbfs": -0.5}, {"silence_floor_dbfs": -10},
-    {"max_input_bytes": 0}, {"max_duration_seconds": 0}, {"max_input_channels": 0},
+    {"max_input_bytes": 0}, {"max_decoded_bytes": 0}, {"max_duration_seconds": 0}, {"max_input_channels": 0},
     {"accepted_formats": []}, {"accepted_formats": ["WAV", "WAV"]},
     {"accepted_formats": ["MP3"]}, {"noise_reduction": {"reduction_strength": 2}},
     {"output_subtype": "FLOAT"}, {"typo_setting": True},
@@ -68,6 +68,7 @@ def test_source_path_is_portable_and_relative(manifest_data, path):
     ("clip", "duration_seconds", float("inf")), ("source", "channels", 9),
     ("source", "size_bytes", 300_000_000), ("source", "sha256", "invalid"),
     ("source", "num_frames", 48_000 * 601), ("clip", "audio_path", "prepared/file.flac"),
+    ("settings", "max_decoded_bytes", 1),
 ])
 def test_inconsistent_manifest_metadata_is_rejected(manifest_data, section, field, value):
     manifest_data[section][field] = value

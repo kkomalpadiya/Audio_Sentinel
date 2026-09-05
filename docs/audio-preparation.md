@@ -2,8 +2,9 @@
 
 A1.1 defines the rules that later preparation modules must follow. The settings,
 manifest validation, JSON schemas, and examples are implemented. Audio loading,
-conversion, noise reduction, segmentation, and writing audio files remain the
-following tasks. No dataset download or microphone access is needed for A1.1.
+conversion, noise reduction, segmentation, and writing audio files were the
+following tasks. B1.1 has since added [local loading and validation](audio-loading.md).
+No dataset download or microphone access is needed for A1.1.
 
 ## Settings
 
@@ -14,6 +15,7 @@ following tasks. No dataset download or microphone access is needed for A1.1.
 | --- | --- | --- |
 | Input formats | WAV, FLAC | Check the decoded container format, not only the extension. |
 | Input limits | 256 MiB, 600 seconds, 8 channels | Reject empty, oversized, unsupported, corrupt, or non-finite audio in B1.1. Source rate must be 8,000–192,000 Hz. |
+| Decoded memory limit | 256 MiB | Added in B1.1; bounds the main float32 sample array before allocation. |
 | Sample rate | 16,000 Hz | Keep the Phase 0 default; adjustable from 8,000 to 192,000 Hz. |
 | Mono conversion | Enabled | Average channels. If disabled, preserve channel count. |
 | Volume normalization | Enabled, RMS target −20 dBFS | Adjust average signal level with one gain for the entire clip. |
