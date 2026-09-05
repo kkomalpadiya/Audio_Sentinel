@@ -59,4 +59,5 @@ A1.1 defines validated preprocessing settings and the prepared-audio manifest.
 See [the preparation guide](docs/audio-preparation.md) for defaults, examples,
 window rules, and a beginner-friendly explanation. B1.1 now implements
 [local audio loading and input validation](docs/audio-loading.md), with a synthetic
-smoke test. Next is A1.2: mono conversion, resampling, and volume normalization.
+smoke test. A1.2 implements [mono conversion, resampling, and volume normalization](docs/audio-transforms.md)
+in memory. Next is B1.2: optional configurable noise reduction.

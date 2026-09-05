@@ -40,7 +40,8 @@ class LoadedAudio:
     samples: NDArray[np.float32] = field(repr=False, compare=False)
 
 
-def _validated_consent(consent: ConsentRecord, now: datetime) -> ConsentRecord:
+def validate_processing_consent(consent: ConsentRecord, now: datetime) -> ConsentRecord:
+    """Validate a permission snapshot at an audio-processing boundary."""
     timestamps = (now, consent.granted_at, consent.expires_at)
     if any(value is not None and value.utcoffset() is None for value in timestamps):
         raise AudioLoadError("invalid_consent", "Consent timestamps and current time must include a timezone.")
@@ -131,7 +132,7 @@ def load_audio(
     Relative paths start at settings.paths.raw_data. Absolute paths must resolve
     inside that root. `now` is an optional clock override for reproducible tests.
     """
-    consent = _validated_consent(clip.consent, now if now is not None else datetime.now(UTC))
+    consent = validate_processing_consent(clip.consent, now if now is not None else datetime.now(UTC))
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{2,127}", clip.clip_id):
         raise AudioLoadError("invalid_clip_id", "clip_id must be a valid opaque identifier of 3–128 characters.")
     path, relative_path = _resolve_source(clip.audio_path, settings.paths.raw_data)
@@ -202,7 +203,7 @@ def load_audio(
         raise AudioLoadError("insufficient_memory", "Not enough memory to load this clip; use a shorter recording.") from error
 
     # A long decode must not return audio after its permission has expired.
-    consent = _validated_consent(consent, now if now is not None else datetime.now(UTC))
+    consent = validate_processing_consent(consent, now if now is not None else datetime.now(UTC))
     source = SourceAudioMetadata(
         audio_path=relative_path, sha256=digest.hexdigest(), format=container,
         sample_rate_hz=rate, channels=channels, num_frames=frames, size_bytes=initial.st_size,

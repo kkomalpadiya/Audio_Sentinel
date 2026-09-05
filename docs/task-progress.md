@@ -34,11 +34,32 @@ Verification: all 118 tests pass with no skips. The project verification script 
 the generated-tone smoke test pass. Tests include Windows junction containment,
 truncated WAV/FLAC, invalid samples, and consent expiry before and after decoding.
 
-Current tracker: `outputs/b1_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/b1_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 11 completed tasks out of 72. No manual installation or download is
 needed. Review and commit this checkpoint when ready.
 
-Next: A1.2 — Implement mono conversion, resampling, and loudness normalization.
+Following task: A1.2 — Implement mono conversion, resampling, and loudness normalization.
 
 The loader turns the audio file into a table of numbers, checks that the file and
 permission are valid, and attaches a record of where those numbers came from.
+
+## A1.2 — Complete
+
+Implemented channel averaging, filtered resampling with the contracted frame count,
+and RMS normalization with gain/peak limits. Added an in-memory helper connecting
+these operations to loader output, normalization measurements, regression tests,
+a synthetic smoke test, and `docs/audio-transforms.md`.
+
+Verification: all 161 tests pass with no skips. The project verification script and
+transform smoke test pass. Tests check pitch, anti-alias filtering, timing, stereo
+balance, silence, gain/peak limits, memory limits, and original-data preservation.
+
+Current tracker: `outputs/a1_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 12 completed tasks out of 72. No manual installation or download is
+needed. Review and commit this checkpoint when ready.
+
+Next: B1.2 — Implement optional configurable noise reduction.
+
+Mono conversion combines channels, resampling puts the recording on a common
+timing grid, and normalization adjusts volume with limits. The result stays in
+memory for the later noise-reduction, windowing, and persistence tasks.

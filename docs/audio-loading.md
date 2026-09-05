@@ -2,7 +2,8 @@
 
 The loader now reads an authorized local recording and returns its numeric samples
 and source metadata. It does not resample, convert to mono, adjust volume, remove
-noise, write prepared files, transcribe, or score threats. Those are later tasks.
+noise, write prepared files, transcribe, or score threats. A1.2 now provides
+[mono conversion, resampling, and normalization](audio-transforms.md) for its output.
 
 ## What happens when a file is loaded
 
@@ -97,5 +98,5 @@ For all project checks, run `./scripts/verify_project.ps1`.
 A sound file stores measurements of air-pressure changes as numbers. The loader
 unpacks those numbers into a table: each row is a moment in time, and each column
 is an audio channel. It checks permission and file validity first, then returns the
-table with a record of its source. The next task will standardize the channels,
-sample rate, and volume so the analysis modules receive consistent audio.
+table with a record of its source. A1.2 standardizes the channels, sample rate, and
+volume so the analysis modules receive consistent audio.

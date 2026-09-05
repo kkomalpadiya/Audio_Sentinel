@@ -6,6 +6,10 @@ conversion, noise reduction, segmentation, and writing audio files were the
 following tasks. B1.1 has since added [local loading and validation](audio-loading.md).
 No dataset download or microphone access is needed for A1.1.
 
+A1.2 has also implemented [mono conversion, resampling, and normalization](audio-transforms.md)
+in memory. Noise reduction, segmentation, persistence, and full service integration
+remain later tasks.
+
 ## Settings
 
 `AudioSentinelSettings.audio` remains the shared configuration passed to the
