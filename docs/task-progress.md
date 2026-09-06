@@ -149,12 +149,36 @@ and off, actual encoded output, metadata, stereo/rate overrides, repeat saves,
 protocol compatibility, failure propagation, limits, and permission expiry between
 stages. No real recording or dataset download was needed.
 
-Current tracker: `outputs/a1_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/a1_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 16 completed tasks out of 72. No manual setup is needed. Review, commit,
 and push this checkpoint when ready. B1.4 and A1.5 remain separate test tasks.
 
-Next: B1.4 — Add unit tests for loader, noise reduction, and segmentation.
+Following task: B1.4 — Add unit tests for loader, noise reduction, and segmentation.
 
 The service connects the separate preparation tools in the right order. Give it
 a local recording, permission, and a dataset name; it returns the saved audio and
 manifest so later models can use them without repeating the preparation wiring.
+
+## B1.4 — Complete
+
+Reviewed all three component suites and added 22 checks for untested behavior:
+WAV byte order and odd-chunk padding, decoder frame mismatches and resource errors,
+late non-finite samples, permission-copy independence, noise profiling boundaries,
+alternate FFT/rate combinations, amplitude scaling, read-only strided inputs,
+silent-channel diagnostics, and allocation failures. Two parameterized tests also
+check coverage and tail minimality across 80 seeded window grids.
+
+Verification: all 137 tests in the three component suites pass. The full project
+suite passes all 303 tests with no skips, and compilation and diff checks pass.
+No audio-processing implementation changes were needed. Added
+`docs/preparation-component-tests.md` and updated the project status next step.
+
+Current tracker: `outputs/b1_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 17 completed tasks out of 72. No manual installation, recording, or
+dataset download is needed. Review, commit, and push this checkpoint when ready.
+
+Next: A1.5 — Add preparation integration tests and sample-clip smoke test.
+
+Unit tests check individual tools using known inputs and expected results. Some
+also simulate broken input or failed allocations. Running them after future edits
+helps catch regressions before those changes affect real recordings.

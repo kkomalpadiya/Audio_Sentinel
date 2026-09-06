@@ -187,3 +187,66 @@ def test_noise_reduction_runs_after_resampling_before_normalization(loaded_clip,
     assert not result.samples.any()
     assert result.source == loaded_clip.source
     assert result.consent == loaded_clip.consent
+
+
+@pytest.mark.parametrize("length,reason,frames", [(895, "too_short", 0), (896, "processed", 4)])
+def test_minimum_four_complete_profile_frames(length, reason, frames):
+    samples = np.random.default_rng(91).normal(0, 0.03, (length, 1)).astype(np.float32)
+    result = reduce(samples)
+    assert result.stats.reason == reason
+    assert result.stats.profile_frames == frames
+    assert result.samples.shape == samples.shape
+    assert not np.shares_memory(result.samples, samples)
+    if reason == "too_short":
+        np.testing.assert_array_equal(result.samples, samples)
+
+
+@pytest.mark.parametrize("fft_size,rate", [(64, 8_000), (512, 44_100), (2048, 48_000)])
+def test_nondefault_fft_and_rate_preserve_boundary_impulses(fft_size, rate):
+    samples = np.zeros((fft_size * 12 + 7, 1), dtype=np.float32)
+    samples[0] = 0.25
+    samples[-1] = -0.5
+    result = reduce_noise(samples, rate, NoiseReductionSettings(enabled=True, fft_size=fft_size),
+                          max_decoded_bytes=samples.nbytes)
+    assert result.stats.reason == "processed"
+    assert result.samples.dtype == np.float32 and result.samples.shape == samples.shape
+    np.testing.assert_allclose(result.samples, samples, atol=1e-7)
+
+
+def test_amplitude_scaling_does_not_change_the_gate_decisions(noisy_tone):
+    samples = noisy_tone[1]
+    original = reduce(samples)
+    quieter = reduce(samples * np.float32(0.125))
+    np.testing.assert_allclose(quieter.samples, original.samples * 0.125, rtol=1e-5, atol=1e-8)
+    assert quieter.stats.mean_spectral_gain == pytest.approx(original.stats.mean_spectral_gain, abs=1e-10)
+
+
+def test_readonly_strided_input_is_supported(noisy_tone):
+    backing = np.repeat(noisy_tone[1], 2, axis=0)
+    samples = backing[::2]
+    samples.flags.writeable = False
+    assert not samples.flags.c_contiguous
+    result = reduce(samples)
+    np.testing.assert_array_equal(result.samples, reduce(noisy_tone[1]).samples)
+    np.testing.assert_array_equal(samples, noisy_tone[1])
+    assert not np.shares_memory(result.samples, backing)
+
+
+def test_silent_channel_contributes_unity_gain_to_diagnostics(noisy_tone):
+    mono = reduce(noisy_tone[1])
+    stereo = reduce(np.column_stack((noisy_tone[1][:, 0], np.zeros(len(noisy_tone[1]), dtype=np.float32))))
+    assert stereo.stats.mean_spectral_gain == pytest.approx((mono.stats.mean_spectral_gain + 1) / 2)
+    assert not stereo.samples[:, 1].any()
+
+
+def test_spectral_allocation_failure_is_reported_and_input_preserved(noisy_tone, monkeypatch):
+    from audio_sentinel import noise_reduction
+    samples = noisy_tone[1]
+    before = samples.copy()
+    def fail(*args, **kwargs):
+        raise MemoryError("simulated spectral allocation failure")
+    monkeypatch.setattr(noise_reduction.ShortTimeFFT, "stft", fail)
+    with pytest.raises(AudioTransformError) as caught:
+        reduce(samples)
+    assert caught.value.code == "insufficient_memory"
+    np.testing.assert_array_equal(samples, before)

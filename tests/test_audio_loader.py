@@ -4,6 +4,7 @@ import hashlib
 import os
 from pathlib import Path
 import subprocess
+import struct
 import wave
 
 import numpy as np
@@ -288,3 +289,62 @@ def test_permission_is_rechecked_after_decode(make_clip, temporary_settings, mon
     with pytest.raises(AudioLoadError) as caught:
         load_audio(clip, temporary_settings)
     assert caught.value.code == "consent_expired"
+
+
+@pytest.mark.parametrize("byteorder", ["little", "big"])
+def test_independent_wav_with_odd_metadata_chunk(make_clip, temporary_settings, byteorder):
+    """Exercise RIFF padding and RIFX using bytes not produced by our decoder."""
+    clip = make_clip()
+    path = temporary_settings.paths.raw_data / clip.audio_path
+    endian = "<" if byteorder == "little" else ">"
+    def chunk(tag, payload):
+        return tag + len(payload).to_bytes(4, byteorder) + payload + (b"\x00" if len(payload) % 2 else b"")
+    fmt = struct.pack(endian + "HHIIHH", 1, 2, 16_000, 64_000, 4, 16)
+    pcm = struct.pack(endian + "hhhhhh", -32768, 32767, 0, -16384, 16384, 0)
+    body = b"WAVE" + chunk(b"JUNK", b"odd") + chunk(b"fmt ", fmt) + chunk(b"data", pcm)
+    payload = (b"RIFF" if byteorder == "little" else b"RIFX") + len(body).to_bytes(4, byteorder) + body
+    path.write_bytes(payload)
+    loaded = load_audio(clip, temporary_settings, now=NOW)
+    np.testing.assert_array_equal(loaded.samples, [[-1, 32767 / 32768], [0, -0.5], [0.5, 0]])
+    assert loaded.source.sha256 == hashlib.sha256(payload).hexdigest()
+
+
+@pytest.mark.parametrize("fault", ["short", "extra"])
+def test_decoder_frame_mismatch_is_rejected(make_clip, temporary_settings, monkeypatch, fault):
+    clip = make_clip()
+    original = sf.SoundFile.read
+    def read(audio, count, **kwargs):
+        result = original(audio, count, **kwargs)
+        if fault == "short" and len(result):
+            return result[:-1]
+        if fault == "extra" and not len(result):
+            return np.zeros((1, audio.channels), dtype=np.float32)
+        return result
+    monkeypatch.setattr(sf.SoundFile, "read", read)
+    assert_rejected("invalid_audio", clip, temporary_settings)
+
+
+@pytest.mark.parametrize("failure,code", [(MemoryError, "insufficient_memory"), (OSError, "file_unreadable")])
+def test_decoder_resource_failures_keep_error_code_and_release_file(make_clip, temporary_settings, monkeypatch, failure, code):
+    clip = make_clip()
+    def fail(*args, **kwargs):
+        raise failure("simulated decoder failure")
+    with monkeypatch.context() as patch:
+        patch.setattr(sf.SoundFile, "read", fail)
+        assert_rejected(code, clip, temporary_settings)
+    # A fresh call must work after the failed read; no stale decoder or partial output.
+    assert load_audio(clip, temporary_settings, now=NOW).samples.shape == (5, 1)
+    assert list(temporary_settings.paths.interim_data.iterdir()) == []
+
+
+def test_nonfinite_sample_in_later_decode_block_is_rejected(make_clip, temporary_settings):
+    samples = np.zeros(65_537, dtype=np.float32)
+    samples[-1] = np.nan
+    assert_rejected("non_finite_audio", make_clip(samples, subtype="FLOAT"), temporary_settings)
+
+
+def test_loaded_permission_is_independent_of_callers_mutable_record(make_clip, temporary_settings):
+    clip = make_clip()
+    loaded = load_audio(clip, temporary_settings, now=NOW)
+    clip.consent.consent_id = "changed-after-loading"
+    assert loaded.consent.consent_id != clip.consent.consent_id

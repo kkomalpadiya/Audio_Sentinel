@@ -65,5 +65,6 @@ disabled by default. B1.3 adds [deterministic overlapping windows](docs/audio-se
 with manifest-ready records. A1.3 adds [verified WAV persistence and manifests](docs/audio-persistence.md)
 with safe repeat saves. A1.4 connects these components through a
 [one-call preparation service](docs/audio-pipeline.md), compatible with the shared
-preprocessor interface. Next is B1.4: unit-test coverage for loading, noise reduction,
-and segmentation, followed by A1.5 integration tests and the sample-clip smoke test.
+preprocessor interface. B1.4 expands [component-test coverage](docs/preparation-component-tests.md)
+for loading, noise reduction, and segmentation. Next is A1.5: preparation integration
+tests and the sample-clip smoke test.

@@ -10,7 +10,7 @@ from audio_sentinel.audio_arrays import AudioTransformError
 from audio_sentinel.audio_loader import AudioLoadError, load_audio
 from audio_sentinel.audio_transforms import NormalizationStats, PreparedSignal, prepare_signal
 from audio_sentinel.config import AudioSettings
-from audio_sentinel.contracts import PreparedClipRecord
+from audio_sentinel.contracts import ConsentRecord, PreparedClipRecord
 from audio_sentinel.preparation import PreparedAudioManifest, SourceAudioMetadata
 from audio_sentinel.segmentation import iter_windows
 
@@ -211,3 +211,78 @@ def test_loader_through_preparation_and_segmentation(temporary_settings, active_
     assert [w.record.window_seconds for w in windows] == [1, 1, 1, 5, 10]
     assert windows[2].record.padding_samples == 6_400
     assert list(temporary_settings.paths.interim_data.iterdir()) == []
+
+
+@pytest.mark.parametrize("policy", ["pad", "drop"])
+def test_window_coverage_invariants_across_seeded_grids(make_signal, policy):
+    """Check coverage/minimality without reusing the production count formula."""
+    random = np.random.default_rng(148)
+    for _ in range(40):
+        frames = int(random.integers(1, 258))
+        length = int(random.choice([4, 8, 16, 32]))
+        hop = int(random.choice([length, length // 2, length // 4]))
+        signal = make_signal(frames=frames, channels=2)
+        signal = replace(signal, settings=AudioSettings(convert_to_mono=False, window_seconds=(length / 16_000,),
+                                                        window_overlap_ratio=1 - hop / length, tail_policy=policy))
+        windows = list(iter_windows(signal, now=NOW))
+        coverage = np.zeros(frames, dtype=bool)
+        assert len({w.record.window_id for w in windows}) == len(windows)
+        for index, window in enumerate(windows):
+            record = window.record
+            assert record.start_sample == index * hop
+            assert 0 <= record.start_sample < record.end_sample <= frames
+            assert window.samples.shape == (length, 2)
+            real = record.end_sample - record.start_sample
+            np.testing.assert_array_equal(window.samples[:real], signal.samples[record.start_sample:record.end_sample])
+            assert record.padding_samples == length - real
+            assert not window.samples[real:].any()
+            coverage[record.start_sample:record.end_sample] = True
+        if policy == "pad":
+            assert coverage.all()
+            assert windows[-1].record.end_sample == frames
+            assert all(w.record.end_sample < frames for w in windows[:-1])
+        elif frames < length:
+            assert windows == []
+        else:
+            assert all(w.record.padding_samples == 0 for w in windows)
+            final = windows[-1].record
+            assert coverage[:final.end_sample].all()
+            assert final.start_sample + hop + length > frames  # No further full window fits.
+
+
+def test_entry_permission_check_precedes_window_allocation(make_signal, monkeypatch):
+    from audio_sentinel import segmentation
+    denied = ConsentRecord(consent_id="denied-001", status="denied", processing_scope="none", device_authorized=False)
+    signal = replace(make_signal(frames=1), consent=denied)
+    monkeypatch.setattr(segmentation.np, "zeros", lambda *a, **k: pytest.fail("Must not allocate without permission"))
+    with pytest.raises(AudioLoadError) as caught:
+        iter_windows(signal, now=NOW)
+    assert caught.value.code == "consent_denied"
+
+
+def test_window_allocation_failure_is_reported_without_modifying_source(make_signal, monkeypatch):
+    from audio_sentinel import segmentation
+    signal = make_signal(frames=1)
+    before = signal.samples.copy()
+    windows = iter_windows(signal, now=NOW)
+    def fail(*args, **kwargs):
+        raise MemoryError("simulated padding allocation failure")
+    monkeypatch.setattr(segmentation.np, "zeros", fail)
+    with pytest.raises(AudioTransformError) as caught:
+        next(windows)
+    assert caught.value.code == "insufficient_memory"
+    np.testing.assert_array_equal(signal.samples, before)
+    assert list(windows) == []
+
+
+def test_readonly_strided_signal_produces_independent_writable_windows(make_signal):
+    signal = make_signal()
+    backing = np.repeat(signal.samples, 2, axis=0)
+    view = backing[::2]
+    view.flags.writeable = False
+    original = view.copy()
+    windows = list(iter_windows(replace(signal, samples=view), now=NOW))
+    for window in windows:
+        assert window.samples.flags.writeable and not np.shares_memory(window.samples, backing)
+        window.samples[:] = 99
+    np.testing.assert_array_equal(view, original)
