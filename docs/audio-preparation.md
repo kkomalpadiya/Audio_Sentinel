@@ -7,8 +7,8 @@ following tasks. B1.1 has since added [local loading and validation](audio-loadi
 No dataset download or microphone access is needed for A1.1.
 
 A1.2 has also implemented [mono conversion, resampling, and normalization](audio-transforms.md)
-in memory. Noise reduction, segmentation, persistence, and full service integration
-remain later tasks.
+in memory. B1.2 adds [optional noise reduction](noise-reduction.md). Segmentation,
+persistence, and full service integration remain later tasks.
 
 ## Settings
 
@@ -25,7 +25,7 @@ remain later tasks.
 | Volume normalization | Enabled, RMS target −20 dBFS | Adjust average signal level with one gain for the entire clip. |
 | Gain limits | +20 dB maximum, −1 dBFS peak ceiling | Limit amplification and prevent peaks exceeding the ceiling. |
 | Silence floor | −60 dBFS | Leave clips at or below this RMS level unchanged. |
-| Noise reduction | Disabled; strength 0.5 when enabled | B1.2 will implement stationary spectral gating using a noise estimate from the clip. |
+| Noise reduction | Disabled; strength 0.5 when enabled | B1.2 implements stationary spectral gating using a noise estimate from the clip. |
 | Output | WAV, signed 16-bit PCM | Full clip and window files share this format. |
 | Window durations | 1, 5, 10 seconds | Three views of the same prepared clip. |
 | Overlap | 0.5 | Advance by half a window. Zero disables overlap. |

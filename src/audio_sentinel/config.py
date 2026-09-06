@@ -21,6 +21,17 @@ class NoiseReductionSettings(BaseModel):
     enabled: bool = False
     method: Literal["stationary_spectral_gate"] = "stationary_spectral_gate"
     reduction_strength: float = Field(default=0.5, gt=0, le=1)
+    fft_size: int = Field(default=512, ge=64, le=8192)
+    noise_quantile: float = Field(default=0.2, gt=0, le=0.5)
+    threshold_multiplier: float = Field(default=1.5, gt=0, le=10)
+    max_working_bytes: int = Field(default=268_435_456, gt=0)
+
+    @field_validator("fft_size")
+    @classmethod
+    def validate_fft_size(cls, value: int) -> int:
+        if value & (value - 1):
+            raise ValueError("fft_size must be a power of two")
+        return value
 
 
 class Paths(BaseModel):

@@ -13,15 +13,13 @@ from numpy.typing import NDArray
 from scipy.signal import resample_poly
 
 from audio_sentinel.audio_loader import LoadedAudio, validate_processing_consent
+from audio_sentinel.audio_arrays import (
+    AudioTransformError, check_memory as _check_memory, validate_samples as _validate_samples,
+)
 from audio_sentinel.config import AudioSettings
 from audio_sentinel.contracts import ConsentRecord
 from audio_sentinel.preparation import SourceAudioMetadata
-
-
-class AudioTransformError(ValueError):
-    def __init__(self, code: str, message: str) -> None:
-        self.code = code
-        super().__init__(message)
+from audio_sentinel.noise_reduction import NoiseReductionStats, reduce_noise
 
 
 @dataclass(frozen=True)
@@ -51,6 +49,7 @@ class PreparedSignal:
     sample_rate_hz: int
     samples: NDArray[np.float32] = field(repr=False, compare=False)
     normalization: NormalizationStats
+    noise_reduction: NoiseReductionStats | None = None
 
     @property
     def num_frames(self) -> int:
@@ -63,21 +62,6 @@ class PreparedSignal:
     @property
     def duration_seconds(self) -> float:
         return self.num_frames / self.sample_rate_hz
-
-
-def _validate_samples(samples: NDArray[np.float32]) -> None:
-    if not isinstance(samples, np.ndarray) or samples.dtype != np.float32:
-        raise AudioTransformError("invalid_samples", "Expected a float32 NumPy array from the audio loader.")
-    if samples.ndim != 2 or samples.shape[0] == 0 or not 1 <= samples.shape[1] <= 32:
-        raise AudioTransformError("invalid_samples", "Expected nonempty audio shaped (frames, channels), with 1–32 channels.")
-    for start in range(0, len(samples), 65_536):
-        if not np.isfinite(samples[start:start + 65_536]).all():
-            raise AudioTransformError("non_finite_audio", "Samples must not contain NaN or infinity.")
-
-
-def _check_memory(num_frames: int, channels: int, max_bytes: int) -> None:
-    if max_bytes <= 0 or num_frames * channels * 4 > max_bytes:
-        raise AudioTransformError("decoded_audio_too_large", "Signal exceeds max_decoded_bytes.")
 
 
 def convert_to_mono(samples: NDArray[np.float32]) -> NDArray[np.float32]:
@@ -164,10 +148,8 @@ def normalize_loudness(samples: NDArray[np.float32], settings: AudioSettings) ->
 
 
 def prepare_signal(loaded: LoadedAudio, settings: AudioSettings, *, now: datetime | None = None) -> PreparedSignal:
-    """Apply A1.2 to loader output. Noise reduction must remain disabled until B1.2."""
+    """Convert, resample, optionally reduce noise, then normalize loader output."""
     consent = validate_processing_consent(loaded.consent, now if now is not None else datetime.now(UTC))
-    if settings.noise_reduction.enabled:
-        raise AudioTransformError("noise_reduction_unavailable", "Noise reduction belongs to B1.2 and is not implemented yet.")
     _validate_samples(loaded.samples)
     if loaded.samples.shape != (loaded.source.num_frames, loaded.source.channels):
         raise AudioTransformError("source_mismatch", "Loaded samples do not match source metadata.")
@@ -176,8 +158,9 @@ def prepare_signal(loaded: LoadedAudio, settings: AudioSettings, *, now: datetim
         samples = convert_to_mono(loaded.samples) if settings.convert_to_mono else loaded.samples
         samples = resample_audio(samples, loaded.source.sample_rate_hz, settings.target_sample_rate_hz,
                                  max_decoded_bytes=settings.max_decoded_bytes)
-        # B1.2 will insert noise reduction here, before normalization.
-        normalized = normalize_loudness(samples, settings)
+        denoised = reduce_noise(samples, settings.target_sample_rate_hz, settings.noise_reduction,
+                                max_decoded_bytes=settings.max_decoded_bytes)
+        normalized = normalize_loudness(denoised.samples, settings)
     except MemoryError as error:
         raise AudioTransformError("insufficient_memory", "Not enough memory to transform this recording.") from error
     consent = validate_processing_consent(consent, now if now is not None else datetime.now(UTC))
@@ -185,4 +168,5 @@ def prepare_signal(loaded: LoadedAudio, settings: AudioSettings, *, now: datetim
         clip_id=loaded.clip_id, consent=consent, source=loaded.source.model_copy(deep=True),
         settings=settings, sample_rate_hz=settings.target_sample_rate_hz,
         samples=normalized.samples, normalization=normalized.stats,
+        noise_reduction=denoised.stats,
     )

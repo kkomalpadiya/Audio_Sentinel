@@ -294,6 +294,19 @@
           "title": "Enabled",
           "type": "boolean"
         },
+        "fft_size": {
+          "default": 512,
+          "maximum": 8192,
+          "minimum": 64,
+          "title": "Fft Size",
+          "type": "integer"
+        },
+        "max_working_bytes": {
+          "default": 268435456,
+          "exclusiveMinimum": 0,
+          "title": "Max Working Bytes",
+          "type": "integer"
+        },
         "method": {
           "const": "stationary_spectral_gate",
           "default": "stationary_spectral_gate",
@@ -303,11 +316,25 @@
           "title": "Method",
           "type": "string"
         },
+        "noise_quantile": {
+          "default": 0.2,
+          "exclusiveMinimum": 0.0,
+          "maximum": 0.5,
+          "title": "Noise Quantile",
+          "type": "number"
+        },
         "reduction_strength": {
           "default": 0.5,
           "exclusiveMinimum": 0.0,
           "maximum": 1.0,
           "title": "Reduction Strength",
+          "type": "number"
+        },
+        "threshold_multiplier": {
+          "default": 1.5,
+          "exclusiveMinimum": 0.0,
+          "maximum": 10.0,
+          "title": "Threshold Multiplier",
           "type": "number"
         }
       },

@@ -60,7 +60,8 @@ print(prepared.sample_rate_hz, prepared.duration_seconds)
 print(prepared.normalization)
 ```
 
-`prepare_signal` averages channels when enabled, resamples, and then normalizes.
+`prepare_signal` averages channels when enabled, resamples, optionally reduces noise
+(added in B1.2), and then normalizes.
 It returns `PreparedSignal` with the samples, target rate, settings snapshot,
 normalization measurements, clip ID, consent, and a copy of the original source
 metadata. Source metadata continues to describe the original recording; properties
@@ -73,17 +74,16 @@ a total process memory cap: source, result, intermediate arrays, and SciPy's fil
 workspace can coexist. Transform functions do not mutate their input arrays.
 
 `AudioTransformError` provides a stable `code` for invalid samples/rates, non-finite
-audio, memory limits, zero-length output, source-shape mismatch, or unavailable
-noise reduction. Permission errors remain `AudioLoadError`, as in B1.1. Standalone
+audio, memory limits, zero-length output, or source-shape mismatch.
+Permission errors remain `AudioLoadError`, as in B1.1. Standalone
 numeric functions accept float32 arrays; permission handling is at the loaded-clip
 boundary. Extremely large finite values that overflow the resampling filter are
 rejected if they produce non-finite output.
 
 ## Relationship to the remaining tasks
 
-Noise reduction remains disabled by default. If explicitly enabled, this helper
-raises `noise_reduction_unavailable` so it cannot silently claim to have applied it.
-B1.2 will add that step between resampling and normalization. Segmentation, writing
+B1.2 now implements [optional noise reduction](noise-reduction.md) between resampling
+and normalization, disabled by default. Segmentation, writing
 WAV files/manifests, and full preparation-service integration remain B1.3, A1.3, and
 A1.4. `PreparedSignal` is an in-memory result, so it does not pretend to be the
 existing file-backed `PreprocessedAudio` interface yet.

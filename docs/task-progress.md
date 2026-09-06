@@ -54,12 +54,34 @@ Verification: all 161 tests pass with no skips. The project verification script 
 transform smoke test pass. Tests check pitch, anti-alias filtering, timing, stereo
 balance, silence, gain/peak limits, memory limits, and original-data preservation.
 
-Current tracker: `outputs/a1_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/a1_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 12 completed tasks out of 72. No manual installation or download is
 needed. Review and commit this checkpoint when ready.
 
-Next: B1.2 — Implement optional configurable noise reduction.
+Following task: B1.2 — Implement optional configurable noise reduction.
 
 Mono conversion combines channels, resampling puts the recording on a common
 timing grid, and normalization adjusts volume with limits. The result stays in
 memory for the later noise-reduction, windowing, and persistence tasks.
+
+## B1.2 — Complete
+
+Implemented configurable stationary spectral gating with noise estimation from the
+clip, smoothed attenuation, exact-length reconstruction, short/silent bypass,
+diagnostics, and a spectral workspace budget. Integrated it after resampling and
+before normalization. Disabled mode preserves A1.2 samples exactly. Updated schemas,
+examples, regression tests, and the noise-reduction guide and synthetic smoke test.
+
+Verification: all 199 tests pass with no skips. Project checks and the synthetic
+smoke test pass. At strength 0.8, the fixed synthetic case improved SNR from 14.06
+to 17.51 dB. Real-dataset effectiveness remains to be evaluated; default stays off.
+
+Current tracker: `outputs/b1_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 13 completed tasks out of 72. No manual installation or download is
+needed. Review and commit this checkpoint when ready.
+
+Next: B1.3 — Implement deterministic overlapping window segmentation.
+
+Noise reduction estimates recurring background frequencies, turns down weaker
+components near that estimate, and reconstructs the original-length recording.
+It is optional because useful sustained sounds can also resemble background noise.

@@ -217,9 +217,9 @@ def test_optional_mono_and_normalization_can_both_be_disabled(loaded_clip):
 
 
 def test_noise_reduction_is_not_silently_ignored(loaded_clip):
-    with pytest.raises(AudioTransformError) as caught:
-        prepare_signal(loaded_clip, AudioSettings(noise_reduction={"enabled": True}), now=NOW)
-    assert caught.value.code == "noise_reduction_unavailable"
+    result = prepare_signal(loaded_clip, AudioSettings(noise_reduction={"enabled": True}), now=NOW)
+    assert result.noise_reduction.reason == "processed"
+    assert result.samples.shape == (16_000, 1)
 
 
 def test_mismatched_loaded_shape_is_rejected(loaded_clip):

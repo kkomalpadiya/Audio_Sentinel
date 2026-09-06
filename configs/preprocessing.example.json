@@ -10,7 +10,11 @@
   "noise_reduction": {
     "enabled": false,
     "method": "stationary_spectral_gate",
-    "reduction_strength": 0.5
+    "reduction_strength": 0.5,
+    "fft_size": 512,
+    "noise_quantile": 0.2,
+    "threshold_multiplier": 1.5,
+    "max_working_bytes": 268435456
   },
   "accepted_formats": [
     "WAV",
