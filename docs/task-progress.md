@@ -123,12 +123,38 @@ manifest, repeat-save reuse, and original-file preservation. Failure checks cove
 partial writes, manifest errors, corrupt readback, failed publication, conflicting
 output, consent expiry, and Windows junctions.
 
-Current tracker: `outputs/a1_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/a1_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 15 completed tasks out of 72. No manual installation, recording, or
 download is needed. Review and commit this checkpoint when ready.
 
-Next: A1.4 — Integrate preparation steps into one pipeline service.
+Following task: A1.4 — Integrate preparation steps into one pipeline service.
 
 Persistence turns the prepared numbers in memory into playable audio files. The
 manifest catalogs those files and their origin/settings. Writing and checking a
 temporary folder first keeps a failed save from exposing an incomplete result.
+
+## A1.4 — Complete
+
+Added `AudioPreparationService` to connect local loading, signal preparation,
+windowing, and verified persistence in one call. The service returns the saved
+bundle and implements the existing `AudioPreprocessor` interface. Per-call audio
+settings apply consistently to every stage, without changing service defaults.
+Paths, dataset attribution, annotations, output limits, and permission checks are
+carried through to the result. Updated the project status response and added
+`docs/audio-pipeline.md` with usage and a beginner-friendly explanation.
+
+Verification: all 281 tests pass with no skips, including 15 new service checks.
+Project compilation passes. Generated-recording tests verify noise reduction on
+and off, actual encoded output, metadata, stereo/rate overrides, repeat saves,
+protocol compatibility, failure propagation, limits, and permission expiry between
+stages. No real recording or dataset download was needed.
+
+Current tracker: `outputs/a1_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 16 completed tasks out of 72. No manual setup is needed. Review, commit,
+and push this checkpoint when ready. B1.4 and A1.5 remain separate test tasks.
+
+Next: B1.4 — Add unit tests for loader, noise reduction, and segmentation.
+
+The service connects the separate preparation tools in the right order. Give it
+a local recording, permission, and a dataset name; it returns the saved audio and
+manifest so later models can use them without repeating the preparation wiring.

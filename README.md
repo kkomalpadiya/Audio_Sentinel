@@ -63,4 +63,7 @@ smoke test. A1.2 implements [mono conversion, resampling, and volume normalizati
 in memory. B1.2 adds [optional configurable noise reduction](docs/noise-reduction.md),
 disabled by default. B1.3 adds [deterministic overlapping windows](docs/audio-segmentation.md)
 with manifest-ready records. A1.3 adds [verified WAV persistence and manifests](docs/audio-persistence.md)
-with safe repeat saves. Next is A1.4: integrate these components into one pipeline service.
+with safe repeat saves. A1.4 connects these components through a
+[one-call preparation service](docs/audio-pipeline.md), compatible with the shared
+preprocessor interface. Next is B1.4: unit-test coverage for loading, noise reduction,
+and segmentation, followed by A1.5 integration tests and the sample-clip smoke test.

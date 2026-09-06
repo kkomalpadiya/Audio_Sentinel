@@ -17,6 +17,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Phase 0 contracts and configuration are ready.",
-        "next_step": "Implement preprocessing settings and the prepared-audio manifest.",
+        "current_focus": "Offline audio preparation service is ready.",
+        "next_step": "Add unit tests for loader, noise reduction, and segmentation (B1.4).",
     }
