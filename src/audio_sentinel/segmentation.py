@@ -26,6 +26,17 @@ class AudioWindow:
     samples: NDArray[np.float32] = field(repr=False, compare=False)
 
 
+def prepared_output_key(signal: PreparedSignal) -> str:
+    """Shared deterministic namespace for full clips, windows, and manifests."""
+    identity = json.dumps({
+        "clip_id": signal.clip_id,
+        "source_sha256": signal.source.sha256,
+        "settings": signal.settings.model_dump(mode="json"),
+        "preprocessing_version": "1.0",
+    }, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return hashlib.sha256(identity.encode("utf-8")).hexdigest()
+
+
 def iter_windows(signal: PreparedSignal, *, now: datetime | None = None) -> Iterator[AudioWindow]:
     """Validate eagerly, then yield windows ordered by duration and start sample.
 
@@ -60,13 +71,7 @@ def iter_windows(signal: PreparedSignal, *, now: datetime | None = None) -> Iter
         groups.append((seconds, length, hop, count))
 
     # Opaque, filesystem-safe identity, including full settings and source content.
-    identity = json.dumps({
-        "clip_id": signal.clip_id,
-        "source_sha256": signal.source.sha256,
-        "settings": settings.model_dump(mode="json"),
-        "preprocessing_version": "1.0",
-    }, sort_keys=True, separators=(",", ":"), allow_nan=False)
-    key = hashlib.sha256(identity.encode("utf-8")).hexdigest()
+    key = prepared_output_key(signal)
     samples, rate, clip_id = signal.samples, signal.sample_rate_hz, signal.clip_id
 
     def generate() -> Iterator[AudioWindow]:

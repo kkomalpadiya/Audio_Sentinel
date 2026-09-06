@@ -62,4 +62,5 @@ window rules, and a beginner-friendly explanation. B1.1 now implements
 smoke test. A1.2 implements [mono conversion, resampling, and volume normalization](docs/audio-transforms.md)
 in memory. B1.2 adds [optional configurable noise reduction](docs/noise-reduction.md),
 disabled by default. B1.3 adds [deterministic overlapping windows](docs/audio-segmentation.md)
-with manifest-ready records. Next is A1.3: prepared-output persistence and manifests.
+with manifest-ready records. A1.3 adds [verified WAV persistence and manifests](docs/audio-persistence.md)
+with safe repeat saves. Next is A1.4: integrate these components into one pipeline service.

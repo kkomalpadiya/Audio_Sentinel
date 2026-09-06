@@ -98,12 +98,37 @@ Verification: all 229 tests pass with no skips. Project checks and the segmentat
 smoke test pass. The 1.6-second sample produces three 1-second windows, one padded
 5-second window, and one padded 10-second window. Prepared files are not written yet.
 
-Current tracker: `outputs/b1_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/b1_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 14 completed tasks out of 72. No manual installation or download is
 needed. Review and commit this checkpoint when ready.
 
-Next: A1.3 — Implement prepared-output persistence and manifests.
+Following task: A1.3 — Implement prepared-output persistence and manifests.
 
 Windows are short excerpts of the prepared recording. Overlap helps a sound near
 one excerpt's edge appear centrally in another. Padding fills an incomplete final
 excerpt with zeros while the metadata retains its actual recording boundaries.
+
+## A1.3 — Complete
+
+Implemented verified PCM16 WAV persistence for full clips and windows, validated
+JSON manifests, deterministic bundle directories, staged publication, identical
+output reuse, conflict protection, and per-save disk/window limits. Added failure
+and permission regression tests, a synthetic save/reload smoke test, and
+`docs/audio-persistence.md`. The result exposes the existing file-backed
+`PreprocessedAudio` interface for the upcoming pipeline service.
+
+Verification: all 266 tests pass with no skips. Project checks and the persistence
+smoke test pass. The synthetic run verifies one full WAV, five window WAVs, the
+manifest, repeat-save reuse, and original-file preservation. Failure checks cover
+partial writes, manifest errors, corrupt readback, failed publication, conflicting
+output, consent expiry, and Windows junctions.
+
+Current tracker: `outputs/a1_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 15 completed tasks out of 72. No manual installation, recording, or
+download is needed. Review and commit this checkpoint when ready.
+
+Next: A1.4 — Integrate preparation steps into one pipeline service.
+
+Persistence turns the prepared numbers in memory into playable audio files. The
+manifest catalogs those files and their origin/settings. Writing and checking a
+temporary folder first keeps a failed save from exposing an incomplete result.

@@ -157,6 +157,15 @@ class AudioSettings(BaseModel):
         return length, round(length * (1 - self.window_overlap_ratio))
 
 
+class PersistenceSettings(BaseModel):
+    """Local output limits, separate from the audio recipe and its identity."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    max_output_bytes: int = Field(default=1_073_741_824, gt=0)
+    max_windows: int = Field(default=10_000, ge=0)
+
+
 class AudioSentinelSettings(BaseModel):
     """Top-level settings object supplied to all future pipeline modules."""
 
@@ -164,6 +173,7 @@ class AudioSentinelSettings(BaseModel):
 
     paths: Paths
     audio: AudioSettings = Field(default_factory=AudioSettings)
+    persistence: PersistenceSettings = Field(default_factory=PersistenceSettings)
 
     @classmethod
     def from_project_root(cls, root: Path) -> "AudioSentinelSettings":
