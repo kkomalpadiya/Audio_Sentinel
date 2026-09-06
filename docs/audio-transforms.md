@@ -83,9 +83,9 @@ rejected if they produce non-finite output.
 ## Relationship to the remaining tasks
 
 B1.2 now implements [optional noise reduction](noise-reduction.md) between resampling
-and normalization, disabled by default. Segmentation, writing
-WAV files/manifests, and full preparation-service integration remain B1.3, A1.3, and
-A1.4. `PreparedSignal` is an in-memory result, so it does not pretend to be the
+and normalization, disabled by default. B1.3 implements
+[window segmentation](audio-segmentation.md). Writing WAV files/manifests and full
+preparation-service integration remain A1.3 and A1.4. `PreparedSignal` is an in-memory result, so it does not pretend to be the
 existing file-backed `PreprocessedAudio` interface yet.
 
 ## Try the synthetic example

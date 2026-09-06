@@ -76,12 +76,34 @@ Verification: all 199 tests pass with no skips. Project checks and the synthetic
 smoke test pass. At strength 0.8, the fixed synthetic case improved SNR from 14.06
 to 17.51 dB. Real-dataset effectiveness remains to be evaluated; default stays off.
 
-Current tracker: `outputs/b1_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/b1_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 13 completed tasks out of 72. No manual installation or download is
 needed. Review and commit this checkpoint when ready.
 
-Next: B1.3 — Implement deterministic overlapping window segmentation.
+Following task: B1.3 — Implement deterministic overlapping window segmentation.
 
 Noise reduction estimates recurring background frequencies, turns down weaker
 components near that estimate, and reconstructs the original-length recording.
 It is optional because useful sustained sounds can also resemble background noise.
+
+## B1.3 — Complete
+
+Implemented deterministic overlapping windows with integer sample positions, both
+padding/drop tail policies, stable IDs and planned paths, independent sample arrays,
+one-window-at-a-time allocation, and permission checks while iterating. Records are
+compatible with the existing prepared-audio manifest. Added tests, a synthetic
+loader-to-segmentation smoke test, and `docs/audio-segmentation.md`.
+
+Verification: all 229 tests pass with no skips. Project checks and the segmentation
+smoke test pass. The 1.6-second sample produces three 1-second windows, one padded
+5-second window, and one padded 10-second window. Prepared files are not written yet.
+
+Current tracker: `outputs/b1_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 14 completed tasks out of 72. No manual installation or download is
+needed. Review and commit this checkpoint when ready.
+
+Next: A1.3 — Implement prepared-output persistence and manifests.
+
+Windows are short excerpts of the prepared recording. Overlap helps a sound near
+one excerpt's edge appear centrally in another. Padding fills an incomplete final
+excerpt with zeros while the metadata retains its actual recording boundaries.

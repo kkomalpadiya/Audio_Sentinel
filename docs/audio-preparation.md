@@ -7,8 +7,9 @@ following tasks. B1.1 has since added [local loading and validation](audio-loadi
 No dataset download or microphone access is needed for A1.1.
 
 A1.2 has also implemented [mono conversion, resampling, and normalization](audio-transforms.md)
-in memory. B1.2 adds [optional noise reduction](noise-reduction.md). Segmentation,
-persistence, and full service integration remain later tasks.
+in memory. B1.2 adds [optional noise reduction](noise-reduction.md). B1.3 now provides
+[overlapping window segmentation](audio-segmentation.md). Persistence and full
+service integration remain later tasks.
 
 ## Settings
 

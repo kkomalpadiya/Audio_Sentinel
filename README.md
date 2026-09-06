@@ -61,4 +61,5 @@ window rules, and a beginner-friendly explanation. B1.1 now implements
 [local audio loading and input validation](docs/audio-loading.md), with a synthetic
 smoke test. A1.2 implements [mono conversion, resampling, and volume normalization](docs/audio-transforms.md)
 in memory. B1.2 adds [optional configurable noise reduction](docs/noise-reduction.md),
-disabled by default. Next is B1.3: deterministic overlapping window segmentation.
+disabled by default. B1.3 adds [deterministic overlapping windows](docs/audio-segmentation.md)
+with manifest-ready records. Next is A1.3: prepared-output persistence and manifests.
