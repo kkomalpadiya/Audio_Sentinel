@@ -7,6 +7,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from audio_sentinel.feature_settings import LogMelSettings
+
 
 DEFAULT_SAMPLE_RATE_HZ = 16_000
 DEFAULT_WINDOW_SECONDS = (1.0, 5.0, 10.0)
@@ -174,6 +176,7 @@ class AudioSentinelSettings(BaseModel):
     paths: Paths
     audio: AudioSettings = Field(default_factory=AudioSettings)
     persistence: PersistenceSettings = Field(default_factory=PersistenceSettings)
+    log_mel: LogMelSettings = Field(default_factory=LogMelSettings)
 
     @classmethod
     def from_project_root(cls, root: Path) -> "AudioSentinelSettings":
@@ -197,7 +200,8 @@ def find_project_root(start: Path | None = None) -> Path:
 
 
 def load_settings(
-    project_root: Path | None = None, *, audio_config_path: Path | None = None
+    project_root: Path | None = None, *, audio_config_path: Path | None = None,
+    log_mel_config_path: Path | None = None,
 ) -> AudioSentinelSettings:
     """Build default settings for the supplied or automatically discovered root."""
 
@@ -208,4 +212,10 @@ def load_settings(
         if not config_path.is_absolute():
             config_path = root / config_path
         audio = AudioSettings.model_validate_json(config_path.read_text(encoding="utf-8"))
-    return AudioSentinelSettings(paths=Paths.from_root(root), audio=audio)
+    log_mel = LogMelSettings()
+    if log_mel_config_path is not None:
+        config_path = Path(log_mel_config_path)
+        if not config_path.is_absolute():
+            config_path = root / config_path
+        log_mel = LogMelSettings.model_validate_json(config_path.read_text(encoding="utf-8"))
+    return AudioSentinelSettings(paths=Paths.from_root(root), audio=audio, log_mel=log_mel)

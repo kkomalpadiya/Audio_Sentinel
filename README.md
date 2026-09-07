@@ -69,4 +69,11 @@ preprocessor interface. B1.4 expands [component-test coverage](docs/preparation-
 for loading, noise reduction, and segmentation. A1.5 adds
 [preparation integration tests and a sample-clip smoke test](docs/preparation-integration-tests.md).
 Run `python scripts/smoke_test_preparation.py` for a generated-audio check; the standard
-verification script also runs it. Next is A2.1: the Log-Mel feature contract and metadata schema.
+verification script also runs it. A2.1 defines the
+[Log-Mel feature contract and metadata schema](docs/log-mel-features.md), including
+validated settings, source-window linkage, shape rules, and JSON examples.
+B2.1 implements [Log-Mel spectrogram generation](docs/log-mel-generation.md)
+with numerical checks and a smoke test over saved preparation windows.
+A2.2 adds [verified feature storage and source-window linkage](docs/feature-storage.md),
+including checked reloads, repeat-save reuse, and source/consent checks.
+Next is B2.2: add feature shape, range, and determinism tests.

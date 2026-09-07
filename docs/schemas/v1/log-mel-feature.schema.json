@@ -1,0 +1,416 @@
+{
+  "$defs": {
+    "LogMelSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "amin": {
+          "default": 1e-10,
+          "exclusiveMinimum": 0.0,
+          "title": "Amin",
+          "type": "number"
+        },
+        "center": {
+          "const": false,
+          "default": false,
+          "enum": [
+            false
+          ],
+          "title": "Center",
+          "type": "boolean"
+        },
+        "fmax_hz": {
+          "default": 8000.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Fmax Hz",
+          "type": "number"
+        },
+        "fmin_hz": {
+          "default": 0.0,
+          "minimum": 0.0,
+          "title": "Fmin Hz",
+          "type": "number"
+        },
+        "frame_tail_policy": {
+          "const": "drop",
+          "default": "drop",
+          "enum": [
+            "drop"
+          ],
+          "title": "Frame Tail Policy",
+          "type": "string"
+        },
+        "hop_length": {
+          "default": 160,
+          "minimum": 1,
+          "title": "Hop Length",
+          "type": "integer"
+        },
+        "log_scale": {
+          "const": "power_db",
+          "default": "power_db",
+          "enum": [
+            "power_db"
+          ],
+          "title": "Log Scale",
+          "type": "string"
+        },
+        "max_feature_bytes": {
+          "default": 268435456,
+          "exclusiveMinimum": 0,
+          "title": "Max Feature Bytes",
+          "type": "integer"
+        },
+        "mel_norm": {
+          "const": "slaney",
+          "default": "slaney",
+          "enum": [
+            "slaney"
+          ],
+          "title": "Mel Norm",
+          "type": "string"
+        },
+        "mel_scale": {
+          "const": "slaney",
+          "default": "slaney",
+          "enum": [
+            "slaney"
+          ],
+          "title": "Mel Scale",
+          "type": "string"
+        },
+        "n_fft": {
+          "default": 512,
+          "maximum": 8192,
+          "minimum": 32,
+          "title": "N Fft",
+          "type": "integer"
+        },
+        "n_mels": {
+          "default": 64,
+          "maximum": 256,
+          "minimum": 1,
+          "title": "N Mels",
+          "type": "integer"
+        },
+        "power": {
+          "const": 2.0,
+          "default": 2.0,
+          "enum": [
+            2.0
+          ],
+          "title": "Power",
+          "type": "number"
+        },
+        "recipe_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Recipe Version",
+          "type": "string"
+        },
+        "reference_power": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Reference Power",
+          "type": "number"
+        },
+        "sample_rate_hz": {
+          "default": 16000,
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "short_input_policy": {
+          "const": "right_zero_pad_to_n_fft",
+          "default": "right_zero_pad_to_n_fft",
+          "enum": [
+            "right_zero_pad_to_n_fft"
+          ],
+          "title": "Short Input Policy",
+          "type": "string"
+        },
+        "top_db": {
+          "default": 80.0,
+          "exclusiveMinimum": 0.0,
+          "maximum": 200.0,
+          "title": "Top Db",
+          "type": "number"
+        },
+        "win_length": {
+          "default": 400,
+          "minimum": 2,
+          "title": "Win Length",
+          "type": "integer"
+        },
+        "window": {
+          "const": "hann_periodic",
+          "default": "hann_periodic",
+          "enum": [
+            "hann_periodic"
+          ],
+          "title": "Window",
+          "type": "string"
+        }
+      },
+      "title": "LogMelSettings",
+      "type": "object"
+    },
+    "LogMelSource": {
+      "additionalProperties": false,
+      "description": "References to data/interim plus raw-file identity inherited from preparation.",
+      "properties": {
+        "channels": {
+          "const": 1,
+          "default": 1,
+          "enum": [
+            1
+          ],
+          "title": "Channels",
+          "type": "integer"
+        },
+        "clip_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "preparation_manifest_path": {
+          "minLength": 1,
+          "title": "Preparation Manifest Path",
+          "type": "string"
+        },
+        "preparation_manifest_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Preparation Manifest Sha256",
+          "type": "string"
+        },
+        "raw_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Audio Sha256",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "window": {
+          "$ref": "#/$defs/PreparedWindowRecord"
+        },
+        "window_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Window Audio Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "preparation_manifest_path",
+        "preparation_manifest_sha256",
+        "raw_audio_sha256",
+        "window_audio_sha256",
+        "clip_id",
+        "sample_rate_hz",
+        "window"
+      ],
+      "title": "LogMelSource",
+      "type": "object"
+    },
+    "PreparedWindowRecord": {
+      "additionalProperties": false,
+      "description": "Offsets count frames in the prepared full clip; end_sample is exclusive.",
+      "properties": {
+        "audio_path": {
+          "minLength": 1,
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "padding_samples": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Padding Samples",
+          "type": "integer"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "window_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Window Id",
+          "type": "string"
+        },
+        "window_seconds": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 600.0,
+          "title": "Window Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "window_id",
+        "audio_path",
+        "window_seconds",
+        "start_sample",
+        "end_sample"
+      ],
+      "title": "PreparedWindowRecord",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/log-mel-feature.schema.json",
+  "additionalProperties": false,
+  "properties": {
+    "analysis_padding_samples": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Analysis Padding Samples",
+      "type": "integer"
+    },
+    "axes": {
+      "default": [
+        "mel",
+        "time"
+      ],
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "const": "mel",
+          "enum": [
+            "mel"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "time",
+          "enum": [
+            "time"
+          ],
+          "type": "string"
+        }
+      ],
+      "title": "Axes",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "dtype": {
+      "const": "float32",
+      "default": "float32",
+      "enum": [
+        "float32"
+      ],
+      "title": "Dtype",
+      "type": "string"
+    },
+    "extractor_name": {
+      "const": "librosa",
+      "default": "librosa",
+      "enum": [
+        "librosa"
+      ],
+      "title": "Extractor Name",
+      "type": "string"
+    },
+    "extractor_version": {
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^\\S+$",
+      "title": "Extractor Version",
+      "type": "string"
+    },
+    "feature_path": {
+      "minLength": 1,
+      "title": "Feature Path",
+      "type": "string"
+    },
+    "feature_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Feature Sha256",
+      "type": "string"
+    },
+    "feature_type": {
+      "const": "log_mel_power",
+      "default": "log_mel_power",
+      "enum": [
+        "log_mel_power"
+      ],
+      "title": "Feature Type",
+      "type": "string"
+    },
+    "implementation_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Implementation Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "settings": {
+      "$ref": "#/$defs/LogMelSettings"
+    },
+    "shape": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        }
+      ],
+      "title": "Shape",
+      "type": "array"
+    },
+    "source": {
+      "$ref": "#/$defs/LogMelSource"
+    },
+    "storage_format": {
+      "const": "npy",
+      "default": "npy",
+      "enum": [
+        "npy"
+      ],
+      "title": "Storage Format",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source",
+    "settings",
+    "feature_path",
+    "feature_sha256",
+    "shape",
+    "extractor_version",
+    "created_at"
+  ],
+  "title": "LogMelFeatureMetadata",
+  "type": "object"
+}

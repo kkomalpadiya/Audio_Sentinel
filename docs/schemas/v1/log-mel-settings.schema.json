@@ -1,0 +1,159 @@
+{
+  "$id": "https://audio-sentinel.local/schemas/v1/log-mel-settings.schema.json",
+  "additionalProperties": false,
+  "properties": {
+    "amin": {
+      "default": 1e-10,
+      "exclusiveMinimum": 0.0,
+      "title": "Amin",
+      "type": "number"
+    },
+    "center": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Center",
+      "type": "boolean"
+    },
+    "fmax_hz": {
+      "default": 8000.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Fmax Hz",
+      "type": "number"
+    },
+    "fmin_hz": {
+      "default": 0.0,
+      "minimum": 0.0,
+      "title": "Fmin Hz",
+      "type": "number"
+    },
+    "frame_tail_policy": {
+      "const": "drop",
+      "default": "drop",
+      "enum": [
+        "drop"
+      ],
+      "title": "Frame Tail Policy",
+      "type": "string"
+    },
+    "hop_length": {
+      "default": 160,
+      "minimum": 1,
+      "title": "Hop Length",
+      "type": "integer"
+    },
+    "log_scale": {
+      "const": "power_db",
+      "default": "power_db",
+      "enum": [
+        "power_db"
+      ],
+      "title": "Log Scale",
+      "type": "string"
+    },
+    "max_feature_bytes": {
+      "default": 268435456,
+      "exclusiveMinimum": 0,
+      "title": "Max Feature Bytes",
+      "type": "integer"
+    },
+    "mel_norm": {
+      "const": "slaney",
+      "default": "slaney",
+      "enum": [
+        "slaney"
+      ],
+      "title": "Mel Norm",
+      "type": "string"
+    },
+    "mel_scale": {
+      "const": "slaney",
+      "default": "slaney",
+      "enum": [
+        "slaney"
+      ],
+      "title": "Mel Scale",
+      "type": "string"
+    },
+    "n_fft": {
+      "default": 512,
+      "maximum": 8192,
+      "minimum": 32,
+      "title": "N Fft",
+      "type": "integer"
+    },
+    "n_mels": {
+      "default": 64,
+      "maximum": 256,
+      "minimum": 1,
+      "title": "N Mels",
+      "type": "integer"
+    },
+    "power": {
+      "const": 2.0,
+      "default": 2.0,
+      "enum": [
+        2.0
+      ],
+      "title": "Power",
+      "type": "number"
+    },
+    "recipe_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Recipe Version",
+      "type": "string"
+    },
+    "reference_power": {
+      "default": 1.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Reference Power",
+      "type": "number"
+    },
+    "sample_rate_hz": {
+      "default": 16000,
+      "maximum": 192000,
+      "minimum": 8000,
+      "title": "Sample Rate Hz",
+      "type": "integer"
+    },
+    "short_input_policy": {
+      "const": "right_zero_pad_to_n_fft",
+      "default": "right_zero_pad_to_n_fft",
+      "enum": [
+        "right_zero_pad_to_n_fft"
+      ],
+      "title": "Short Input Policy",
+      "type": "string"
+    },
+    "top_db": {
+      "default": 80.0,
+      "exclusiveMinimum": 0.0,
+      "maximum": 200.0,
+      "title": "Top Db",
+      "type": "number"
+    },
+    "win_length": {
+      "default": 400,
+      "minimum": 2,
+      "title": "Win Length",
+      "type": "integer"
+    },
+    "window": {
+      "const": "hann_periodic",
+      "default": "hann_periodic",
+      "enum": [
+        "hann_periodic"
+      ],
+      "title": "Window",
+      "type": "string"
+    }
+  },
+  "title": "LogMelSettings",
+  "type": "object"
+}

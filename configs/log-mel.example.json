@@ -1,0 +1,22 @@
+{
+  "recipe_version": "1.0",
+  "sample_rate_hz": 16000,
+  "n_fft": 512,
+  "win_length": 400,
+  "hop_length": 160,
+  "window": "hann_periodic",
+  "center": false,
+  "short_input_policy": "right_zero_pad_to_n_fft",
+  "frame_tail_policy": "drop",
+  "n_mels": 64,
+  "fmin_hz": 0.0,
+  "fmax_hz": 8000.0,
+  "mel_scale": "slaney",
+  "mel_norm": "slaney",
+  "power": 2.0,
+  "log_scale": "power_db",
+  "reference_power": 1.0,
+  "amin": 1e-10,
+  "top_db": 80.0,
+  "max_feature_bytes": 268435456
+}

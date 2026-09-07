@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "feature_type": "log_mel_power",
+  "source": {
+    "preparation_manifest_path": "prepared/clip-001/manifest.json",
+    "preparation_manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "raw_audio_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "window_audio_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "clip_id": "clip-001",
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "window": {
+      "window_id": "clip-001-1s-0000",
+      "audio_path": "prepared/clip-001/windows/1s-0000.wav",
+      "window_seconds": 1.0,
+      "start_sample": 0,
+      "end_sample": 12000,
+      "padding_samples": 4000
+    }
+  },
+  "settings": {
+    "recipe_version": "1.0",
+    "sample_rate_hz": 16000,
+    "n_fft": 512,
+    "win_length": 400,
+    "hop_length": 160,
+    "window": "hann_periodic",
+    "center": false,
+    "short_input_policy": "right_zero_pad_to_n_fft",
+    "frame_tail_policy": "drop",
+    "n_mels": 64,
+    "fmin_hz": 0.0,
+    "fmax_hz": 8000.0,
+    "mel_scale": "slaney",
+    "mel_norm": "slaney",
+    "power": 2.0,
+    "log_scale": "power_db",
+    "reference_power": 1.0,
+    "amin": 1e-10,
+    "top_db": 80.0,
+    "max_feature_bytes": 268435456
+  },
+  "feature_path": "log-mel/example/clip-001-1s-0000.npy",
+  "feature_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "storage_format": "npy",
+  "dtype": "float32",
+  "axes": [
+    "mel",
+    "time"
+  ],
+  "shape": [
+    64,
+    97
+  ],
+  "analysis_padding_samples": 0,
+  "extractor_name": "librosa",
+  "extractor_version": "0.11.0",
+  "implementation_version": "1.0",
+  "created_at": "2026-09-07T00:00:00Z"
+}

@@ -209,3 +209,96 @@ Next: A2.1 — Define Log-Mel feature contract and metadata schema.
 Integration tests check that the separate preparation tools work together and
 produce usable files. The smoke test is a quick complete run with one generated
 sample, making it easy to check the main workflow in the current environment.
+
+## A2.1 — Complete
+
+Defined `LogMelSettings`, `LogMelSource`, and `LogMelFeatureMetadata`, two JSON
+schemas, configuration/metadata examples, and `docs/log-mel-features.md`.
+The recipe specifies mono input, FFT/window/hop settings, Slaney filters,
+fixed-reference power dB, short-input padding, frame-tail handling, numeric
+float32 arrays, source-window references and hashes, and software versions.
+Settings load independently through `load_settings(log_mel_config_path=...)`.
+Existing preparation options remain compatible. Metadata checks enforce shape,
+rate, padding, payload limits, and linkage to a preparation manifest.
+
+Verification: all 386 tests pass, including 70 new contract cases. The standard
+verification script passes compilation, the full suite, and the unchanged
+preparation smoke test. Updated the project-status expectation to B2.1.
+No feature arrays have been generated: generation, storage, numerical tests,
+and pipeline integration remain their separate Phase 2 tasks. The documented
+default recipe is not yet certified for a pretrained acoustic model.
+
+Current tracker: `outputs/a2_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 19 completed tasks out of 72. Use this project tracker; the standalone
+Desktop workbook and the Documents/ChatGPT scaffold are older checkpoints.
+No manual setup, recording, or downloads are needed. Review and commit this
+checkpoint when ready.
+
+Next: B2.1 — Implement Log-Mel spectrogram generation.
+
+This task defines the format of the frequency-over-time numbers and the record
+that ties them to their audio window. The next task will calculate those numbers
+from the prepared audio.
+
+## B2.1 — Complete
+
+Implemented `generate_log_mel` and its in-memory `LogMelFeatures` result in
+`src/audio_sentinel/log_mel.py`. The generator follows A2.1's periodic Hann,
+Slaney Mel power, fixed-reference dB, frame-grid, and short-padding rules.
+It returns owned contiguous float32 arrays and the installed librosa version,
+preserves source samples, rejects incompatible input and empty filters, and
+checks output and estimated workspace budgets before FFT allocations.
+Float64 intermediates avoid overflow when squaring finite float32 extremes.
+
+Added `docs/log-mel-generation.md`, 35 generator checks, and a standalone smoke
+script that reloads all five saved Phase 1 windows of a generated tone. Tests
+compare against independently calculated FFT frames, Mel triangles, and dB
+values, and check frequency/amplitude behavior, silence, boundary lengths,
+repeatability, input preservation, and errors. The smoke script verifies shapes
+`(64, 97)` three times, `(64, 497)`, and `(64, 997)` without modifying source files.
+
+Verification: all 421 tests pass with no skips. The standard verification script
+passes compilation, the full suite (including the new smoke subprocess), and
+the preparation smoke test. Diff checks pass. No setup or downloads were needed.
+
+Current tracker: `outputs/b2_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 20 completed tasks out of 72. Feature storage remains A2.2, expanded
+shape/range/determinism testing remains B2.2, and production integration remains
+A2.3. Changes are ready for review and are uncommitted.
+
+Next: A2.2 — Implement feature storage and source-window linkage.
+
+Each audio window can now become a table of frequency energy over time. The
+next task will save that table with a verifiable reference to its source window.
+
+## A2.2 — Complete
+
+Implemented `save_window_log_mel`, `load_log_mel`, and configurable persistence
+limits in `src/audio_sentinel/feature_persistence.py`. One listed prepared window
+is decoded, transformed, and saved as a verified `features.npy` and `metadata.json`
+bundle under `data/processed/log-mel/`. Metadata includes exact feature/window/
+manifest byte hashes and the original source identity inherited from preparation.
+Reloads verify source linkage, current manifest consent, numeric format, shape,
+finite values, and hashes. The raw source is not reopened or modified.
+
+Publication uses a checked private staging directory. Repeated saves regenerate
+and verify existing output while preserving its original bytes, timestamps, and
+creation time. Corrupt/conflicting output is rejected. Source changes, invalid
+paths, Windows junctions, oversized files/arrays, malformed NPY headers, denied
+or expired consent, failed writes, and publication conflicts are covered.
+
+Verification: all 461 project tests pass with no skips, including 40 new storage
+tests. Compilation and the existing preparation smoke test also pass. Storage
+tests use real saved Phase 1 windows and compare reloaded features with B2.1
+generation. No manual setup, recording, or download was required. Added
+`docs/feature-storage.md` with the API, limits, failure behavior, and explanation.
+
+Current tracker: `outputs/a2_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 21 completed tasks out of 72. Changes remain uncommitted for review.
+The full preparation-to-feature production service remains A2.3.
+
+Next: B2.2 — Add feature shape, range, and determinism tests.
+
+The frequency-over-time table can now be saved with a record identifying its
+audio window and settings. Reloading checks that the table and its source still
+match that record before returning the numbers.
