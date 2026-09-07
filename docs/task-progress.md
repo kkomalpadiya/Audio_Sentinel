@@ -364,3 +364,35 @@ Next: A3.1 — Choose pretrained acoustic model and define label mapping.
 The separate tools are now connected: one recording becomes prepared audio and
 a verified list of saved frequency-over-time tables. The next phase adds a
 pretrained model that interprets audio and maps its predictions to our event labels.
+
+## A3.1 — Complete
+
+Selected YAMNet TensorFlow Hub revision 1 after checking its official frontend,
+vocabulary and runtime requirements against PANNs Cnn14_16k and the local project.
+Added `src/audio_sentinel/acoustic_model.py` with a frozen model specification,
+mapping version 1.0, six candidate acoustic-label mappings and explicit deferrals
+for all seven remaining v1 labels. Exact index/MID/name triples are checked against
+the bundled, checksummed official 521-class CSV. Its license/provenance are included;
+package-data configuration and Git byte preservation keep the reference usable
+after installation and checkout. No model weights are bundled.
+
+Phase 1 and Phase 2 remain complete. YAMNet consumes prepared 16 kHz mono waveforms
+through its own frontend, because our generic power-dB Log-Mel tables do not match
+its trained magnitude/natural-log recipe. Documented this distinction, model
+selection rationale, runtime observations, timing support, semantic limitations
+and later score/aggregation responsibilities in `docs/acoustic-model-selection.md`.
+Runtime loading, inference and measured accuracy remain later tasks.
+
+Verification: all 537 project tests pass with no skips, including 22 new mapping
+checks. Compilation, preparation smoke test and diff checks pass. Built a wheel
+and successfully validated its vocabulary directly from the package, including
+license/provenance resources. The vocabulary and reference license were downloaded
+from the pinned official source; no model dependencies or weights were installed.
+
+Current tracker: `outputs/a3_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 24 completed tasks out of 72. Changes remain uncommitted for review.
+
+Next: B3.1 — Implement isolated acoustic-model loader with version metadata.
+
+We have chosen the recognizer and defined its translation dictionary. The next
+task loads it; subsequent tasks run predictions and test their accuracy.

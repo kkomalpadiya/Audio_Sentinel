@@ -17,6 +17,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Audio preparation and Log-Mel extraction/storage are integrated and verified.",
-        "next_step": "Choose pretrained acoustic model and define label mapping (A3.1).",
+        "current_focus": "YAMNet baseline selected with a verified, versioned acoustic label mapping.",
+        "next_step": "Implement isolated acoustic-model loader with version metadata (B3.1).",
     }

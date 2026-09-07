@@ -81,4 +81,7 @@ including alternate recipes, exact dB relationships, and fresh-process reproduci
 A2.3 provides a [one-call audio-to-feature service](docs/feature-pipeline.md),
 with ordered verified output, configurable budgets, and retry reuse.
 Run `python scripts/smoke_test_feature_pipeline.py` for the complete generated-sample check.
-Phase 2 is complete. Next is A3.1: choose a pretrained acoustic model and define label mapping.
+Phase 2 is complete. A3.1 selects [YAMNet and a versioned label mapping](docs/acoustic-model-selection.md).
+The detector will consume prepared waveforms through its own frontend; the saved
+generic Log-Mel recipe is not compatible with YAMNet input features.
+Next is B3.1: implement the isolated acoustic-model loader with version metadata.

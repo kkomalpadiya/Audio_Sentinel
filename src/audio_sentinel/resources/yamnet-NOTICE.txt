@@ -1,0 +1,8 @@
+YAMNet vocabulary reference, retrieved 2026-09-07.
+Upstream: TensorFlow Authors, tensorflow/models, Apache License 2.0.
+The unmodified upstream license is included as yamnet-LICENSE.txt.
+Source revision: d598fb8b23d9cd2fb26b5789b8242de3f494aca7
+Source file:
+https://github.com/tensorflow/models/blob/d598fb8b23d9cd2fb26b5789b8242de3f494aca7/research/audioset/yamnet/yamnet_class_map.csv
+SHA256: cdf24d193e196d9e95912a2667051ae203e92a2ba09449218ccb40ef787c6df2
+The vocabulary file is copied without modification. No weights are bundled.
