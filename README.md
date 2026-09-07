@@ -76,4 +76,6 @@ B2.1 implements [Log-Mel spectrogram generation](docs/log-mel-generation.md)
 with numerical checks and a smoke test over saved preparation windows.
 A2.2 adds [verified feature storage and source-window linkage](docs/feature-storage.md),
 including checked reloads, repeat-save reuse, and source/consent checks.
-Next is B2.2: add feature shape, range, and determinism tests.
+B2.2 adds [feature shape, range, and determinism tests](docs/feature-property-tests.md),
+including alternate recipes, exact dB relationships, and fresh-process reproducibility.
+Next is A2.3: integrate feature extraction with the preparation pipeline.

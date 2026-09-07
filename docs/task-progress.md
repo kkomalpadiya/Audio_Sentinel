@@ -302,3 +302,29 @@ Next: B2.2 — Add feature shape, range, and determinism tests.
 The frequency-over-time table can now be saved with a record identifying its
 audio window and settings. Reloading checks that the table and its source still
 match that record before returning the numbers.
+
+## B2.2 — Complete
+
+Reviewed the existing B2.1 numerical examples and A2.2 storage checks, then added
+24 feature-property tests in `tests/test_feature_properties.py`. They cover 108
+boundary/seeded length cases across four recipes at 8, 16, 44.1, and 48 kHz,
+exact peak-relative clipping, fixed-reference shifts, configurable silence and
+power floors, positive feature values, polarity/layout invariance, and output
+independence after earlier arrays are modified. Two clean Python interpreters
+with different extraction call orders reproduce the parent's exact NPY bytes
+from the same saved input and recipe in the current environment.
+
+Verification: all 485 project tests pass with no skips, including all 24 new
+tests. Compilation and the preparation smoke test pass. No audio-processing
+implementation changes were needed. Updated status and documentation, including
+`docs/feature-property-tests.md`. No manual setup or downloads are required.
+Exact cross-library/platform bitwise equality is not claimed.
+
+Current tracker: `outputs/b2_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 22 completed tasks out of 72. Changes remain uncommitted for review.
+
+Next: A2.3 — Integrate feature extraction with preparation pipeline.
+
+These tests check that feature tables have the right dimensions, obey their
+scaling rules, and reproduce the same numbers when the same audio is processed
+again. The next task will connect the verified components into one service.

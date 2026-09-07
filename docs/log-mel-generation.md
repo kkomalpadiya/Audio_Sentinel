@@ -66,8 +66,8 @@ python scripts/smoke_test_log_mel.py
 The tests compare output to independent NumPy FFT/framing and explicit Slaney
 triangles and dB calculations. They also check signal-level behavior, boundary
 lengths, silence, extreme finite amplitudes, input preservation, repeatability,
-invalid inputs, empty filters, and allocation guards/failures. B2.2 remains the
-separate task for expanding feature shape/range/determinism coverage.
+invalid inputs, empty filters, and allocation guards/failures. [B2.2 adds expanded
+feature shape/range/determinism coverage](feature-property-tests.md).
 
 The smoke script prepares a generated 48 kHz stereo tone, reloads all five saved
 mono PCM16 windows, computes features, and checks repeatability and unchanged raw

@@ -100,8 +100,8 @@ output, round-trip features, and simulate corrupt output, changed sources,
 consent expiry, failed writes/publication, memory limits, and Windows junctions.
 No dataset downloads or manual recording are required.
 
-This task provides storage for one existing prepared window. B2.2 expands
-shape/range/determinism tests; A2.3 will connect preparation and extraction/storage
+This task provides storage for one existing prepared window. [B2.2 expands
+shape/range/determinism tests](feature-property-tests.md); A2.3 will connect preparation and extraction/storage
 as a production service over the window inventory.
 
 ## In plain language
