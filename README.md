@@ -78,4 +78,7 @@ A2.2 adds [verified feature storage and source-window linkage](docs/feature-stor
 including checked reloads, repeat-save reuse, and source/consent checks.
 B2.2 adds [feature shape, range, and determinism tests](docs/feature-property-tests.md),
 including alternate recipes, exact dB relationships, and fresh-process reproducibility.
-Next is A2.3: integrate feature extraction with the preparation pipeline.
+A2.3 provides a [one-call audio-to-feature service](docs/feature-pipeline.md),
+with ordered verified output, configurable budgets, and retry reuse.
+Run `python scripts/smoke_test_feature_pipeline.py` for the complete generated-sample check.
+Phase 2 is complete. Next is A3.1: choose a pretrained acoustic model and define label mapping.

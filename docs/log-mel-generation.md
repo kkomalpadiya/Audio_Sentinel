@@ -20,7 +20,7 @@ input sample count, additional analysis padding, actual librosa version, and
 implementation version. It does not fabricate file paths or hashes for unsaved
 features. Generator results remain in memory; [A2.2](feature-storage.md) now saves
 feature files and verifies source linkage,
-and A2.3 owns the production pipeline connection.
+and [A2.3 provides the integrated pipeline service](feature-pipeline.md).
 
 ## Behavior
 

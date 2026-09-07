@@ -3,8 +3,8 @@
 A2.1 defines validated settings and metadata for one prepared window's numeric
 features. [B2.1 computes them in memory](log-mel-generation.md),
 [A2.2 stores and verifies them](feature-storage.md),
-[B2.2 expands numerical property tests](feature-property-tests.md), and A2.3 will
-connect extraction to the preparation service.
+[B2.2 expands numerical property tests](feature-property-tests.md), and
+[A2.3 connects extraction to preparation](feature-pipeline.md).
 
 ## Input and default recipe
 

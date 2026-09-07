@@ -17,6 +17,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Log-Mel generation and storage are verified with expanded feature-property tests.",
-        "next_step": "Integrate feature extraction with preparation pipeline (A2.3).",
+        "current_focus": "Audio preparation and Log-Mel extraction/storage are integrated and verified.",
+        "next_step": "Choose pretrained acoustic model and define label mapping (A3.1).",
     }

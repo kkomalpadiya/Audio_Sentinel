@@ -15,4 +15,4 @@ def test_health_check_reports_missing_directories(temporary_settings: AudioSenti
 
 def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
-    assert project_status()["next_step"] == "Integrate feature extraction with preparation pipeline (A2.3)."
+    assert project_status()["next_step"] == "Choose pretrained acoustic model and define label mapping (A3.1)."

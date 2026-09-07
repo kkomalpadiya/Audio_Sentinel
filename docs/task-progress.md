@@ -328,3 +328,39 @@ Next: A2.3 — Integrate feature extraction with preparation pipeline.
 These tests check that feature tables have the right dimensions, obey their
 scaling rules, and reproduce the same numbers when the same audio is processed
 again. The next task will connect the verified components into one service.
+
+## A2.3 — Complete
+
+Added `AudioFeatureService.prepare` and its file-backed `PreparedAudioFeatures`
+result in `src/audio_sentinel/feature_pipeline.py`. One call prepares an authorized
+recording, processes each saved window in manifest order, checks source consistency,
+verifies the final feature inventory, and returns paths/metadata with a JSON-ready
+summary. Per-call recipes leave defaults unchanged. Per-window limits and an
+aggregate feature-output budget are checked; an explicit drop-tail empty inventory
+returns zero features. Final verification releases one feature array at a time.
+
+Failures propagate without returning partial success. Valid completed preparation
+and feature bundles remain for checked reuse on retry. This is per-bundle
+publication, not a transaction over all clip outputs. Existing preparation-only
+behavior is unchanged; the integrated service requires mono conversion and
+matching audio/feature rates before preparation begins.
+
+Verification: all 515 project tests pass with no skips, including 30 integration
+tests covering WAV/FLAC, 8/16 kHz, denoising, annotations, overrides, JSON defaults,
+repeat runs, empty windows, budgets, retries, changed sources, earlier-output
+corruption, and consent expiry. The new standalone
+`scripts/smoke_test_feature_pipeline.py` passes through the suite: five expected
+feature shapes, complete repeat reuse, unchanged generated source, and temporary
+cleanup. Compilation, the preparation smoke test, and diff checks pass.
+
+Added `docs/feature-pipeline.md`. No manual setup, recording, or downloads are
+needed for this task. Changes remain uncommitted for review.
+
+Current tracker: `outputs/a2_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 23 completed tasks out of 72. All five Phase 2 Log-Mel tasks are complete.
+
+Next: A3.1 — Choose pretrained acoustic model and define label mapping.
+
+The separate tools are now connected: one recording becomes prepared audio and
+a verified list of saved frequency-over-time tables. The next phase adds a
+pretrained model that interprets audio and maps its predictions to our event labels.
