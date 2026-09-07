@@ -173,12 +173,39 @@ suite passes all 303 tests with no skips, and compilation and diff checks pass.
 No audio-processing implementation changes were needed. Added
 `docs/preparation-component-tests.md` and updated the project status next step.
 
-Current tracker: `outputs/b1_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+Tracker at completion: `outputs/b1_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
 It records 17 completed tasks out of 72. No manual installation, recording, or
 dataset download is needed. Review, commit, and push this checkpoint when ready.
 
-Next: A1.5 — Add preparation integration tests and sample-clip smoke test.
+Following task: A1.5 — Add preparation integration tests and sample-clip smoke test.
 
 Unit tests check individual tools using known inputs and expected results. Some
 also simulate broken input or failed allocations. Running them after future edits
 helps catch regressions before those changes affect real recordings.
+
+## A1.5 — Complete
+
+Added 13 preparation integration checks, including an eight-case WAV/FLAC recipe
+matrix, disk readback of every window against the full encoded clip, configuration
+reload and repeat saves, silence, late-write recovery, metadata conflicts, and
+annotation permission scope. Added `scripts/smoke_test_preparation.py`, runnable
+without an editable install or `PYTHONPATH`, and a subprocess test from a different
+working directory. Documented the workflow in `docs/preparation-integration-tests.md`.
+
+Verification: all 316 project tests pass with no skips. The standard verification
+script compiles the package, runs the suite, and passes the new smoke test. Python
+exit codes are now explicitly checked so failures stop verification. The generated
+1.6-second sample yields 16 kHz mono PCM16, five windows, and -20.0 dBFS RMS in the
+report; repeat save reuses output, the source is unchanged, and temporary files are
+removed. Diff checks pass. No audio-processing algorithm changes were needed.
+
+Current tracker: `outputs/a1_5_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 18 completed tasks out of 72. No manual installation, recording, or
+download is needed. Optionally run `python scripts/smoke_test_preparation.py` to see
+the result yourself. Review, commit, and push this checkpoint when ready.
+
+Next: A2.1 — Define Log-Mel feature contract and metadata schema.
+
+Integration tests check that the separate preparation tools work together and
+produce usable files. The smoke test is a quick complete run with one generated
+sample, making it easy to check the main workflow in the current environment.

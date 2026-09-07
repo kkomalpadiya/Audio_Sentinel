@@ -41,8 +41,9 @@ and runs the complete project suite. No new dependency, recording, or dataset
 download is needed. Generated files live in pytest's temporary directories.
 
 These are behavior checks, not a claim of exhaustive coverage or real-world noise
-removal quality. A1.5 remains the broader preparation integration-test and
-sample-clip smoke-test task. Review, commit, and push this checkpoint when ready.
+removal quality. A1.5 documents the [broader preparation integration tests and
+sample-clip smoke test](preparation-integration-tests.md). Review, commit, and push
+this checkpoint when ready.
 
 ## In plain language
 

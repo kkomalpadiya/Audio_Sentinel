@@ -103,8 +103,8 @@ python -m pytest tests/test_pipeline.py -q
 
 They check real saved output with noise reduction on/off, stereo/rate overrides,
 manifest metadata, repeat saves, protocol compatibility, output limits, failures,
-and permission expiry between stages. B1.4 remains the component-test task and
-A1.5 remains the broader integration-test and sample-clip smoke-test task.
+and permission expiry between stages. B1.4 adds [component-test coverage](preparation-component-tests.md).
+A1.5 adds [broader integration tests and a runnable sample-clip check](preparation-integration-tests.md).
 The `/project/status` response now reflects the completed preparation service.
 
 Review, commit, and push this checkpoint when ready.

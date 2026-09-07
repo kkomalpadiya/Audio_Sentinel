@@ -66,5 +66,7 @@ with manifest-ready records. A1.3 adds [verified WAV persistence and manifests](
 with safe repeat saves. A1.4 connects these components through a
 [one-call preparation service](docs/audio-pipeline.md), compatible with the shared
 preprocessor interface. B1.4 expands [component-test coverage](docs/preparation-component-tests.md)
-for loading, noise reduction, and segmentation. Next is A1.5: preparation integration
-tests and the sample-clip smoke test.
+for loading, noise reduction, and segmentation. A1.5 adds
+[preparation integration tests and a sample-clip smoke test](docs/preparation-integration-tests.md).
+Run `python scripts/smoke_test_preparation.py` for a generated-audio check; the standard
+verification script also runs it. Next is A2.1: the Log-Mel feature contract and metadata schema.

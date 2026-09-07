@@ -17,6 +17,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Offline audio preparation service is ready.",
-        "next_step": "Add preparation integration tests and sample-clip smoke test (A1.5).",
+        "current_focus": "Offline audio preparation is implemented and integration-tested.",
+        "next_step": "Define Log-Mel feature contract and metadata schema (A2.1).",
     }

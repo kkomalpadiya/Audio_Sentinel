@@ -15,4 +15,4 @@ def test_health_check_reports_missing_directories(temporary_settings: AudioSenti
 
 def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
-    assert project_status()["next_step"] == "Add preparation integration tests and sample-clip smoke test (A1.5)."
+    assert project_status()["next_step"] == "Define Log-Mel feature contract and metadata schema (A2.1)."
