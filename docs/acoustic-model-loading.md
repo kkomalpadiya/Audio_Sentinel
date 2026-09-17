@@ -60,5 +60,5 @@ boundaries keep ordinary project imports and tests lightweight.
 
 In plain language: setup downloads the known recognizer once. Every later load
 checks that the recognizer is still the exact expected copy and that its input and
-output plugs have not changed. The next task can safely send prepared waveforms
-through it without mixing model installation, identity checks, and inference.
+output plugs have not changed. A3.2 now sends prepared waveforms through that
+verified callable; see [the inference guide](acoustic-inference.md).

@@ -27,6 +27,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Pinned YAMNet v1 loads locally with verified artifact, runtime, vocabulary, and signature metadata.",
-        "next_step": "Implement inference orchestration over prepared waveforms (A3.2).",
+        "current_focus": "Pinned YAMNet v1 produces verified raw patch scores over prepared waveform windows.",
+        "next_step": "Implement event aggregation across overlapping windows (B3.2).",
     }

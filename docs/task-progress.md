@@ -432,3 +432,39 @@ Next: A3.2 — Implement inference orchestration over prepared waveforms.
 The recognizer is now installed in a separate environment and its exact files and
 input/output plugs are checked every time it loads. The next task will feed real
 prepared audio through that verified callable and retain raw model evidence.
+
+## A3.2 — Complete
+
+Added `infer_prepared_audio` in `src/audio_sentinel/acoustic_inference.py` to run
+the verified local YAMNet v1 callable over every listed preparation window in
+manifest order. It reads 16 kHz mono PCM16 waveforms directly, verifies consent,
+file containment and WAV properties, removes only verified preparation padding,
+and preserves raw `(patches, 521)` sigmoid-score matrices as owned read-only
+float32 arrays. The model's embeddings and internal spectrogram are checked for
+their exact shapes/dtypes/finite values and then discarded.
+
+Results include model version metadata, manifest/raw/window hashes, exact window
+records, unpadded input lengths, output shapes, and padding-clipped absolute patch
+support. Manifest/window snapshots are rechecked after inference. Configurable
+limits bound manifest/window reads, decoded samples, total model output, and the
+window count. Model/runtime failures are converted to stable safe errors. This task
+does not choose thresholds, merge overlaps, emit events, or calculate risk.
+
+Added focused fake-model regression coverage, a real generated-tone YAMNet smoke
+test, and `docs/acoustic-inference.md`. The ordinary suite stays TensorFlow-free;
+the real smoke uses the existing ignored `.venv/yamnet` runtime and local model.
+
+Verification: all 590 project tests pass, including 33 A3.2 checks. The standard
+verification script, preparation smoke test, real YAMNet inference smoke test,
+compilation, and diff checks pass.
+
+Current tracker: `outputs/a3_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 26 completed tasks out of 72. No new setup is required if B3.1 setup
+was already run. On a clean machine, run `.\scripts\setup_yamnet.ps1` once.
+
+Next: B3.2 — Implement event aggregation across overlapping windows.
+
+In plain language: each saved audio excerpt now goes through the sound recognizer,
+and we keep its original class scores with proof of the exact audio and model used.
+The next task combines repeated evidence from overlapping excerpts without counting
+the same sound twice.

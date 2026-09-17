@@ -87,8 +87,12 @@ pinned artifact digest, isolated TensorFlow 2.21 runtime, vocabulary/signature
 checks, and JSON-ready version metadata. The detector consumes prepared waveforms
 through its own frontend; the saved generic Log-Mel recipe is not compatible with
 YAMNet input features. Run `.\scripts\setup_yamnet.ps1` once to create the ignored
-runtime and download the ignored model weights. Next is A3.2: inference
-orchestration over prepared waveforms.
+runtime and download the ignored model weights. A3.2 adds
+[verified raw-score inference over prepared waveform windows](docs/acoustic-inference.md),
+including padding-aware patch spans, source/model provenance, consent checks, and
+resource limits. Run the real check with
+`.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_inference.py`.
+Next is B3.2: event aggregation across overlapping windows.
 
 ## Local panel demonstration
 
@@ -98,4 +102,4 @@ and saved/reloaded Log-Mel values for three generated signals. It includes audio
 playback, window selection, padding boundaries, feature-value inspection, and PNG
 export. See [the demo commands and speaking guide](docs/panel-frontend-demo.md).
 No additional dependencies or model downloads are needed. Acoustic inference
-remains a later milestone.
+is implemented in the backend but is not connected to this temporary frontend.
