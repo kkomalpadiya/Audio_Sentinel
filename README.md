@@ -82,9 +82,13 @@ A2.3 provides a [one-call audio-to-feature service](docs/feature-pipeline.md),
 with ordered verified output, configurable budgets, and retry reuse.
 Run `python scripts/smoke_test_feature_pipeline.py` for the complete generated-sample check.
 Phase 2 is complete. A3.1 selects [YAMNet and a versioned label mapping](docs/acoustic-model-selection.md).
-The detector will consume prepared waveforms through its own frontend; the saved
-generic Log-Mel recipe is not compatible with YAMNet input features.
-Next is B3.1: implement the isolated acoustic-model loader with version metadata.
+B3.1 adds a [local, verified model loader](docs/acoustic-model-loading.md) with a
+pinned artifact digest, isolated TensorFlow 2.21 runtime, vocabulary/signature
+checks, and JSON-ready version metadata. The detector consumes prepared waveforms
+through its own frontend; the saved generic Log-Mel recipe is not compatible with
+YAMNet input features. Run `.\scripts\setup_yamnet.ps1` once to create the ignored
+runtime and download the ignored model weights. Next is A3.2: inference
+orchestration over prepared waveforms.
 
 ## Local panel demonstration
 

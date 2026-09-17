@@ -1,4 +1,4 @@
-"""A3.1 baseline specification and vocabulary; no model runtime or inference."""
+"""A3.1 baseline specification and vocabulary shared with the model loader."""
 
 from __future__ import annotations
 
@@ -17,6 +17,10 @@ from audio_sentinel.contracts import EventLabel
 class AcousticModelSpec:
     model_id: str
     model_handle: str
+    download_handle: str
+    artifact_sha256: str
+    runtime_distribution: str
+    runtime_version: str
     reference_revision: str
     class_map_sha256: str
     num_classes: int
@@ -35,7 +39,11 @@ class AcousticModelSpec:
 
 YAMNET = AcousticModelSpec(
     model_id="yamnet-tfhub-1",
-    model_handle="https://tfhub.dev/google/yamnet/1",
+    model_handle="https://www.kaggle.com/models/google/yamnet/tensorFlow2/yamnet/1",
+    download_handle="google/yamnet/tensorFlow2/yamnet/1",
+    artifact_sha256="2aee541e6039364299c90cfe5a715d239097aafb38aa4ce50d805a5445993b82",
+    runtime_distribution="tensorflow",
+    runtime_version="2.21.0",
     reference_revision="d598fb8b23d9cd2fb26b5789b8242de3f494aca7",
     class_map_sha256="cdf24d193e196d9e95912a2667051ae203e92a2ba09449218ccb40ef787c6df2",
     num_classes=521,

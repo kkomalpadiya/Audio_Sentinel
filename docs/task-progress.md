@@ -396,3 +396,39 @@ Next: B3.1 — Implement isolated acoustic-model loader with version metadata.
 
 We have chosen the recognizer and defined its translation dictionary. The next
 task loads it; subsequent tasks run predictions and test their accuracy.
+
+## B3.1 — Complete
+
+Added `load_yamnet` in `src/audio_sentinel/acoustic_loader.py` for local-only,
+lazy TensorFlow loading. Before importing TensorFlow, it resolves the SavedModel
+inside `models/`, rejects links/junctions and unexpected files, enforces a byte
+budget, hashes the complete four-file payload, and compares it with the pinned
+YAMNet v1 digest. It also reuses the verified 521-class vocabulary and mapping.
+
+The loaded model must expose the exact `serving_default` waveform contract and
+the expected 521-score, 1024-embedding, and 64-band model-owned Log-Mel outputs.
+The result returns the callable plus JSON-ready metadata covering model identity,
+relative local path, artifact/vocabulary hashes, label mapping, TensorFlow runtime,
+SavedModel exporter versions, and tensor shapes/dtypes. B3.1 does not run inference.
+
+Added a pinned `yamnet` optional dependency group, one-command isolated setup in
+`scripts/setup_yamnet.ps1`, official Kaggle model download/verification, a real
+loader smoke test, unit coverage, and `docs/acoustic-model-loading.md`. TensorFlow
+2.21.0 and the model live under ignored `.venv/` and `models/` directories. The
+normal project import and test path still does not require TensorFlow or network.
+
+Verification: the real Google YAMNet v1 SavedModel loaded successfully under
+Python 3.13 with TensorFlow 2.21.0. Its payload digest is
+`2aee541e6039364299c90cfe5a715d239097aafb38aa4ce50d805a5445993b82`,
+its vocabulary digest matches A3.1, its exporter reports TensorFlow 2.3.0, and its
+signature matches the expected input and three outputs. The standard verification
+script passes compilation, all 557 project tests, and the preparation smoke test.
+
+Current tracker: `outputs/b3_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 25 completed tasks out of 72. Model inference remains A3.2.
+
+Next: A3.2 — Implement inference orchestration over prepared waveforms.
+
+The recognizer is now installed in a separate environment and its exact files and
+input/output plugs are checked every time it loads. The next task will feed real
+prepared audio through that verified callable and retain raw model evidence.

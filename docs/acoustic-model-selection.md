@@ -16,19 +16,19 @@ candidate if YAMNet fails our later evaluation. Neither model accepts arbitrary
 Log-Mel recipes just because dimensions match.
 [Author's implementation and checkpoints](https://github.com/qiuqiangkong/audioset_tagging_cnn).
 
-The current project interpreter is Python 3.13.5 (Anaconda); TensorFlow is absent.
-B3.1 must establish and record a compatible optional runtime, load the versioned
-SavedModel locally, and verify actual model metadata. Prefer SavedModel inference;
-the upstream Keras reconstruction code currently requires Keras 2. No dependency
-installation, weight download, inference, or performance claim is part of A3.1.
-The source revision below pins the vocabulary/reference code, not the model bytes.
-B3.1 must additionally record a digest of the actual downloaded model artifact.
+The project interpreter is Python 3.13.5. B3.1 now provides an isolated
+TensorFlow 2.21.0 environment, loads the versioned SavedModel locally, and verifies
+actual model metadata. The source revision below pins the vocabulary/reference
+code. The downloaded SavedModel is separately pinned by the complete payload
+digest documented in [the loader guide](acoustic-model-loading.md). No inference
+or performance claim is part of A3.1 or B3.1.
 
 ## Executable specification
 
 `src/audio_sentinel/acoustic_model.py` provides the frozen `YAMNET` specification,
 `LABEL_MAPPING_VERSION`, immutable mapping/deferral tables, and offline
-`validate_label_mapping()`. Model handle: `https://tfhub.dev/google/yamnet/1`.
+`validate_label_mapping()`. The v1 model is loaded from Google's official Kaggle
+mirror: `https://www.kaggle.com/models/google/yamnet/tensorFlow2/yamnet/1`.
 
 The bundled official CSV preserves all 521 ordered indexes, machine identifiers,
 and display names. Its upstream revision is
@@ -102,10 +102,11 @@ also scoring a broad target class highly; retain those confounders for evaluatio
 
 `tests/test_acoustic_model.py` checks complete taxonomy coverage, reference
 integrity, mapping drift, excluded lookalikes, duplicate associations, immutability,
-and use without network or ML runtime imports. It verifies the specification,
-not detection quality. Next: **B3.1 — Implement isolated acoustic-model loader
-with version metadata**.
+and use without network or ML runtime imports. B3.1 adds artifact/runtime/signature
+checks in `tests/test_acoustic_loader.py` and a real local smoke test. These verify
+model identity and loadability, not detection quality. Next: **A3.2 — Implement
+inference orchestration over windows/features**.
 
-In plain language: we have selected the sound recognizer and written its
-translation dictionary. The next task installs/loads the recognizer; later tasks
-run it on windows and verify how well its predictions match real examples.
+In plain language: we selected the sound recognizer, wrote its translation
+dictionary, and can now load an exact verified local copy. The next task runs it
+on prepared waveforms; later tasks combine predictions and test their accuracy.
