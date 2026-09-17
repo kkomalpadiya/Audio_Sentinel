@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore real audio preparation and Log-Mel features in the local Audio Sentinel presentation demo.">
+  <title>Audio Sentinel · Feature explorer</title>
+  <link rel="stylesheet" href="/demo/assets/style.css">
+  <script defer src="/demo/assets/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/demo" aria-label="Audio Sentinel demo"><span class="brand-mark" aria-hidden="true">∿</span> AUDIO SENTINEL</a>
+    <span class="local-tag"><span aria-hidden="true">●</span> Local presentation demo</span>
+  </header>
+  <div class="workspace">
+    <aside class="sidebar">
+      <p class="eyebrow">INPUT SIGNAL</p>
+      <h1>Feature explorer</h1>
+      <p class="intro">Generate a sound. See how the pipeline represents it.</p>
+      <form id="demo-form">
+        <fieldset>
+          <legend>Choose a generated sample</legend>
+          <label class="sample"><input type="radio" name="sample" value="tone"><span><strong>Steady tone</strong><small>1,000 Hz · horizontal band</small></span></label>
+          <label class="sample"><input type="radio" name="sample" value="sweep" checked><span><strong>Frequency sweep</strong><small>250–6,000 Hz · rising band</small></span></label>
+          <label class="sample"><input type="radio" name="sample" value="pulses"><span><strong>Rhythmic pulses</strong><small>Broadband · vertical bursts</small></span></label>
+        </fieldset>
+        <button id="run-button" class="primary" type="submit">Generate spectrogram <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="input-note">1.6 seconds · synthetic audio<br>No microphone or dataset required.</p>
+      <div class="pipeline-note">
+        <p class="eyebrow">IMPLEMENTATION</p>
+        <p><span class="ready-dot"></span> Audio preparation <b>Ready</b></p>
+        <p><span class="ready-dot"></span> Log-Mel features <b>Ready</b></p>
+        <p><span class="pending-dot"></span> Acoustic inference <b>Next</b></p>
+      </div>
+      <a class="api-link" href="/docs" target="_blank" rel="noopener">Open backend API ↗</a>
+    </aside>
+    <main>
+      <div class="main-heading"><div><p class="eyebrow">AUDIO → PREPARATION → FEATURES</p><h2>From sound to spectrum</h2></div><span id="run-state" class="state">Preparing</span></div>
+      <p id="status" class="status" role="status" aria-live="polite">Preparing the first generated sample…</p>
+      <div id="error" class="error" role="alert" hidden></div>
+      <section class="metrics" aria-label="Processing result">
+        <div><span>Source → prepared</span><strong id="rate-value">—</strong><small>Sample rate</small></div>
+        <div><span>Channel conversion</span><strong id="channel-value">—</strong><small>Prepared audio</small></div>
+        <div><span>Output windows</span><strong id="window-value">—</strong><small>1 s / 5 s / 10 s contexts</small></div>
+        <div><span>Frequency bands</span><strong id="band-value">—</strong><small>Mel-scaled power features</small></div>
+      </section>
+      <section class="panel spectrum-panel" aria-labelledby="spectrum-title">
+        <div class="panel-heading"><div><h3 id="spectrum-title">Log-Mel spectrogram</h3><p id="sample-description">Feature values come from the Python pipeline.</p></div><button id="export-button" class="secondary" disabled>Save image ↓</button></div>
+        <div class="window-controls"><label for="window-select">Audio window</label><select id="window-select" disabled><option>Preparing windows…</option></select><span id="shape-label">—</span></div>
+        <canvas id="spectrogram" role="img" aria-label="Log-Mel spectrogram; time horizontally, Mel bands vertically, color indicates power in decibels"></canvas>
+        <p id="plot-detail" class="plot-detail">Move over the plot to inspect a feature value.</p>
+        <div class="recipe"><span>FFT <b id="fft-value">—</b></span><span>Hop <b id="hop-value">—</b></span><span>Scale <b>Power dB</b></span><span>Matrix <b>float32</b></span></div>
+      </section>
+      <section class="panel waveform-panel" aria-labelledby="wave-title">
+        <div class="panel-heading"><h3 id="wave-title">Prepared waveform</h3><span id="wave-meta">16 kHz · mono</span></div>
+        <canvas id="waveform" role="img" aria-label="Prepared waveform; amplitude over the 1.6-second recording"></canvas>
+        <div class="audio-row"><label>Original signal<audio id="source-audio" controls preload="metadata"></audio></label><label>Prepared signal<audio id="prepared-audio" controls preload="metadata"></audio></label></div>
+      </section>
+      <div id="checks" class="checks" aria-live="polite"></div>
+      <p class="scope-note">This view demonstrates real preparation and feature extraction. YAMNet is selected; recognition, threat scores, and alerts are not implemented yet.</p>
+    </main>
+  </div>
+</body>
+</html>

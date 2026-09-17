@@ -35,7 +35,7 @@ ml = [
 where = ["src"]
 
 [tool.setuptools.package-data]
-audio_sentinel = ["resources/*.csv", "resources/*.txt"]
+audio_sentinel = ["resources/*.csv", "resources/*.txt", "web/*.html", "web/*.css", "web/*.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

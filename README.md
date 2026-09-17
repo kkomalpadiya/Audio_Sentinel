@@ -85,3 +85,13 @@ Phase 2 is complete. A3.1 selects [YAMNet and a versioned label mapping](docs/ac
 The detector will consume prepared waveforms through its own frontend; the saved
 generic Log-Mel recipe is not compatible with YAMNet input features.
 Next is B3.1: implement the isolated acoustic-model loader with version metadata.
+
+## Local panel demonstration
+
+Run `python -m uvicorn audio_sentinel.main:app --app-dir src --host 127.0.0.1 --port 8000`
+and open `http://127.0.0.1:8000/demo`. The frontend displays actual prepared audio
+and saved/reloaded Log-Mel values for three generated signals. It includes audio
+playback, window selection, padding boundaries, feature-value inspection, and PNG
+export. See [the demo commands and speaking guide](docs/panel-frontend-demo.md).
+No additional dependencies or model downloads are needed. Acoustic inference
+remains a later milestone.

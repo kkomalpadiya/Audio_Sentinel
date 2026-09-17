@@ -1,9 +1,19 @@
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from audio_sentinel.config import load_settings
+from audio_sentinel.demo import WEB_DIRECTORY, router as demo_router
 from audio_sentinel.health import check_project_health
 
 app = FastAPI(title="Audio Sentinel")
+app.include_router(demo_router)
+app.mount("/demo/assets", StaticFiles(directory=WEB_DIRECTORY), name="demo-assets")
+
+
+@app.get("/", include_in_schema=False)
+def home() -> RedirectResponse:
+    return RedirectResponse("/demo")
 
 
 @app.get("/health")
