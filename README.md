@@ -97,7 +97,12 @@ mapped classes use their maximum score, repeated patch support is unioned withou
 score inflation, and complete provenance is retained. Thresholds remain explicit
 experimental inputs until evaluation. Run the real structural check with
 `.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_aggregation.py`.
-Next is A3.3: timestamped acoustic-evidence JSON.
+A3.3 adds [versioned timestamped acoustic-evidence JSON](docs/acoustic-evidence.md)
+with sample-exact times, full source/model/window provenance, deterministic identity,
+atomic repeat-safe persistence, and source/consent verification on reload. It remains
+candidate evidence, not an incident or risk decision. Run the real persistence check
+with `.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_evidence.py`.
+Next is B3.3: acoustic loader and aggregation unit-test completion.
 
 ## Local panel demonstration
 

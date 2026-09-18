@@ -507,3 +507,46 @@ Next: A3.3 — Produce timestamped acoustic-evidence JSON.
 In plain language: overlapping excerpts can show the recognizer the same sound
 several times. This step groups that repeated evidence into one candidate interval,
 keeps only the strongest score, and remembers every patch that supported it.
+
+## A3.3 — Complete
+
+Added `build_acoustic_evidence`, `save_acoustic_evidence`, and
+`load_acoustic_evidence` in `src/audio_sentinel/acoustic_evidence.py`. The new v1
+JSON contract records a UTC creation time, deterministic semantic evidence ID,
+16 kHz sample-exact and second-based timestamps, explicit aggregation settings,
+complete input window/patch inventory, every retained patch contribution, and the
+full preparation/model/mapping/runtime provenance chain.
+
+The builder recomputes B3.2 aggregation from the paired A3.2 inference snapshot
+before accepting it. Contract validation checks the pinned model, event and patch
+grids, timestamp conversions, ordering, thresholds, winning mapped classes, hashes,
+counts, and evidence identity. The document is explicitly
+`acoustic_event_candidates`; scores remain uncalibrated model evidence and the
+schema has no incident, probability, or risk decision.
+
+Persistence writes one JSON file under
+`data/processed/acoustic-evidence/<evidence-id>/` using bounded staging, fsync,
+readback, source rechecks, and atomic publication. Repeated equivalent saves reuse
+the original document and creation time. Existing conflicts are never overwritten.
+Reloading rechecks the bundle path/inventory, resource limits, current consent,
+manifest/raw-audio identity, the complete prepared-window inventory, and every
+window hash. It stores no raw audio, score matrices, embeddings, or spectrograms.
+
+Added the checked-in JSON Schema, 22 focused tests, task documentation, and a real
+isolated-YAMNet persistence smoke test. The smoke saved and reloaded evidence for
+three overlapping windows, five YAMNet patches, and all six mapped labels using a
+deliberately zero structural-test threshold. It makes no accuracy claim.
+
+Verification: all 649 project tests pass. Compilation, diff checks, the real YAMNet
+evidence smoke test, schema round-trip checks, repeat-save behavior, tamper/source
+rejection, limits, and tracker formula/visual checks pass.
+
+Current tracker: `outputs/a3_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 28 completed tasks out of 72. No new setup is required if B3.1 setup was
+already run. On a clean machine, run `.\scripts\setup_yamnet.ps1` once.
+
+Next: B3.3 — Add acoustic loader and aggregation unit tests.
+
+In plain language: the recognizer's candidate sounds now have a durable receipt.
+It says exactly when the model produced each piece of evidence and preserves proof
+of the source audio, prepared windows, model version, mapping, and rules used.

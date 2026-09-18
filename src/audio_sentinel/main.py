@@ -27,6 +27,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "YAMNet patch evidence is mapped and merged across overlapping windows without score inflation.",
-        "next_step": "Produce timestamped acoustic-evidence JSON (A3.3).",
+        "current_focus": "Versioned timestamped acoustic evidence is persisted with exact provenance and source verification.",
+        "next_step": "Complete acoustic loader and aggregation unit tests (B3.3).",
     }

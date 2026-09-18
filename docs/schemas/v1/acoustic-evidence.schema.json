@@ -1,0 +1,537 @@
+{
+  "$defs": {
+    "AcousticAggregationSettings": {
+      "additionalProperties": false,
+      "description": "Complete mapped-label thresholds plus a sample-exact merge rule.",
+      "properties": {
+        "max_contributions": {
+          "default": 1000000,
+          "exclusiveMinimum": 0,
+          "title": "Max Contributions",
+          "type": "integer"
+        },
+        "merge_gap_samples": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Merge Gap Samples",
+          "type": "integer"
+        },
+        "thresholds": {
+          "items": {
+            "$ref": "#/$defs/AcousticLabelThreshold"
+          },
+          "title": "Thresholds",
+          "type": "array"
+        }
+      },
+      "required": [
+        "thresholds"
+      ],
+      "title": "AcousticAggregationSettings",
+      "type": "object"
+    },
+    "AcousticLabelThreshold": {
+      "additionalProperties": false,
+      "description": "One explicit experimental threshold; B3.2 does not approve its value.",
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "minimum_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "minimum_score"
+      ],
+      "title": "AcousticLabelThreshold",
+      "type": "object"
+    },
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "EvidenceAcousticClass": {
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "index": {
+          "minimum": 0,
+          "title": "Index",
+          "type": "integer"
+        },
+        "mid": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Mid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "mid",
+        "display_name"
+      ],
+      "title": "EvidenceAcousticClass",
+      "type": "object"
+    },
+    "EvidenceContribution": {
+      "additionalProperties": false,
+      "properties": {
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "patch_index": {
+          "minimum": 0,
+          "title": "Patch Index",
+          "type": "integer"
+        },
+        "score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Score",
+          "type": "number"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        },
+        "window_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Window Audio Sha256",
+          "type": "string"
+        },
+        "window_id": {
+          "title": "Window Id",
+          "type": "string"
+        },
+        "winning_class": {
+          "$ref": "#/$defs/EvidenceAcousticClass"
+        }
+      },
+      "required": [
+        "label",
+        "window_id",
+        "window_audio_sha256",
+        "patch_index",
+        "start_sample",
+        "end_sample",
+        "start_seconds",
+        "end_seconds",
+        "score",
+        "winning_class"
+      ],
+      "title": "EvidenceContribution",
+      "type": "object"
+    },
+    "EvidenceEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "contributions": {
+          "items": {
+            "$ref": "#/$defs/EvidenceContribution"
+          },
+          "title": "Contributions",
+          "type": "array"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "peak_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Peak Score",
+          "type": "number"
+        },
+        "source_window_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Window Ids",
+          "type": "array"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "start_sample",
+        "end_sample",
+        "start_seconds",
+        "end_seconds",
+        "peak_score",
+        "source_window_ids",
+        "contributions"
+      ],
+      "title": "EvidenceEvent",
+      "type": "object"
+    },
+    "EvidenceModel": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "class_map_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Class Map Sha256",
+          "type": "string"
+        },
+        "exported_with_tensorflow": {
+          "title": "Exported With Tensorflow",
+          "type": "string"
+        },
+        "exported_with_tensorflow_git": {
+          "title": "Exported With Tensorflow Git",
+          "type": "string"
+        },
+        "input": {
+          "$ref": "#/$defs/EvidenceTensorContract"
+        },
+        "label_mapping_version": {
+          "title": "Label Mapping Version",
+          "type": "string"
+        },
+        "model_handle": {
+          "title": "Model Handle",
+          "type": "string"
+        },
+        "model_id": {
+          "title": "Model Id",
+          "type": "string"
+        },
+        "model_path": {
+          "title": "Model Path",
+          "type": "string"
+        },
+        "model_version": {
+          "title": "Model Version",
+          "type": "string"
+        },
+        "num_classes": {
+          "exclusiveMinimum": 0,
+          "title": "Num Classes",
+          "type": "integer"
+        },
+        "outputs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceTensorContract"
+          },
+          "title": "Outputs",
+          "type": "array"
+        },
+        "runtime_distribution": {
+          "title": "Runtime Distribution",
+          "type": "string"
+        },
+        "runtime_version": {
+          "title": "Runtime Version",
+          "type": "string"
+        },
+        "signature_name": {
+          "title": "Signature Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id",
+        "model_version",
+        "model_handle",
+        "model_path",
+        "artifact_sha256",
+        "class_map_sha256",
+        "label_mapping_version",
+        "runtime_distribution",
+        "runtime_version",
+        "exported_with_tensorflow",
+        "exported_with_tensorflow_git",
+        "signature_name",
+        "input",
+        "outputs",
+        "num_classes"
+      ],
+      "title": "EvidenceModel",
+      "type": "object"
+    },
+    "EvidenceSource": {
+      "additionalProperties": false,
+      "properties": {
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "preparation_manifest_path": {
+          "title": "Preparation Manifest Path",
+          "type": "string"
+        },
+        "preparation_manifest_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Preparation Manifest Sha256",
+          "type": "string"
+        },
+        "raw_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Audio Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "preparation_manifest_path",
+        "preparation_manifest_sha256",
+        "raw_audio_sha256",
+        "clip_id"
+      ],
+      "title": "EvidenceSource",
+      "type": "object"
+    },
+    "EvidenceTensorContract": {
+      "additionalProperties": false,
+      "properties": {
+        "dtype": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Dtype",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "shape": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Shape",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "shape",
+        "dtype"
+      ],
+      "title": "EvidenceTensorContract",
+      "type": "object"
+    },
+    "EvidenceWindow": {
+      "additionalProperties": false,
+      "properties": {
+        "audio_path": {
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "input_num_samples": {
+          "exclusiveMinimum": 0,
+          "title": "Input Num Samples",
+          "type": "integer"
+        },
+        "padding_samples": {
+          "minimum": 0,
+          "title": "Padding Samples",
+          "type": "integer"
+        },
+        "patch_count": {
+          "exclusiveMinimum": 0,
+          "title": "Patch Count",
+          "type": "integer"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "window_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Window Audio Sha256",
+          "type": "string"
+        },
+        "window_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "title": "Window Id",
+          "type": "string"
+        },
+        "window_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Window Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "window_id",
+        "audio_path",
+        "window_audio_sha256",
+        "window_seconds",
+        "start_sample",
+        "end_sample",
+        "padding_samples",
+        "input_num_samples",
+        "patch_count"
+      ],
+      "title": "EvidenceWindow",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/acoustic-evidence.schema.json",
+  "additionalProperties": false,
+  "description": "Persistent model evidence; deliberately not an incident/risk contract.",
+  "properties": {
+    "aggregation": {
+      "$ref": "#/$defs/AcousticAggregationSettings"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "acoustic_event_candidates",
+      "default": "acoustic_event_candidates",
+      "enum": [
+        "acoustic_event_candidates"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/EvidenceEvent"
+      },
+      "title": "Events",
+      "type": "array"
+    },
+    "evidence_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "input_patch_count": {
+      "minimum": 0,
+      "title": "Input Patch Count",
+      "type": "integer"
+    },
+    "input_window_count": {
+      "minimum": 0,
+      "title": "Input Window Count",
+      "type": "integer"
+    },
+    "model": {
+      "$ref": "#/$defs/EvidenceModel"
+    },
+    "sample_rate_hz": {
+      "exclusiveMinimum": 0,
+      "title": "Sample Rate Hz",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/EvidenceSource"
+    },
+    "windows": {
+      "items": {
+        "$ref": "#/$defs/EvidenceWindow"
+      },
+      "title": "Windows",
+      "type": "array"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "created_at",
+    "sample_rate_hz",
+    "source",
+    "model",
+    "aggregation",
+    "input_window_count",
+    "input_patch_count",
+    "windows",
+    "events"
+  ],
+  "title": "AcousticEvidenceDocument",
+  "type": "object"
+}

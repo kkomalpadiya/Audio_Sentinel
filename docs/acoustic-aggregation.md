@@ -53,9 +53,9 @@ contribution limit prevents a permissive threshold from creating an unbounded
 evidence inventory. A failure returns no partial aggregation result.
 
 The input score arrays are read only and never modified. The result copies the
-model, clip, manifest, and raw-audio identities from the A3.2 snapshot. A3.3 will
-define the persistent timestamped JSON contract; B3.2's `to_summary()` is only a
-diagnostic representation.
+model, clip, manifest, and raw-audio identities from the A3.2 snapshot. A3.3 now
+defines the persistent timestamped JSON contract; B3.2's `to_summary()` remains
+only a diagnostic representation.
 
 ## Verification
 
