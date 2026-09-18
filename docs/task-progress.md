@@ -550,3 +550,42 @@ Next: B3.3 — Add acoustic loader and aggregation unit tests.
 In plain language: the recognizer's candidate sounds now have a durable receipt.
 It says exactly when the model produced each piece of evidence and preserves proof
 of the source audio, prepared windows, model version, mapping, and rules used.
+
+## B3.3 — Complete
+
+Completed the boundary-focused unit-test matrix for the isolated YAMNet loader and
+overlap-safe event aggregator. The focused pair now contains 96 tests, including
+47 new cases added in this task. Production code did not require changes: the
+existing B3.1/B3.2 implementation passed the stricter behavior and failure checks.
+
+Loader additions cover valid/invalid download markers, model byte limits, linked
+model directories and payloads, mid-hash file changes, full signature inventory,
+input/output name and dtype drift, TensorFlow load/inspection failures, class-map
+redirection, string asset paths, missing exporter metadata, and immutable returned
+contracts. The tests continue to prove that the normal package import does not
+require TensorFlow and that loading does not run inference.
+
+Aggregation additions exercise every mapped class across all six project labels,
+deterministic contribution ordering with reversed inputs, source-window
+deduplication, tail-patch clipping, exact adjacency, transitive gap chains, strict
+integer settings, exact contribution-limit behavior, complete model metadata drift,
+malformed patch support, and immutable results. Existing checks continue to cover
+maximum-not-sum scoring, threshold boundaries, overlap without score inflation,
+finite score/tensor validation, empty inputs, and input preservation.
+
+Added `docs/acoustic-unit-tests.md` with the test matrix, commands, and scope.
+Software correctness tests do not measure recognition quality or approve thresholds;
+A3.4 remains responsible for labeled evaluation.
+
+Verification: all 696 project tests pass. The standard project verification script,
+real pinned YAMNet loader smoke test, real overlap aggregation smoke test,
+compilation, diff checks, and tracker formula/visual checks pass.
+
+Current tracker: `outputs/b3_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 29 completed tasks out of 72. No new setup or manual action is required.
+
+Next: A3.4 — Evaluate acoustic detection against labeled samples.
+
+In plain language: the sound-model boundary now has tests for both ordinary use and
+the failure cases most likely to corrupt provenance or double-count overlapping
+audio. The next task checks how well the recognizer performs on labeled recordings.

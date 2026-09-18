@@ -104,8 +104,9 @@ also scoring a broad target class highly; retain those confounders for evaluatio
 integrity, mapping drift, excluded lookalikes, duplicate associations, immutability,
 and use without network or ML runtime imports. B3.1 adds artifact/runtime/signature
 checks in `tests/test_acoustic_loader.py`; A3.2 adds verified raw-score orchestration,
-and B3.2 adds overlap-safe candidate aggregation. These still do not verify
-detection quality. Next: **A3.3 — Produce timestamped acoustic-evidence JSON**.
+B3.2 adds overlap-safe candidate aggregation, A3.3 persists auditable evidence,
+and B3.3 completes the loader/aggregation boundary-test matrix. These still do not
+verify detection quality. Next: **A3.4 — Evaluate acoustic detection against labeled samples**.
 
 In plain language: we selected the sound recognizer, wrote its translation
 dictionary, can load an exact verified local copy, run it on prepared waveforms,

@@ -1,7 +1,8 @@
 """B3.2 tests for mapped-score and overlapping-window aggregation."""
 
-from dataclasses import replace
+from dataclasses import FrozenInstanceError, replace
 import json
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -92,6 +93,18 @@ def test_maps_each_label_with_max_not_sum_and_records_winning_class():
     assert event.peak_score == pytest.approx(0.8)
 
 
+@pytest.mark.parametrize("label", tuple(LABEL_MAPPING))
+def test_every_project_label_and_all_its_mapped_classes_are_exercised(label):
+    classes = LABEL_MAPPING[label]
+    values = [(0, item.index, 0.55 + index * 0.05) for index, item in enumerate(classes)]
+    output = aggregation.aggregate_acoustic_events(
+        result(window("c-label", 0, 9_600, values)), policy()
+    )
+    event = next(item for item in output.events if item.label is label)
+    assert event.contributions[0].winning_class == classes[-1]
+    assert event.peak_score == pytest.approx(0.55 + (len(classes) - 1) * 0.05)
+
+
 def test_overlapping_windows_union_into_one_event_without_score_inflation():
     values = [(0, 390, 0.60), (1, 390, 0.70)]
     first = window("c-first", 0, 16_000, values)
@@ -103,6 +116,36 @@ def test_overlapping_windows_union_into_one_event_without_score_inflation():
     assert sirens[0].peak_score == pytest.approx(0.8)
     assert len(sirens[0].contributions) == 4
     assert sirens[0].source_window_ids == ("c-first", "d-second")
+
+
+def test_contribution_and_source_window_order_is_deterministic_for_reversed_inputs():
+    early = window("c-early", 0, 16_000, [(0, 390, 0.7), (1, 390, 0.75)])
+    late = window("d-late", 8_000, 16_000, [(0, 390, 0.8), (1, 390, 0.85)])
+    output = aggregation.aggregate_acoustic_events(result(late, early), policy())
+    event = next(item for item in output.events if item.label is EventLabel.SIREN)
+    assert [(item.start_sample, item.window_id, item.patch_index) for item in event.contributions] == [
+        (0, "c-early", 0),
+        (7_680, "c-early", 1),
+        (8_000, "d-late", 0),
+        (15_680, "d-late", 1),
+    ]
+    assert event.source_window_ids == ("c-early", "d-late")
+
+
+def test_repeated_patches_from_one_window_deduplicate_source_window_ids():
+    item = window("c-repeat", 0, 16_000, [(0, 390, 0.7), (1, 390, 0.8)])
+    event = aggregation.aggregate_acoustic_events(result(item), policy()).events[0]
+    assert len(event.contributions) == 2
+    assert event.source_window_ids == ("c-repeat",)
+
+
+def test_tail_patch_support_is_clipped_to_real_window_end():
+    item = window("c-tail", 0, 16_000, [(1, 390, 0.8)])
+    event = aggregation.aggregate_acoustic_events(result(item), policy()).events[0]
+    assert (event.start_sample, event.end_sample) == (7_680, 16_000)
+    assert (event.contributions[0].start_sample, event.contributions[0].end_sample) == (
+        7_680, 16_000
+    )
 
 
 def test_equal_threshold_is_included_and_below_threshold_is_excluded():
@@ -119,6 +162,29 @@ def test_separated_support_remains_separate_without_configured_gap():
     output = aggregation.aggregate_acoustic_events(result(first, second), policy())
     events = [item for item in output.events if item.label is EventLabel.EXPLOSION]
     assert [(item.start_sample, item.end_sample) for item in events] == [(0, 9_600), (20_000, 29_600)]
+
+
+def test_exactly_adjacent_support_merges_with_default_zero_gap():
+    first = window("c-first", 0, 9_600, [(0, 420, 0.9)])
+    second = window("d-second", 9_600, 9_600, [(0, 420, 0.8)])
+    events = aggregation.aggregate_acoustic_events(result(second, first), policy()).events
+    explosions = [item for item in events if item.label is EventLabel.EXPLOSION]
+    assert len(explosions) == 1
+    assert (explosions[0].start_sample, explosions[0].end_sample) == (0, 19_200)
+
+
+def test_gap_merge_is_transitive_across_a_chain_of_contributions():
+    items = (
+        window("c-first", 0, 9_600, [(0, 420, 0.9)]),
+        window("d-middle", 9_700, 9_600, [(0, 420, 0.8)]),
+        window("e-last", 19_400, 9_600, [(0, 420, 0.7)]),
+    )
+    output = aggregation.aggregate_acoustic_events(
+        result(*reversed(items)), policy(merge_gap_samples=100)
+    )
+    explosions = [item for item in output.events if item.label is EventLabel.EXPLOSION]
+    assert len(explosions) == 1
+    assert (explosions[0].start_sample, explosions[0].end_sample) == (0, 29_000)
 
 
 @pytest.mark.parametrize("gap,expected", [(10_399, 2), (10_400, 1)])
@@ -188,6 +254,18 @@ def test_input_score_arrays_are_not_modified():
     assert np.array_equal(item.scores, before)
 
 
+def test_aggregation_result_event_and_contribution_are_immutable():
+    output = aggregation.aggregate_acoustic_events(
+        result(window("c-one", 0, 9_600, [(0, 390, 0.8)])), policy()
+    )
+    with pytest.raises(FrozenInstanceError):
+        output.clip_id = "changed"
+    with pytest.raises(FrozenInstanceError):
+        output.events[0].peak_score = 0.1
+    with pytest.raises(FrozenInstanceError):
+        output.events[0].contributions[0].score = 0.1
+
+
 def test_uniform_policy_is_complete_ordered_and_independent():
     first = policy(0.4)
     second = policy(0.7)
@@ -219,6 +297,17 @@ def test_threshold_rejects_out_of_range_or_nonfinite_values(score):
         aggregation.AcousticLabelThreshold(label=EventLabel.SIREN, minimum_score=score)
 
 
+@pytest.mark.parametrize("field,value", [
+    ("merge_gap_samples", -1),
+    ("merge_gap_samples", True),
+    ("max_contributions", 0),
+    ("max_contributions", True),
+])
+def test_policy_rejects_invalid_integer_limits(field, value):
+    with pytest.raises(ValidationError):
+        policy(**{field: value})
+
+
 def test_contribution_limit_fails_instead_of_returning_partial_events():
     item = window("c-one", 0, 9_600, [(0, 390, 0.8), (0, 420, 0.8)])
     with pytest.raises(aggregation.AcousticAggregationError) as error:
@@ -226,11 +315,26 @@ def test_contribution_limit_fails_instead_of_returning_partial_events():
     assert error.value.code == "too_many_contributions"
 
 
+def test_contribution_limit_is_inclusive_at_the_exact_boundary():
+    item = window("c-one", 0, 9_600, [(0, 390, 0.8), (0, 420, 0.8)])
+    output = aggregation.aggregate_acoustic_events(
+        result(item), policy(max_contributions=2)
+    )
+    assert sum(len(event.contributions) for event in output.events) == 2
+
+
 @pytest.mark.parametrize("field,value", [
     ("model_id", "other"),
+    ("model_version", "other"),
+    ("model_handle", "other"),
     ("artifact_sha256", "0" * 64),
+    ("class_map_sha256", "0" * 64),
     ("label_mapping_version", "other"),
+    ("runtime_distribution", "other"),
     ("runtime_version", "other"),
+    ("signature_name", "other"),
+    ("input", TensorContract("audio", (None,), "float32")),
+    ("outputs", (TensorContract("output_0", (None, 521), "float32"),)),
     ("num_classes", 520),
 ])
 def test_rejects_model_metadata_drift(field, value):
@@ -269,4 +373,21 @@ def test_rejects_malformed_inference_arrays_and_shapes(change):
         object.__setattr__(item, "spectrogram_shape", (96, 64))
     with pytest.raises(aggregation.AcousticAggregationError) as error:
         aggregation.aggregate_acoustic_events(result(item), policy())
+    assert error.value.code == "invalid_inference"
+
+
+@pytest.mark.parametrize("span", [((-1, 9_600),), ((0, 9_601),), ((10, 10),)])
+def test_rejects_patch_support_outside_or_empty_against_real_window(span):
+    item = window("c-one", 0, 9_600)
+    malformed = SimpleNamespace(
+        window=item.window,
+        window_audio_sha256=item.window_audio_sha256,
+        input_num_samples=item.input_num_samples,
+        scores=item.scores,
+        embeddings_shape=item.embeddings_shape,
+        spectrogram_shape=item.spectrogram_shape,
+        patch_spans_samples=span,
+    )
+    with pytest.raises(aggregation.AcousticAggregationError) as error:
+        aggregation.aggregate_acoustic_events(result(malformed), policy())
     assert error.value.code == "invalid_inference"

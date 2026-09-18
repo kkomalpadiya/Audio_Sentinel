@@ -102,7 +102,10 @@ with sample-exact times, full source/model/window provenance, deterministic iden
 atomic repeat-safe persistence, and source/consent verification on reload. It remains
 candidate evidence, not an incident or risk decision. Run the real persistence check
 with `.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_evidence.py`.
-Next is B3.3: acoustic loader and aggregation unit-test completion.
+B3.3 completes the [acoustic loader and aggregation unit-test matrix](docs/acoustic-unit-tests.md),
+covering local artifact hardening, TensorFlow/signature drift, all mapped labels,
+overlap/gap boundaries, deterministic ordering, limits, and malformed inputs.
+Next is A3.4: evaluate acoustic detection against labeled samples.
 
 ## Local panel demonstration
 

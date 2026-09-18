@@ -15,4 +15,4 @@ def test_health_check_reports_missing_directories(temporary_settings: AudioSenti
 
 def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
-    assert project_status()["next_step"] == "Complete acoustic loader and aggregation unit tests (B3.3)."
+    assert project_status()["next_step"] == "Evaluate acoustic detection against labeled samples (A3.4)."
