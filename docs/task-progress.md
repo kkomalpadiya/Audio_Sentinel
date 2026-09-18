@@ -589,3 +589,53 @@ Next: A3.4 — Evaluate acoustic detection against labeled samples.
 In plain language: the sound-model boundary now has tests for both ordinary use and
 the failure cases most likely to corrupt provenance or double-count overlapping
 audio. The next task checks how well the recognizer performs on labeled recordings.
+
+## A3.4 — Complete
+
+Added a reproducible, local-only labeled benchmark in
+`src/audio_sentinel/acoustic_evaluation.py` and
+`scripts/evaluate_acoustic_detection.py`. It creates disjoint calibration and
+holdout samples from official dataset folds, balances selection by source category
+with a fixed SHA-256 rank, verifies dataset/license/audio provenance, safely decodes
+and resamples each clip, and reduces the pinned YAMNet output to the A3.1 project
+label mapping. Thresholds maximize clip-level calibration F1; holdout clips never
+participate in threshold selection.
+
+The completed run evaluated 720 clips: 480 calibration and 240 holdout. Direct
+positive coverage exists only for siren, glass break, and gunshot. Holdout results
+were: siren F1 0.857 (6 TP, 0 FP, 2 FN), glass-break F1 0.667 (3 TP, 2 FP, 1 FN),
+and gunshot F1 0.000 (0 TP, 0 FP, 4 FN). The failed gunshot operating point remains
+visible and is explicitly rejected as a runtime default. Speech presence, smoke
+alarm, and explosion remain unevaluated because the local datasets do not provide
+direct positive categories under the approved mapping; fireworks remain a
+confounder rather than an explosion proxy.
+
+The checked-in JSON report preserves the model/mapping identity, dataset metadata
+and license hashes, sampling contract, selected thresholds, calibration/holdout and
+per-dataset metrics, limitations, and per-clip hashes, labels, audio properties,
+truth, and scores. No raw dataset audio is committed or uploaded. The report labels
+all results as a research baseline, not production calibration.
+
+Added 21 TensorFlow-free unit tests for deterministic/disjoint sampling, category
+mapping, bounded resource use, confusion metrics, tied-score average precision,
+threshold selection, model/tensor identity, stable report identity, end-to-end
+fake-model reporting, JSON safety, and non-overwriting persistence. Added
+`docs/acoustic-evaluation.md` with methods, results, interpretation limits,
+licensing, and rerun instructions.
+
+Verification: the focused 21-test evaluation suite passes. The real pinned YAMNet
+v1 run completed over all 720 selected clips and the report metrics reconcile to
+their confusion counts. Full project verification and tracker checks are recorded
+with this task.
+
+Current tracker: `outputs/a3_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 30 completed tasks out of 72. No new setup is required when B3.1 and the
+approved ESC-50/UrbanSound8K datasets are already present. A fresh machine must run
+the prior model setup and place the licensed datasets locally before rerunning.
+
+Next: A4.1 — Define speech-evidence schema and reliability rules.
+
+In plain language: the recognizer now has an honest report card on labeled sounds.
+Siren looks promising in this small sample, glass breaking needs refinement, and
+gunshot is not reliable at the tested threshold. The next task defines the evidence
+contract and reliability rules for the separate speech-processing branch.
