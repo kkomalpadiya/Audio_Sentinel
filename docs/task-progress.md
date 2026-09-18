@@ -468,3 +468,42 @@ In plain language: each saved audio excerpt now goes through the sound recognize
 and we keep its original class scores with proof of the exact audio and model used.
 The next task combines repeated evidence from overlapping excerpts without counting
 the same sound twice.
+
+## B3.2 — Complete
+
+Added `aggregate_acoustic_events` in
+`src/audio_sentinel/acoustic_aggregation.py`. For each patch and mapped project
+label, it selects the maximum associated YAMNet class score rather than summing
+related classes. Scores meeting an explicit caller-supplied threshold become patch
+contributions. Overlapping, adjacent, or explicitly gap-bridged contributions for
+the same label are unioned into one candidate interval whose score is the maximum
+observed score, so repeated preparation windows cannot inflate confidence.
+
+Each candidate retains its label, sample-exact union, peak uncalibrated score,
+source window IDs/hashes, patch indexes, clipped supports, and winning YAMNet
+classes. Labels remain separate. Output is chronologically deterministic and uses
+`AcousticEventCandidate`, not `EventAnnotation`; it emits no risk level or incident
+claim. Thresholds must explicitly cover all six mapped labels because A3.4 still
+owns calibration and accuracy evaluation.
+
+The aggregator revalidates pinned model metadata, patch/tensor shapes, score dtype,
+finite range, window uniqueness, real input lengths, and contribution limits. It
+returns no partial result on failure and never modifies raw inference arrays.
+Added 37 focused tests, `docs/acoustic-aggregation.md`, and a real YAMNet structural
+smoke test. The latter merges five patches from three overlapping generated-tone
+windows into one interval per mapped label using a deliberately zero test threshold;
+it makes no accuracy claim.
+
+Verification: all 627 project tests pass. The standard verification script,
+preparation smoke test, real YAMNet aggregation smoke test, compilation, and diff
+checks pass.
+
+Current tracker: `outputs/b3_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 27 completed tasks out of 72. No new setup is required if B3.1 setup
+was already run. On a clean machine, run `.\scripts\setup_yamnet.ps1` once.
+
+Next: A3.3 — Produce timestamped acoustic-evidence JSON.
+
+In plain language: overlapping excerpts can show the recognizer the same sound
+several times. This step groups that repeated evidence into one candidate interval,
+keeps only the strongest score, and remembers every patch that supported it.

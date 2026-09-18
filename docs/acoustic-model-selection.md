@@ -103,11 +103,11 @@ also scoring a broad target class highly; retain those confounders for evaluatio
 `tests/test_acoustic_model.py` checks complete taxonomy coverage, reference
 integrity, mapping drift, excluded lookalikes, duplicate associations, immutability,
 and use without network or ML runtime imports. B3.1 adds artifact/runtime/signature
-checks in `tests/test_acoustic_loader.py`; A3.2 adds verified raw-score orchestration
-and a real inference smoke test. These still do not verify detection quality.
-Next: **B3.2 — Implement event aggregation across overlapping windows**.
+checks in `tests/test_acoustic_loader.py`; A3.2 adds verified raw-score orchestration,
+and B3.2 adds overlap-safe candidate aggregation. These still do not verify
+detection quality. Next: **A3.3 — Produce timestamped acoustic-evidence JSON**.
 
 In plain language: we selected the sound recognizer, wrote its translation
-dictionary, can load an exact verified local copy, and can run it on prepared
-waveforms. The next task combines repeated window predictions; later work tests
-their accuracy.
+dictionary, can load an exact verified local copy, run it on prepared waveforms,
+and combine repeated window predictions without score inflation. The next task
+serializes timestamped evidence; later work tests accuracy.

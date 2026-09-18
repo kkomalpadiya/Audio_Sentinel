@@ -92,7 +92,12 @@ runtime and download the ignored model weights. A3.2 adds
 including padding-aware patch spans, source/model provenance, consent checks, and
 resource limits. Run the real check with
 `.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_inference.py`.
-Next is B3.2: event aggregation across overlapping windows.
+B3.2 adds [overlap-safe acoustic event aggregation](docs/acoustic-aggregation.md):
+mapped classes use their maximum score, repeated patch support is unioned without
+score inflation, and complete provenance is retained. Thresholds remain explicit
+experimental inputs until evaluation. Run the real structural check with
+`.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_aggregation.py`.
+Next is A3.3: timestamped acoustic-evidence JSON.
 
 ## Local panel demonstration
 

@@ -66,5 +66,6 @@ does not import TensorFlow or need model files.
 
 In plain language: this step safely feeds each prepared excerpt into the sound
 recognizer and keeps the recognizer's original class scores with proof of which
-audio and model produced them. The next task will combine repeated evidence from
-overlapping excerpts without counting the same sound twice.
+audio and model produced them. B3.2 now combines repeated evidence from overlapping
+excerpts without counting the same sound twice; see
+[the aggregation guide](acoustic-aggregation.md).

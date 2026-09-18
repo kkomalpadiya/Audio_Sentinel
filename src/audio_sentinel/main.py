@@ -27,6 +27,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Pinned YAMNet v1 produces verified raw patch scores over prepared waveform windows.",
-        "next_step": "Implement event aggregation across overlapping windows (B3.2).",
+        "current_focus": "YAMNet patch evidence is mapped and merged across overlapping windows without score inflation.",
+        "next_step": "Produce timestamped acoustic-evidence JSON (A3.3).",
     }
