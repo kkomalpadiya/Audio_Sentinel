@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "document_type": "speech_evidence_candidates",
+  "evidence_id": "speech-example-001",
+  "created_at": "2026-09-19T12:00:00Z",
+  "source": {
+    "preparation_manifest_path": "prepared/example/manifest.json",
+    "preparation_manifest_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "raw_audio_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "clip_id": "clip-example-001",
+    "consent_id": "consent-example-001",
+    "processing_scope": "acoustic_and_speech",
+    "sample_rate_hz": 16000,
+    "num_samples": 32000
+  },
+  "reliability_policy": {
+    "policy_version": "1.0",
+    "vad_speech_threshold": 0.6,
+    "transcript_review_threshold": 0.5,
+    "transcript_acceptance_threshold": 0.8
+  },
+  "vad_model": {
+    "model_id": "example-vad",
+    "model_version": "1",
+    "artifact_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "runtime_distribution": "example-runtime",
+    "runtime_version": "1.0"
+  },
+  "transcription_model": {
+    "model_id": "example-asr",
+    "model_version": "1",
+    "artifact_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "runtime_distribution": "example-runtime",
+    "runtime_version": "1.0"
+  },
+  "input_window_count": 2,
+  "segment_count": 2,
+  "transcribed_segment_count": 2,
+  "windows": [
+    {
+      "window_id": "window-0000",
+      "audio_path": "prepared/example/windows/window-0000.wav",
+      "window_audio_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+      "start_sample": 0,
+      "end_sample": 24000,
+      "padding_samples": 0
+    },
+    {
+      "window_id": "window-0001",
+      "audio_path": "prepared/example/windows/window-0001.wav",
+      "window_audio_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+      "start_sample": 16000,
+      "end_sample": 32000,
+      "padding_samples": 8000
+    }
+  ],
+  "segments": [
+    {
+      "segment_id": "speech-0000",
+      "source_window_ids": ["window-0000"],
+      "start_sample": 2000,
+      "end_sample": 10000,
+      "start_seconds": 0.125,
+      "end_seconds": 0.625,
+      "vad_score": 0.94,
+      "transcript": {
+        "text": "Please call for help.",
+        "confidence_score": 0.91,
+        "confidence_kind": "derived_score",
+        "language": "en",
+        "language_confidence": 0.97
+      },
+      "assessment": {
+        "reliability": "accepted",
+        "reason_codes": ["meets_acceptance_threshold"],
+        "downstream_text_allowed": true,
+        "human_review_required": false
+      }
+    },
+    {
+      "segment_id": "speech-0001",
+      "source_window_ids": ["window-0000", "window-0001"],
+      "start_sample": 18000,
+      "end_sample": 24000,
+      "start_seconds": 1.125,
+      "end_seconds": 1.5,
+      "vad_score": 0.84,
+      "transcript": {
+        "text": "The door may be open.",
+        "confidence_score": 0.67,
+        "confidence_kind": "model_score",
+        "language": "en",
+        "language_confidence": 0.88
+      },
+      "assessment": {
+        "reliability": "review_required",
+        "reason_codes": ["below_acceptance_threshold"],
+        "downstream_text_allowed": false,
+        "human_review_required": true
+      }
+    }
+  ]
+}

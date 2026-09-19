@@ -105,7 +105,13 @@ with `.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_evidence.p
 B3.3 completes the [acoustic loader and aggregation unit-test matrix](docs/acoustic-unit-tests.md),
 covering local artifact hardening, TensorFlow/signature drift, all mapped labels,
 overlap/gap boundaries, deterministic ordering, limits, and malformed inputs.
-Next is A3.4: evaluate acoustic detection against labeled samples.
+A3.4 completes the [labeled acoustic evaluation](docs/acoustic-evaluation.md) with
+separate calibration and holdout data, reproducible sampling, explicit coverage
+gaps, and checked-in research-baseline metrics. Phase 3 is complete. A4.1 defines the
+[speech-evidence contract and reliability rules](docs/speech-evidence.md), including
+sample-exact provenance, consent scope, confidence typing, and deterministic
+accepted/review/rejected handling. Next is B4.1: implement the pretrained
+voice-activity-detection wrapper.
 
 ## Local panel demonstration
 

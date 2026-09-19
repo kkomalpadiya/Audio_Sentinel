@@ -639,3 +639,44 @@ In plain language: the recognizer now has an honest report card on labeled sound
 Siren looks promising in this small sample, glass breaking needs refinement, and
 gunshot is not reliable at the tested threshold. The next task defines the evidence
 contract and reliability rules for the separate speech-processing branch.
+
+## A4.1 — Complete
+
+Defined the versioned speech-evidence contract and deterministic reliability rules
+in `src/audio_sentinel/speech_contracts.py`. The contract links every result to an
+authorized prepared-audio manifest, records model/runtime provenance, preserves the
+complete input-window inventory, and expresses final VAD-positive segments with
+sample-exact timestamps, optional transcript candidates, and verified handling
+decisions. It deliberately contains no language classification, incident outcome,
+severity, or risk score.
+
+Reliability policy v1.0 records a VAD gate of 0.60, a transcript review boundary of
+0.50, and an acceptance boundary of 0.80. Below-review candidates are rejected,
+middle-band candidates require human review, and only accepted transcript text may
+flow automatically to later language analysis. Missing transcription remains
+`not_transcribed`; it is never interpreted as safe. Confidence values are typed as
+model, derived, or calibrated signals so an ordinary normalized score is not
+misrepresented as a probability.
+
+The document validator recomputes each assessment and checks consent scope, model
+provenance, counts, unique and deterministic inventories, safe relative paths,
+source bounds, non-overlapping final segments, exact sample-to-second conversions,
+VAD threshold compliance, and source-window links. Unknown fields, NaN/Infinity,
+unbounded transcript text, and unapproved speech scope are rejected.
+
+Added the checked-in JSON Schema, a complete two-segment example,
+`docs/speech-evidence.md`, and 43 focused tests covering threshold boundaries,
+tampering, VAD-only evidence, missing provenance, counts, timestamps, ordering,
+overlap, source links, consent, transcript validation, immutability, schema export,
+and privacy exclusions.
+
+Current tracker: `outputs/a4_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 31 completed tasks out of 72. No model download or new manual setup is
+required for this contract task.
+
+Next: B4.1 — Implement pretrained voice-activity-detection wrapper.
+
+In plain language: the speech branch now has a strict receipt format and a clear
+traffic rule for uncertain words. Only sufficiently reliable text can continue
+automatically; uncertain text stays blocked for review, and missing text is never
+treated as proof that the audio was harmless.

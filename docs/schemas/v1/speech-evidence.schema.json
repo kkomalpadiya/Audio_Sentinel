@@ -1,0 +1,492 @@
+{
+  "$defs": {
+    "SpeechEvidenceSource": {
+      "additionalProperties": false,
+      "description": "Privacy-minimized link back to an authorized prepared-audio manifest.",
+      "properties": {
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "consent_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "num_samples": {
+          "exclusiveMinimum": 0,
+          "title": "Num Samples",
+          "type": "integer"
+        },
+        "preparation_manifest_path": {
+          "title": "Preparation Manifest Path",
+          "type": "string"
+        },
+        "preparation_manifest_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Preparation Manifest Sha256",
+          "type": "string"
+        },
+        "processing_scope": {
+          "const": "acoustic_and_speech",
+          "default": "acoustic_and_speech",
+          "enum": [
+            "acoustic_and_speech"
+          ],
+          "title": "Processing Scope",
+          "type": "string"
+        },
+        "raw_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Raw Audio Sha256",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "preparation_manifest_path",
+        "preparation_manifest_sha256",
+        "raw_audio_sha256",
+        "clip_id",
+        "consent_id",
+        "sample_rate_hz",
+        "num_samples"
+      ],
+      "title": "SpeechEvidenceSource",
+      "type": "object"
+    },
+    "SpeechModelDescriptor": {
+      "additionalProperties": false,
+      "description": "Minimum model provenance needed to reproduce a VAD or ASR result.",
+      "properties": {
+        "artifact_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "model_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Model Id",
+          "type": "string"
+        },
+        "model_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Model Version",
+          "type": "string"
+        },
+        "runtime_distribution": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Runtime Distribution",
+          "type": "string"
+        },
+        "runtime_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Runtime Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id",
+        "model_version",
+        "artifact_sha256",
+        "runtime_distribution",
+        "runtime_version"
+      ],
+      "title": "SpeechModelDescriptor",
+      "type": "object"
+    },
+    "SpeechReliabilityAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "downstream_text_allowed": {
+          "title": "Downstream Text Allowed",
+          "type": "boolean"
+        },
+        "human_review_required": {
+          "title": "Human Review Required",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/SpeechReliabilityReason"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "reliability": {
+          "$ref": "#/$defs/TranscriptReliability"
+        }
+      },
+      "required": [
+        "reliability",
+        "reason_codes",
+        "downstream_text_allowed",
+        "human_review_required"
+      ],
+      "title": "SpeechReliabilityAssessment",
+      "type": "object"
+    },
+    "SpeechReliabilityPolicy": {
+      "additionalProperties": false,
+      "description": "Versioned gates; scores are evidence signals, not claims that text is correct.",
+      "properties": {
+        "policy_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "transcript_acceptance_threshold": {
+          "default": 0.8,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Transcript Acceptance Threshold",
+          "type": "number"
+        },
+        "transcript_review_threshold": {
+          "default": 0.5,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Transcript Review Threshold",
+          "type": "number"
+        },
+        "vad_speech_threshold": {
+          "default": 0.6,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Vad Speech Threshold",
+          "type": "number"
+        }
+      },
+      "title": "SpeechReliabilityPolicy",
+      "type": "object"
+    },
+    "SpeechReliabilityReason": {
+      "enum": [
+        "transcript_not_attempted",
+        "below_review_threshold",
+        "below_acceptance_threshold",
+        "meets_acceptance_threshold"
+      ],
+      "title": "SpeechReliabilityReason",
+      "type": "string"
+    },
+    "SpeechSegmentEvidence": {
+      "additionalProperties": false,
+      "description": "Sample-exact VAD-positive span and its optional transcript candidate.",
+      "properties": {
+        "assessment": {
+          "$ref": "#/$defs/SpeechReliabilityAssessment"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "segment_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "source_window_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 3,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Window Ids",
+          "type": "array"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        },
+        "transcript": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TranscriptCandidate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "vad_score": {
+          "description": "Normalized VAD evidence score; not a calibrated correctness probability.",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Vad Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "segment_id",
+        "source_window_ids",
+        "start_sample",
+        "end_sample",
+        "start_seconds",
+        "end_seconds",
+        "vad_score",
+        "assessment"
+      ],
+      "title": "SpeechSegmentEvidence",
+      "type": "object"
+    },
+    "SpeechWindowReference": {
+      "additionalProperties": false,
+      "description": "Prepared waveform window that was available to the speech branch.",
+      "properties": {
+        "audio_path": {
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "padding_samples": {
+          "minimum": 0,
+          "title": "Padding Samples",
+          "type": "integer"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "window_audio_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Window Audio Sha256",
+          "type": "string"
+        },
+        "window_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Window Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "window_id",
+        "audio_path",
+        "window_audio_sha256",
+        "start_sample",
+        "end_sample",
+        "padding_samples"
+      ],
+      "title": "SpeechWindowReference",
+      "type": "object"
+    },
+    "TranscriptCandidate": {
+      "additionalProperties": false,
+      "description": "One ASR hypothesis plus a clearly typed normalized confidence signal.",
+      "properties": {
+        "confidence_kind": {
+          "$ref": "#/$defs/TranscriptConfidenceKind"
+        },
+        "confidence_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence Score",
+          "type": "number"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z]{2,3}(?:-[A-Z]{2})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "language_confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language Confidence"
+        },
+        "text": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "confidence_score",
+        "confidence_kind"
+      ],
+      "title": "TranscriptCandidate",
+      "type": "object"
+    },
+    "TranscriptConfidenceKind": {
+      "description": "Meaning of a normalized score; none of these labels makes it a truth probability.",
+      "enum": [
+        "model_score",
+        "derived_score",
+        "calibrated_probability"
+      ],
+      "title": "TranscriptConfidenceKind",
+      "type": "string"
+    },
+    "TranscriptReliability": {
+      "description": "Permitted downstream handling for a transcript candidate.",
+      "enum": [
+        "not_transcribed",
+        "rejected_low_confidence",
+        "review_required",
+        "accepted"
+      ],
+      "title": "TranscriptReliability",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/speech-evidence.schema.json",
+  "additionalProperties": false,
+  "description": "Candidate speech evidence; deliberately not language, incident, or risk output.",
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "speech_evidence_candidates",
+      "default": "speech_evidence_candidates",
+      "enum": [
+        "speech_evidence_candidates"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "evidence_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "input_window_count": {
+      "minimum": 0,
+      "title": "Input Window Count",
+      "type": "integer"
+    },
+    "reliability_policy": {
+      "$ref": "#/$defs/SpeechReliabilityPolicy"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "segment_count": {
+      "minimum": 0,
+      "title": "Segment Count",
+      "type": "integer"
+    },
+    "segments": {
+      "items": {
+        "$ref": "#/$defs/SpeechSegmentEvidence"
+      },
+      "title": "Segments",
+      "type": "array"
+    },
+    "source": {
+      "$ref": "#/$defs/SpeechEvidenceSource"
+    },
+    "transcribed_segment_count": {
+      "minimum": 0,
+      "title": "Transcribed Segment Count",
+      "type": "integer"
+    },
+    "transcription_model": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SpeechModelDescriptor"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "vad_model": {
+      "$ref": "#/$defs/SpeechModelDescriptor"
+    },
+    "windows": {
+      "items": {
+        "$ref": "#/$defs/SpeechWindowReference"
+      },
+      "title": "Windows",
+      "type": "array"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "created_at",
+    "source",
+    "reliability_policy",
+    "vad_model",
+    "input_window_count",
+    "segment_count",
+    "transcribed_segment_count",
+    "windows",
+    "segments"
+  ],
+  "title": "SpeechEvidenceDocument",
+  "type": "object"
+}
