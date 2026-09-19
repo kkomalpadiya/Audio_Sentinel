@@ -142,10 +142,13 @@ sample-exact provenance, consent scope, confidence typing, and deterministic
 accepted/review/rejected handling. B4.1 adds the verified
 [Silero VAD v6 wrapper](docs/vad-wrapper.md), using a pinned local ONNX artifact,
 CPU-only runtime, recurrent-state isolation, bounded 32 ms frame scoring, and exact
-tail-padding metadata. Run `.\scripts\setup_speech.ps1` once on a fresh machine;
-the real structural check is
-`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_vad.py`. Next is A4.2:
-implement speech-segment extraction and timestamp handling.
+tail-padding metadata. A4.2 adds [verified speech-segment extraction](docs/speech-segments.md):
+it selects a complete prepared-window duration, maps relative VAD frames onto the
+full clip sample grid, unions overlapping evidence without score inflation, and
+emits transcript-free A4.1 evidence with exact timestamps. Run
+`.\scripts\setup_speech.ps1` once on a fresh machine; the real extraction check is
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_speech_segments.py`. Next
+is B4.2: implement the offline transcription-model wrapper.
 
 ## Local panel demonstration
 

@@ -27,6 +27,7 @@ src/audio_sentinel/pipeline.py
 src/audio_sentinel/preparation.py
 src/audio_sentinel/segmentation.py
 src/audio_sentinel/speech_contracts.py
+src/audio_sentinel/speech_segments.py
 src/audio_sentinel/vad.py
 src/audio_sentinel.egg-info/PKG-INFO
 src/audio_sentinel.egg-info/SOURCES.txt
@@ -66,4 +67,5 @@ tests/test_preparation.py
 tests/test_preparation_integration.py
 tests/test_segmentation.py
 tests/test_speech_contracts.py
+tests/test_speech_segments.py
 tests/test_vad.py

@@ -721,3 +721,48 @@ In plain language: the project can now ask a verified pretrained model how
 speech-like each 32-millisecond piece of audio is. The answer is still raw evidence;
 the next task will join qualifying pieces into reliable speech intervals with exact
 timestamps.
+
+## A4.2 — Complete
+
+Implemented verified prepared-window speech extraction in
+`src/audio_sentinel/speech_segments.py`. The service validates the pinned Silero
+model before file access, reads a bounded preparation manifest, requires active
+`acoustic_and_speech` consent plus 16 kHz mono audio, selects one complete prepared
+window duration, verifies and hashes every PCM-16 window, strips only recorded zero
+padding, and reruns source verification before returning evidence.
+
+Window-relative 512-sample VAD frames are converted to absolute prepared-clip
+samples. Frames meeting the recorded A4.1 VAD threshold are sorted and unioned
+across overlapping windows. Adjacent support merges by default; larger gaps merge
+only when explicitly configured. Segment scores use the maximum contribution, not
+a sum, and timestamps are derived exactly from final sample bounds. Tail padding
+cannot extend a segment beyond real audio.
+
+The result contains immutable window hashes, frame contributions, extraction
+settings, selected duration, resource counts, deterministic segment IDs, and a
+transcript-free `SpeechEvidenceDocument`. Each public segment carries complete
+source-window coverage, `transcript: null`, and the policy-derived
+`not_transcribed` assessment. The semantic evidence ID is stable across creation
+times for identical source, model, policy, and segment content.
+
+Added 37 focused tests for absolute offset conversion, overlap deduplication,
+threshold boundaries, exact gap behavior, minimum duration, tail clipping,
+deterministic identity, evidence provenance, consent scope, model validation,
+source mutation, malformed padding, duration selection, incomplete window
+coverage, resource limits, safe errors, and immutability. The real-model smoke test
+prepares a generated 1.6-second clip, scores 83 frames across three overlapping
+windows twice, and confirms the exact `[0, 25600)` span under a structural
+zero-threshold policy.
+
+Manual setup on a fresh machine remains `.\scripts\setup_speech.ps1`; it now runs
+both the B4.1 model check and the A4.2 segment-extraction check.
+
+Current tracker: `outputs/a4_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 33 completed tasks out of 72.
+
+Next: B4.2 — Implement offline transcription-model wrapper.
+
+In plain language: possible speech pieces from overlapping windows now land on one
+exact timeline and become clean, non-overlapping intervals. No words are invented;
+the next task adds the offline transcription model that can propose text for those
+intervals.

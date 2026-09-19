@@ -23,3 +23,6 @@ if ($LASTEXITCODE -ne 0) { throw "Could not install or verify Silero VAD v6." }
 
 & $runtimePython (Join-Path $PSScriptRoot "smoke_test_vad.py")
 if ($LASTEXITCODE -ne 0) { throw "The Silero VAD smoke test failed." }
+
+& $runtimePython (Join-Path $PSScriptRoot "smoke_test_speech_segments.py")
+if ($LASTEXITCODE -ne 0) { throw "The speech-segment extraction smoke test failed." }

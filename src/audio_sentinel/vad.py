@@ -386,6 +386,12 @@ def _validate_loaded_model(loaded: LoadedVadModel) -> None:
         raise VadError("model_mismatch", "VAD inference requires the verified pinned Silero v6 model.")
 
 
+def validate_loaded_vad(loaded: LoadedVadModel) -> None:
+    """Validate an already loaded model before a higher-level operation reads inputs."""
+
+    _validate_loaded_model(loaded)
+
+
 def _float_array(value: object, name: str, shape: tuple[int, ...]) -> NDArray[np.float32]:
     try:
         result = np.asarray(value)
