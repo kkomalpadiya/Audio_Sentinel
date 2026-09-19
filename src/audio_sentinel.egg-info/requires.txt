@@ -14,5 +14,13 @@ httpx<1,>=0.27
 
 [ml]
 torch<3,>=2.3
-onnxruntime<2,>=1.19
-faster-whisper<2,>=1.1
+onnxruntime==1.23.2
+faster-whisper==1.2.1
+
+[speech]
+onnxruntime==1.23.2
+faster-whisper==1.2.1
+
+[yamnet]
+tensorflow==2.21.0
+kagglehub==1.0.2

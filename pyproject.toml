@@ -27,8 +27,12 @@ dev = [
 ]
 ml = [
   "torch>=2.3,<3",
-  "onnxruntime>=1.19,<2",
-  "faster-whisper>=1.1,<2",
+  "onnxruntime==1.23.2",
+  "faster-whisper==1.2.1",
+]
+speech = [
+  "onnxruntime==1.23.2",
+  "faster-whisper==1.2.1",
 ]
 yamnet = [
   "tensorflow==2.21.0",

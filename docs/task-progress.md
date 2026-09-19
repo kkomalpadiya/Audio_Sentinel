@@ -680,3 +680,44 @@ In plain language: the speech branch now has a strict receipt format and a clear
 traffic rule for uncertain words. Only sufficiently reliable text can continue
 automatically; uncertain text stays blocked for review, and missing text is never
 treated as proof that the audio was harmless.
+
+## B4.1 — Complete
+
+Implemented the verified Silero VAD v6 loader and raw frame-probability wrapper in
+`src/audio_sentinel/vad.py`. The model comes from the pinned
+`faster-whisper==1.2.1` distribution and runs through pinned
+`onnxruntime==1.23.2` on the CPU execution provider. The loader verifies the exact
+file inventory, installation marker, byte size, SHA-256 digest, runtime version,
+provider, and complete ONNX input/output signature before returning the model. It
+rejects linked paths and detects model changes during loading.
+
+The wrapper scores independent 16 kHz mono float32 waveforms on Silero's 512-sample
+(32 ms) frame grid. It supplies the required 64-sample preceding context, carries
+the two recurrent states only across bounded batches within one waveform, and
+resets both states for every new call. Incomplete final frames are right-padded,
+but returned sample/time bounds stop at real audio and expose the padding count.
+Outputs are finite raw float32 probabilities in `[0, 1]`; no speech segment,
+transcript, language category, or risk decision is produced in this task.
+
+Added strict input/output and memory limits, JSON-ready immutable result metadata,
+the `speech` dependency extra, repeat-safe setup and model installation scripts,
+the real pinned-model smoke test, MIT notices, and `docs/vad-wrapper.md`. Added 72
+focused tests covering artifacts, markers, links, runtime and tensor drift, exact
+frame/context construction, batching and state carry, state reset, tail padding,
+resource limits, invalid model outputs, safe errors, and normal import isolation.
+
+The real smoke test loaded the verified 1,245,151-byte model, scored 34 frames twice,
+and matched the pinned Faster Whisper reference output exactly.
+
+Current tracker: `outputs/b4_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 32 completed tasks out of 72.
+
+Manual setup on a fresh machine: run `.\scripts\setup_speech.ps1` once. This machine
+has already completed that setup and the model remains in ignored local directories.
+
+Next: A4.2 — Implement speech-segment extraction and timestamp handling.
+
+In plain language: the project can now ask a verified pretrained model how
+speech-like each 32-millisecond piece of audio is. The answer is still raw evidence;
+the next task will join qualifying pieces into reliable speech intervals with exact
+timestamps.

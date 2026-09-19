@@ -110,8 +110,13 @@ separate calibration and holdout data, reproducible sampling, explicit coverage
 gaps, and checked-in research-baseline metrics. Phase 3 is complete. A4.1 defines the
 [speech-evidence contract and reliability rules](docs/speech-evidence.md), including
 sample-exact provenance, consent scope, confidence typing, and deterministic
-accepted/review/rejected handling. Next is B4.1: implement the pretrained
-voice-activity-detection wrapper.
+accepted/review/rejected handling. B4.1 adds the verified
+[Silero VAD v6 wrapper](docs/vad-wrapper.md), using a pinned local ONNX artifact,
+CPU-only runtime, recurrent-state isolation, bounded 32 ms frame scoring, and exact
+tail-padding metadata. Run `.\scripts\setup_speech.ps1` once on a fresh machine;
+the real structural check is
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_vad.py`. Next is A4.2:
+implement speech-segment extraction and timestamp handling.
 
 ## Local panel demonstration
 

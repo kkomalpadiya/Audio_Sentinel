@@ -18,8 +18,14 @@ Requires-Dist: pytest<9,>=8; extra == "dev"
 Requires-Dist: httpx<1,>=0.27; extra == "dev"
 Provides-Extra: ml
 Requires-Dist: torch<3,>=2.3; extra == "ml"
-Requires-Dist: onnxruntime<2,>=1.19; extra == "ml"
-Requires-Dist: faster-whisper<2,>=1.1; extra == "ml"
+Requires-Dist: onnxruntime==1.23.2; extra == "ml"
+Requires-Dist: faster-whisper==1.2.1; extra == "ml"
+Provides-Extra: speech
+Requires-Dist: onnxruntime==1.23.2; extra == "speech"
+Requires-Dist: faster-whisper==1.2.1; extra == "speech"
+Provides-Extra: yamnet
+Requires-Dist: tensorflow==2.21.0; extra == "yamnet"
+Requires-Dist: kagglehub==1.0.2; extra == "yamnet"
 
 # Project 1: Audio Sentinel
 
@@ -75,3 +81,78 @@ pip install -e .[dev]
 ```
 
 The test configuration intentionally collects only `tests/`, so third-party test files included inside downloaded datasets do not affect project verification.
+
+## Audio preparation contract
+
+A1.1 defines validated preprocessing settings and the prepared-audio manifest.
+See [the preparation guide](docs/audio-preparation.md) for defaults, examples,
+window rules, and a beginner-friendly explanation. B1.1 now implements
+[local audio loading and input validation](docs/audio-loading.md), with a synthetic
+smoke test. A1.2 implements [mono conversion, resampling, and volume normalization](docs/audio-transforms.md)
+in memory. B1.2 adds [optional configurable noise reduction](docs/noise-reduction.md),
+disabled by default. B1.3 adds [deterministic overlapping windows](docs/audio-segmentation.md)
+with manifest-ready records. A1.3 adds [verified WAV persistence and manifests](docs/audio-persistence.md)
+with safe repeat saves. A1.4 connects these components through a
+[one-call preparation service](docs/audio-pipeline.md), compatible with the shared
+preprocessor interface. B1.4 expands [component-test coverage](docs/preparation-component-tests.md)
+for loading, noise reduction, and segmentation. A1.5 adds
+[preparation integration tests and a sample-clip smoke test](docs/preparation-integration-tests.md).
+Run `python scripts/smoke_test_preparation.py` for a generated-audio check; the standard
+verification script also runs it. A2.1 defines the
+[Log-Mel feature contract and metadata schema](docs/log-mel-features.md), including
+validated settings, source-window linkage, shape rules, and JSON examples.
+B2.1 implements [Log-Mel spectrogram generation](docs/log-mel-generation.md)
+with numerical checks and a smoke test over saved preparation windows.
+A2.2 adds [verified feature storage and source-window linkage](docs/feature-storage.md),
+including checked reloads, repeat-save reuse, and source/consent checks.
+B2.2 adds [feature shape, range, and determinism tests](docs/feature-property-tests.md),
+including alternate recipes, exact dB relationships, and fresh-process reproducibility.
+A2.3 provides a [one-call audio-to-feature service](docs/feature-pipeline.md),
+with ordered verified output, configurable budgets, and retry reuse.
+Run `python scripts/smoke_test_feature_pipeline.py` for the complete generated-sample check.
+Phase 2 is complete. A3.1 selects [YAMNet and a versioned label mapping](docs/acoustic-model-selection.md).
+B3.1 adds a [local, verified model loader](docs/acoustic-model-loading.md) with a
+pinned artifact digest, isolated TensorFlow 2.21 runtime, vocabulary/signature
+checks, and JSON-ready version metadata. The detector consumes prepared waveforms
+through its own frontend; the saved generic Log-Mel recipe is not compatible with
+YAMNet input features. Run `.\scripts\setup_yamnet.ps1` once to create the ignored
+runtime and download the ignored model weights. A3.2 adds
+[verified raw-score inference over prepared waveform windows](docs/acoustic-inference.md),
+including padding-aware patch spans, source/model provenance, consent checks, and
+resource limits. Run the real check with
+`.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_inference.py`.
+B3.2 adds [overlap-safe acoustic event aggregation](docs/acoustic-aggregation.md):
+mapped classes use their maximum score, repeated patch support is unioned without
+score inflation, and complete provenance is retained. Thresholds remain explicit
+experimental inputs until evaluation. Run the real structural check with
+`.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_aggregation.py`.
+A3.3 adds [versioned timestamped acoustic-evidence JSON](docs/acoustic-evidence.md)
+with sample-exact times, full source/model/window provenance, deterministic identity,
+atomic repeat-safe persistence, and source/consent verification on reload. It remains
+candidate evidence, not an incident or risk decision. Run the real persistence check
+with `.\.venv\yamnet\Scripts\python.exe .\scripts\smoke_test_acoustic_evidence.py`.
+B3.3 completes the [acoustic loader and aggregation unit-test matrix](docs/acoustic-unit-tests.md),
+covering local artifact hardening, TensorFlow/signature drift, all mapped labels,
+overlap/gap boundaries, deterministic ordering, limits, and malformed inputs.
+A3.4 completes the [labeled acoustic evaluation](docs/acoustic-evaluation.md) with
+separate calibration and holdout data, reproducible sampling, explicit coverage
+gaps, and checked-in research-baseline metrics. Phase 3 is complete. A4.1 defines the
+[speech-evidence contract and reliability rules](docs/speech-evidence.md), including
+sample-exact provenance, consent scope, confidence typing, and deterministic
+accepted/review/rejected handling. B4.1 adds the verified
+[Silero VAD v6 wrapper](docs/vad-wrapper.md), using a pinned local ONNX artifact,
+CPU-only runtime, recurrent-state isolation, bounded 32 ms frame scoring, and exact
+tail-padding metadata. Run `.\scripts\setup_speech.ps1` once on a fresh machine;
+the real structural check is
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_vad.py`. Next is A4.2:
+implement speech-segment extraction and timestamp handling.
+
+## Local panel demonstration
+
+Run `python -m uvicorn audio_sentinel.main:app --app-dir src --host 127.0.0.1 --port 8000`
+and open `http://127.0.0.1:8000/demo`. The frontend displays actual prepared audio
+and saved/reloaded Log-Mel values for three generated signals. It includes audio
+playback, window selection, padding boundaries, feature-value inspection, and PNG
+export. See [the demo commands and speaking guide](docs/panel-frontend-demo.md).
+No additional dependencies or model downloads are needed. Acoustic inference
+is implemented in the backend but is not connected to this temporary frontend.
