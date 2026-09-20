@@ -21,8 +21,14 @@ if ($LASTEXITCODE -ne 0) { throw "Could not install the pinned speech runtime." 
 & $runtimePython (Join-Path $PSScriptRoot "install_silero_vad.py")
 if ($LASTEXITCODE -ne 0) { throw "Could not install or verify Silero VAD v6." }
 
+& $runtimePython (Join-Path $PSScriptRoot "install_whisper_tiny_en.py")
+if ($LASTEXITCODE -ne 0) { throw "Could not install or verify Faster-Whisper tiny.en." }
+
 & $runtimePython (Join-Path $PSScriptRoot "smoke_test_vad.py")
 if ($LASTEXITCODE -ne 0) { throw "The Silero VAD smoke test failed." }
 
 & $runtimePython (Join-Path $PSScriptRoot "smoke_test_speech_segments.py")
 if ($LASTEXITCODE -ne 0) { throw "The speech-segment extraction smoke test failed." }
+
+& $runtimePython (Join-Path $PSScriptRoot "smoke_test_transcription.py")
+if ($LASTEXITCODE -ne 0) { throw "The offline transcription smoke test failed." }

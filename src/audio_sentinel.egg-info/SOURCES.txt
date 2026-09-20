@@ -28,6 +28,7 @@ src/audio_sentinel/preparation.py
 src/audio_sentinel/segmentation.py
 src/audio_sentinel/speech_contracts.py
 src/audio_sentinel/speech_segments.py
+src/audio_sentinel/transcription.py
 src/audio_sentinel/vad.py
 src/audio_sentinel.egg-info/PKG-INFO
 src/audio_sentinel.egg-info/SOURCES.txt
@@ -35,6 +36,7 @@ src/audio_sentinel.egg-info/dependency_links.txt
 src/audio_sentinel.egg-info/requires.txt
 src/audio_sentinel.egg-info/top_level.txt
 src/audio_sentinel/resources/faster-whisper-LICENSE.txt
+src/audio_sentinel/resources/openai-whisper-LICENSE.txt
 src/audio_sentinel/resources/silero-vad-LICENSE.txt
 src/audio_sentinel/resources/yamnet-LICENSE.txt
 src/audio_sentinel/resources/yamnet-NOTICE.txt
@@ -68,4 +70,5 @@ tests/test_preparation_integration.py
 tests/test_segmentation.py
 tests/test_speech_contracts.py
 tests/test_speech_segments.py
+tests/test_transcription.py
 tests/test_vad.py

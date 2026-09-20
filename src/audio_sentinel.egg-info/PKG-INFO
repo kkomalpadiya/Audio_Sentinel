@@ -20,9 +20,15 @@ Provides-Extra: ml
 Requires-Dist: torch<3,>=2.3; extra == "ml"
 Requires-Dist: onnxruntime==1.23.2; extra == "ml"
 Requires-Dist: faster-whisper==1.2.1; extra == "ml"
+Requires-Dist: ctranslate2==4.8.2; extra == "ml"
+Requires-Dist: tokenizers==0.23.2; extra == "ml"
+Requires-Dist: huggingface-hub==1.32.0; extra == "ml"
 Provides-Extra: speech
 Requires-Dist: onnxruntime==1.23.2; extra == "speech"
 Requires-Dist: faster-whisper==1.2.1; extra == "speech"
+Requires-Dist: ctranslate2==4.8.2; extra == "speech"
+Requires-Dist: tokenizers==0.23.2; extra == "speech"
+Requires-Dist: huggingface-hub==1.32.0; extra == "speech"
 Provides-Extra: yamnet
 Requires-Dist: tensorflow==2.21.0; extra == "yamnet"
 Requires-Dist: kagglehub==1.0.2; extra == "yamnet"
@@ -147,8 +153,14 @@ it selects a complete prepared-window duration, maps relative VAD frames onto th
 full clip sample grid, unions overlapping evidence without score inflation, and
 emits transcript-free A4.1 evidence with exact timestamps. Run
 `.\scripts\setup_speech.ps1` once on a fresh machine; the real extraction check is
-`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_speech_segments.py`. Next
-is B4.2: implement the offline transcription-model wrapper.
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_speech_segments.py`. B4.2
+adds a [verified offline transcription wrapper](docs/transcription-wrapper.md) for
+the pinned English Faster-Whisper `tiny.en` model. It verifies every local model
+file and exact runtime version, performs deterministic CPU decoding with bounded
+inputs and outputs, and emits an explicitly derived—not calibrated—confidence
+score. The real-model check is
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_transcription.py`. Next is
+A4.3: orchestrate transcription and low-confidence handling.
 
 ## Local panel demonstration
 

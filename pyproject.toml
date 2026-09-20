@@ -29,10 +29,16 @@ ml = [
   "torch>=2.3,<3",
   "onnxruntime==1.23.2",
   "faster-whisper==1.2.1",
+  "ctranslate2==4.8.2",
+  "tokenizers==0.23.2",
+  "huggingface-hub==1.32.0",
 ]
 speech = [
   "onnxruntime==1.23.2",
   "faster-whisper==1.2.1",
+  "ctranslate2==4.8.2",
+  "tokenizers==0.23.2",
+  "huggingface-hub==1.32.0",
 ]
 yamnet = [
   "tensorflow==2.21.0",

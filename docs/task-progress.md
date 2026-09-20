@@ -766,3 +766,49 @@ In plain language: possible speech pieces from overlapping windows now land on o
 exact timeline and become clean, non-overlapping intervals. No words are invented;
 the next task adds the offline transcription model that can propose text for those
 intervals.
+
+## B4.2 — Complete
+
+Implemented a pinned, local-only Faster-Whisper `tiny.en` loader and single-segment
+transcription wrapper in `src/audio_sentinel/transcription.py`. The model is fixed
+to the official Systran English CTranslate2 conversion at repository revision
+`0d3d19a32d3338f10357c0889762bd8d64bbdeba`. The loader verifies the exact four-file
+inventory, per-file sizes and SHA-256 digests, installation marker, combined
+inventory digest, runtime versions, CPU device, resolved `int8_float32` compute
+type, and English-only capability. It rejects links, junctions, path traversal,
+artifact drift, and model changes during loading; normal loading is offline.
+
+The wrapper accepts one independent 16 kHz mono float32 segment. Decoding is fixed
+to English transcription, one beam, temperature zero, no previous-text context,
+no prompt or hotwords, no word timestamps, and no internal VAD. It validates and
+copies the input, exhausts the lazy result generator, validates all returned text,
+tokens, timestamps, probabilities, and model metadata, and enforces input, segment,
+token, and output-byte limits. Stable safe errors replace runtime exceptions.
+
+Nonempty output becomes an A4.1 `TranscriptCandidate`. Its normalized confidence is
+the exponential of the token-count-weighted average log probability and is
+explicitly typed `derived_score`, not a correctness probability. Empty or
+whitespace-only output remains no candidate. This task does not apply reliability
+thresholds, accept text downstream, classify language intent, or calculate risk;
+A4.3 owns those decisions.
+
+Added exact runtime pins, repeat-safe model installation, the real offline silence
+smoke test, OpenAI Whisper's MIT notice, `docs/transcription-wrapper.md`, and 39
+focused tests covering artifacts, runtime/capability drift, deterministic options,
+confidence math, normalization, malformed output, limits, safe failures,
+immutability, and normal import isolation.
+
+The real smoke test loaded the verified 78 MB model and transcribed the same
+one-second silence twice with the same empty result. The full project verification,
+speech setup workflow, and tracker checks are recorded with this task.
+
+Current tracker: `outputs/b4_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 34 completed tasks out of 72. On a fresh machine, run
+`.\scripts\setup_speech.ps1` once; this machine already has the verified local model.
+
+Next: A4.3 — Orchestrate transcription and low-confidence handling.
+
+In plain language: the project can now turn one verified speech interval into an
+offline English text candidate while keeping the model, settings, and uncertainty
+honest. The next task connects those candidates to speech evidence and enforces the
+review/accept/reject rules before any text can continue automatically.
