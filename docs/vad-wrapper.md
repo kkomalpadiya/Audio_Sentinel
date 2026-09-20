@@ -108,6 +108,10 @@ Run the TensorFlow- and ONNX-free unit suite with the ordinary project environme
 python -m pytest tests/test_vad.py -q
 ```
 
+B4.3 expands this into the complete 90-case VAD matrix documented in
+[`speech-wrapper-tests.md`](speech-wrapper-tests.md), including mid-load changes,
+exact resource boundaries, full metadata drift, memory failure, and input ownership.
+
 Run the real pinned model check with:
 
 ```powershell
@@ -118,11 +122,12 @@ The smoke test verifies the model and runtime, scores 34 frames, repeats the cal
 check state reset, and proves the wrapper output is array-exact with the pinned
 Faster Whisper Silero implementation.
 
-## Next task
+## Downstream use
 
-A4.2 will read verified prepared windows, apply the recorded VAD reliability policy,
-merge qualifying frames into non-overlapping speech segments, and convert window-
-relative spans into sample-exact prepared-clip timestamps.
+A4.2 reads verified prepared windows, applies the recorded VAD reliability policy,
+merges qualifying frames into non-overlapping speech segments, and converts window-
+relative spans into sample-exact prepared-clip timestamps. A4.3 then reconstructs
+those segments for transcription.
 
 ## Beginner-friendly explanation
 

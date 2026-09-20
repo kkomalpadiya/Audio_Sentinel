@@ -85,5 +85,10 @@ silence twice. Both runs must yield the same empty candidate. Positive transcrip
 normalization, confidence, lazy-generator, failure, and limit behavior are covered
 with isolated unit tests so the normal test suite remains model-download-free.
 
+B4.3 completes the 94-case transcription matrix documented in
+[`speech-wrapper-tests.md`](speech-wrapper-tests.md). It adds full artifact,
+runtime, metadata, malformed-output, exact-limit, input-ownership, and safe-failure
+coverage around this wrapper.
+
 The Faster-Whisper runtime and original OpenAI Whisper model are MIT licensed; the
 notices are retained under `src/audio_sentinel/resources/`.

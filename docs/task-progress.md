@@ -867,3 +867,45 @@ In plain language: detected speech intervals now receive offline text candidates
 and each candidate immediately goes through the recorded confidence rules. Only
 accepted text gets a downstream pass; uncertain, rejected, or missing words remain
 blocked and visible for audit.
+
+## B4.3 — Complete
+
+Completed the boundary-focused unit-test matrix for the verified Silero VAD and
+Faster-Whisper transcription wrappers. The focused suite now contains 184 fast,
+offline cases: 90 VAD cases and 94 transcription cases. All model runtimes and
+inference outputs remain synthetic in this suite, so the tests require neither the
+downloaded artifacts nor ONNX Runtime/Faster-Whisper imports.
+
+Expanded VAD coverage now checks the artifact byte limit, changes while the runtime
+loads, safe runtime-construction failures, uninspectable sessions, valid amplitude
+and probability endpoints, exact input/output/batch boundaries, model-input
+ownership, preparation memory failure, the callable session entry point, and every
+pinned metadata field. Existing cases continue to cover path containment, links,
+inventory and marker integrity, hashing, runtime and tensor-contract drift, context
+construction, recurrent state, tail padding, malformed outputs, deterministic
+repeated calls, safe errors, and immutable portable results.
+
+Expanded transcription coverage now checks linked paths and payloads, all marker
+failure modes, size-before-hash enforcement, changes during hashing or model load,
+aggregate identity before runtime access, missing runtimes, safe model-load
+failures, the complete fixed decoding option inventory, input ownership, exact
+resource boundaries, UTF-8 byte accounting, whitespace resource accounting,
+additional malformed segment fields, decreasing timestamps, lazy-iterator errors,
+memory failures, the callable transcriber, and every pinned metadata field.
+Existing cases continue to verify deterministic English CPU decoding, confidence
+math, normalization, empty output, limits, safe failures, and JSON-ready immutable
+results.
+
+Added `docs/speech-wrapper-tests.md` with the complete matrix and commands. The real
+Silero and Faster-Whisper smoke tests remain separate checks of the installed pinned
+artifacts and do not claim model-quality evaluation.
+
+Current tracker: `outputs/b4_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 36 completed tasks out of 72. On a fresh machine, run
+`.\scripts\setup_speech.ps1` once; this machine already has both verified models.
+
+Next: A4.4 — Add speech-branch integration tests.
+
+In plain language: the two speech-model adapters now have explicit tests for normal
+operation and for their dangerous edges. Wrong files, changed runtimes, malformed
+model output, or exceeded limits must fail safely instead of producing evidence.

@@ -184,6 +184,21 @@ def test_loader_checks_exact_model_size_before_hash(tmp_path, monkeypatch):
     assert error.value.code == "invalid_artifact"
 
 
+def test_model_byte_limit_is_enforced_before_hashing(tmp_path, monkeypatch):
+    _, directory, _ = model_tree(tmp_path, monkeypatch)
+    monkeypatch.setattr(vad, "MAX_MODEL_BYTES", 1)
+    monkeypatch.setattr(
+        vad.hashlib,
+        "sha256",
+        lambda: pytest.fail("oversized model must not be hashed"),
+    )
+
+    with pytest.raises(vad.VadError) as error:
+        vad.model_artifact_sha256(directory)
+
+    assert error.value.code == "invalid_artifact"
+
+
 @pytest.mark.parametrize("linked_name,expected_code", [("silero-vad", "invalid_path"),
                                                          (vad.MODEL_FILENAME, "invalid_artifact"),
                                                          (vad.INSTALL_MARKER, "invalid_artifact")])
@@ -223,6 +238,18 @@ def test_loader_detects_model_change_during_hash(tmp_path, monkeypatch):
     assert error.value.code == "artifact_changed"
 
 
+def test_loader_detects_model_change_while_runtime_loads(tmp_path, monkeypatch):
+    paths, _, digest = model_tree(tmp_path, monkeypatch)
+    install_fake_runtime(monkeypatch, FakeLoadSession())
+    hashes = iter((digest, "0" * 64))
+    monkeypatch.setattr(vad, "model_artifact_sha256", lambda _directory: next(hashes))
+
+    with pytest.raises(vad.VadError) as error:
+        vad.load_silero_vad(paths)
+
+    assert error.value.code == "artifact_changed"
+
+
 def test_changed_model_digest_is_rejected_before_runtime_import(tmp_path, monkeypatch):
     paths, directory, _ = model_tree(tmp_path, monkeypatch)
     original = vad.SILERO_VAD
@@ -252,6 +279,40 @@ def test_loader_reports_missing_and_wrong_runtime(tmp_path, monkeypatch):
     with pytest.raises(vad.VadError, match="test-runtime") as version_error:
         vad.load_silero_vad(paths)
     assert version_error.value.code == "runtime_mismatch"
+
+
+def test_loader_wraps_runtime_creation_failure_without_leaking_details(tmp_path, monkeypatch):
+    paths, _, _ = model_tree(tmp_path, monkeypatch)
+
+    class Options:
+        pass
+
+    runtime = SimpleNamespace(
+        __version__="test-runtime",
+        SessionOptions=Options,
+        InferenceSession=lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            RuntimeError("private runtime path")
+        ),
+    )
+    monkeypatch.setattr(vad, "import_module", lambda _name: runtime)
+
+    with pytest.raises(vad.VadError) as error:
+        vad.load_silero_vad(paths)
+
+    assert error.value.code == "model_load_failed"
+    assert "private" not in str(error.value)
+
+
+def test_loader_reports_uninspectable_session_as_signature_mismatch(tmp_path, monkeypatch):
+    paths, _, _ = model_tree(tmp_path, monkeypatch)
+    session = FakeLoadSession()
+    session.get_inputs = None
+    install_fake_runtime(monkeypatch, session)
+
+    with pytest.raises(vad.VadError) as error:
+        vad.load_silero_vad(paths)
+
+    assert error.value.code == "signature_mismatch"
 
 
 @pytest.mark.parametrize(
@@ -379,6 +440,18 @@ def test_scores_frames_with_preceding_context_and_exact_tail_metadata():
     assert np.array_equal(model_input[1, 552:], np.zeros(24, dtype=np.float32))
 
 
+def test_probability_endpoints_and_waveform_amplitude_endpoints_are_valid():
+    session = FakeScoringSession()
+    session.mutate = lambda outputs: outputs[0].__setitem__(slice(None), (0.0, 1.0))
+    waveform = np.concatenate(
+        (np.full(512, -1.0, dtype=np.float32), np.full(512, 1.0, dtype=np.float32))
+    )
+
+    result = vad.infer_vad_probabilities(loaded(session), waveform)
+
+    assert [frame.speech_probability for frame in result.frames] == [0.0, 1.0]
+
+
 def test_batches_model_calls_and_carries_recurrent_state():
     session = FakeScoringSession()
     waveform = np.zeros(5 * 512, dtype=np.float32)
@@ -409,6 +482,22 @@ def test_independent_inference_calls_reset_state_and_are_deterministic():
     assert first == second
     assert np.count_nonzero(session.calls[0][1]["h"]) == 0
     assert np.count_nonzero(session.calls[1][1]["h"]) == 0
+
+
+def test_inference_owns_model_input_and_preserves_source_waveform():
+    class MutatingSession(FakeScoringSession):
+        def run(self, output_names, feeds):
+            result = super().run(output_names, feeds)
+            feeds["input"][:] = 1.0
+            return result
+
+    session = MutatingSession()
+    waveform = np.linspace(-0.5, 0.5, 513, dtype=np.float32)
+    before = waveform.copy()
+
+    vad.infer_vad_probabilities(loaded(session), waveform)
+
+    assert np.array_equal(waveform, before)
 
 
 def test_summary_is_json_ready_and_contains_no_waveform():
@@ -455,6 +544,22 @@ def test_input_and_output_budgets_fail_before_model_call():
     assert output_error.value.code == "output_too_large" and session.calls == []
 
 
+def test_input_output_and_batch_limits_are_inclusive_at_exact_boundaries():
+    session = FakeScoringSession()
+    result = vad.infer_vad_probabilities(
+        loaded(session),
+        np.zeros(1024, dtype=np.float32),
+        settings=vad.VadInferenceSettings(
+            max_input_samples=1024,
+            max_frames_per_call=2,
+            max_output_bytes=8,
+        ),
+    )
+
+    assert result.frame_count == 2
+    assert [len(call[1]["input"]) for call in session.calls] == [2]
+
+
 @pytest.mark.parametrize("overrides", [
     {"max_input_samples": 0}, {"max_input_samples": True},
     {"max_frames_per_call": 0}, {"max_frames_per_call": 100_001},
@@ -466,14 +571,36 @@ def test_invalid_inference_settings_are_rejected(overrides):
 
 
 @pytest.mark.parametrize("field,value", [
-    ("model_id", "other"), ("model_version", "5.0"),
-    ("artifact_sha256", "0" * 64), ("runtime_version", "other"),
-    ("providers", ("CUDAExecutionProvider",)), ("frame_samples", 256),
+    ("model_id", "other"),
+    ("model_version", "5.0"),
+    ("model_source", "other"),
+    ("model_path", "other/6"),
+    ("artifact_sha256", "0" * 64),
+    ("source_distribution", "other"),
+    ("source_distribution_version", "other"),
+    ("runtime_distribution", "other"),
+    ("runtime_version", "other"),
+    ("providers", ("CUDAExecutionProvider",)),
+    ("inputs", (vad.VadTensorContract("input", (None, 512), "tensor(float)"),)),
+    ("outputs", (vad.VadTensorContract("speech_probs", (None, 1), "tensor(float)"),)),
+    ("sample_rate_hz", 8_000),
+    ("frame_samples", 256),
+    ("context_samples", 32),
 ])
 def test_inference_rejects_unverified_loaded_model(field, value):
     changed = replace(expected_metadata(), **{field: value})
     with pytest.raises(vad.VadError) as error:
         vad.infer_vad_probabilities(loaded(metadata=changed), np.zeros(512, dtype=np.float32))
+    assert error.value.code == "model_mismatch"
+
+
+def test_inference_rejects_loaded_model_without_callable_session():
+    with pytest.raises(vad.VadError) as error:
+        vad.infer_vad_probabilities(
+            vad.LoadedVadModel(expected_metadata(), SimpleNamespace(run=None)),
+            np.zeros(512, dtype=np.float32),
+        )
+
     assert error.value.code == "model_mismatch"
 
 
@@ -512,6 +639,16 @@ def test_rejects_wrong_output_inventory_and_wraps_runtime_failure():
         vad.infer_vad_probabilities(loaded(session), np.zeros(512, dtype=np.float32))
     assert runtime_error.value.code == "model_failed"
     assert "private" not in str(runtime_error.value)
+
+
+def test_wraps_preparation_memory_failure_with_stable_error(tmp_path, monkeypatch):
+    waveform = np.zeros(512, dtype=np.float32)
+    monkeypatch.setattr(vad.np, "zeros", lambda *_args, **_kwargs: (_ for _ in ()).throw(MemoryError()))
+
+    with pytest.raises(vad.VadError) as error:
+        vad.infer_vad_probabilities(loaded(), waveform)
+
+    assert error.value.code == "insufficient_memory"
 
 
 def test_public_results_and_metadata_are_immutable():

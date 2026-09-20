@@ -132,7 +132,11 @@ each independently, applies the recorded reject/review/accept policy, and expose
 separate downstream handoff containing accepted text only. Run the real structural
 check with
 `.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_speech_transcription.py`.
-Next is B4.3: add the expanded VAD and transcription wrapper test matrix.
+B4.3 completes the
+[VAD and transcription wrapper regression matrix](docs/speech-wrapper-tests.md)
+with 184 offline cases covering artifact and runtime drift, exact resource
+boundaries, input ownership, malformed model output, safe failures, and immutable
+portable results. Next is A4.4: add speech-branch integration tests.
 
 ## Local panel demonstration
 
