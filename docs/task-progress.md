@@ -812,3 +812,58 @@ In plain language: the project can now turn one verified speech interval into an
 offline English text candidate while keeping the model, settings, and uncertainty
 honest. The next task connects those candidates to speech evidence and enforces the
 review/accept/reject rules before any text can continue automatically.
+
+## A4.3 — Complete
+
+Implemented verified speech-transcription orchestration in
+`src/audio_sentinel/speech_transcription.py`. The orchestrator validates the pinned
+transcription model before file access and accepts only an intact, transcript-free
+A4.2 result. It checks the semantic evidence identity and agreement between public
+evidence and diagnostic model, window, frame-count, segment, timestamp, VAD-score,
+and hash metadata.
+
+The service reopens the bounded prepared manifest, revalidates current
+`acoustic_and_speech` consent and all source metadata, and rereads each selected
+PCM-16 window using the hashes captured by A4.2. Every final speech interval is
+rebuilt on the absolute sample grid. Referenced windows must cover every sample, and
+overlapping window samples must agree exactly. Segments are transcribed in separate
+model calls without carrying audio or decoder context across boundaries. Manifest,
+window, and consent state are checked again after inference; any change invalidates
+the full result.
+
+Every nonempty model hypothesis is retained as an A4.1 `TranscriptCandidate`, and
+the recorded policy recomputes its handling outcome. Scores below 0.50 are rejected,
+scores from 0.50 to below 0.80 require review, and scores at or above 0.80 are
+accepted. Empty output remains `not_transcribed` and is never treated as safe.
+A separate immutable `downstream_transcripts` inventory contains accepted text only;
+rejected and review-required text cannot flow automatically to language analysis.
+
+The completed `SpeechEvidenceDocument` preserves the original source, VAD, window,
+segment, and policy provenance and adds the pinned transcription model, candidates,
+assessments, and exact counts. Its semantic ID now includes transcription content
+and remains stable across creation times. Configurable limits bound source bytes,
+decoded memory, segment count, total transcription samples, and accepted-text bytes.
+No waveform, absolute path, language-intent decision, incident, or risk score is
+returned.
+
+Added 37 focused tests covering all four reliability outcomes, exact threshold
+boundaries, acceptance-only handoff, overlapping-window reconstruction, snapshot
+tampering, source changes, consent expiry, empty segmentation, deterministic
+identity, model failure, resource limits, JSON privacy, and immutability. Added
+`docs/speech-transcription.md` and a real pinned-model orchestration smoke test.
+
+The real test reconstructs one complete 1.6-second structural interval from three
+overlapping windows and runs the pinned offline transcriber twice. Both runs produce
+identical evidence; the generated tone yields no text and therefore remains visibly
+`not_transcribed` with no downstream handoff.
+
+Current tracker: `outputs/a4_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 35 completed tasks out of 72. On a fresh machine, run
+`.\scripts\setup_speech.ps1` once; this machine already has both verified local models.
+
+Next: B4.3 — Add VAD and transcription wrapper tests.
+
+In plain language: detected speech intervals now receive offline text candidates,
+and each candidate immediately goes through the recorded confidence rules. Only
+accepted text gets a downstream pass; uncertain, rejected, or missing words remain
+blocked and visible for audit.

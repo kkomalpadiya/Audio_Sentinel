@@ -124,8 +124,15 @@ the pinned English Faster-Whisper `tiny.en` model. It verifies every local model
 file and exact runtime version, performs deterministic CPU decoding with bounded
 inputs and outputs, and emits an explicitly derived—not calibrated—confidence
 score. The real-model check is
-`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_transcription.py`. Next is
-A4.3: orchestrate transcription and low-confidence handling.
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_transcription.py`. A4.3
+adds the
+[verified speech transcription orchestrator](docs/speech-transcription.md). It
+reconstructs sample-exact segments from hash-checked prepared windows, transcribes
+each independently, applies the recorded reject/review/accept policy, and exposes a
+separate downstream handoff containing accepted text only. Run the real structural
+check with
+`.\.venv\speech\Scripts\python.exe .\scripts\smoke_test_speech_transcription.py`.
+Next is B4.3: add the expanded VAD and transcription wrapper test matrix.
 
 ## Local panel demonstration
 

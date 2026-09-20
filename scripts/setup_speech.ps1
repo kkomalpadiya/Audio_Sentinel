@@ -32,3 +32,6 @@ if ($LASTEXITCODE -ne 0) { throw "The speech-segment extraction smoke test faile
 
 & $runtimePython (Join-Path $PSScriptRoot "smoke_test_transcription.py")
 if ($LASTEXITCODE -ne 0) { throw "The offline transcription smoke test failed." }
+
+& $runtimePython (Join-Path $PSScriptRoot "smoke_test_speech_transcription.py")
+if ($LASTEXITCODE -ne 0) { throw "The speech-transcription orchestration smoke test failed." }
