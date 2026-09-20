@@ -171,7 +171,11 @@ B4.3 completes the
 [VAD and transcription wrapper regression matrix](docs/speech-wrapper-tests.md)
 with 184 offline cases covering artifact and runtime drift, exact resource
 boundaries, input ownership, malformed model output, safe failures, and immutable
-portable results. Next is A4.4: add speech-branch integration tests.
+portable results. A4.4 completes the phase with 16
+[speech-branch integration tests](docs/speech-integration-tests.md) spanning real
+preparation and persistence through VAD segmentation, exact waveform reconstruction,
+transcription policy handling, restart determinism, tamper rejection, and portable
+final evidence. Next is A5.1: define the language-analysis evidence contract.
 
 ## Local panel demonstration
 

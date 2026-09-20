@@ -70,6 +70,7 @@ tests/test_preparation.py
 tests/test_preparation_integration.py
 tests/test_segmentation.py
 tests/test_speech_contracts.py
+tests/test_speech_integration.py
 tests/test_speech_segments.py
 tests/test_speech_transcription.py
 tests/test_transcription.py

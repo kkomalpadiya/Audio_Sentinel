@@ -909,3 +909,41 @@ Next: A4.4 — Add speech-branch integration tests.
 In plain language: the two speech-model adapters now have explicit tests for normal
 operation and for their dangerous edges. Wrong files, changed runtimes, malformed
 model output, or exceeded limits must fail safely instead of producing evidence.
+
+## A4.4 — Complete
+
+Added `tests/test_speech_integration.py` with 16 offline integration cases for the
+complete speech branch. These tests run the real loader, transforms, resampling,
+mono conversion, preparation persistence, manifest and window verification, VAD
+orchestration, segment merging, exact waveform reconstruction, transcription
+orchestration, reliability policy, and final evidence construction. Only the two
+pretrained runtime calls are replaced with contract-accurate fakes, keeping the
+normal suite deterministic and independent of downloaded model artifacts.
+
+The integration matrix covers a 48 kHz stereo overlapping-window path plus four
+WAV/FLAC, 8–48 kHz, mono/stereo source combinations. It verifies all transcript
+outcomes and acceptance-only handoff, no-speech behavior, final-window padding
+removal, custom policy propagation, fresh-service determinism, operation from the
+persisted bundle after raw-source removal, source and bundle immutability, VAD and
+transcription failures, between-stage tampering, and portable JSON round trips.
+
+The combined 274-case speech run also exposed an order-dependent defect in the VAD
+import-isolation test. Reloading the production module inside pytest replaced its
+module-level identities for later tests. The check now runs in a subprocess, still
+proving that normal import does not load ONNX Runtime while leaving the shared test
+process untouched.
+
+Added `docs/speech-integration-tests.md` with the matrix, commands, and scope. The
+existing pinned-model orchestration smoke test remains the real-runtime structural
+check; neither the deterministic integration suite nor that smoke test claims
+real-world accuracy evaluation.
+
+Current tracker: `outputs/a4_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 37 completed tasks out of 72. On a fresh machine, run
+`.\scripts\setup_speech.ps1` once for the optional real-model checks.
+
+Next: A5.1 — Define language categories, reason codes, and evidence schema.
+
+In plain language: Phase 4 now works as a tested chain. Authorized audio can move
+from preparation through speech detection and transcription, while uncertain text,
+changed files, broken models, and partial failures remain blocked and auditable.

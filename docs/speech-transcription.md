@@ -117,6 +117,12 @@ no text, and both runs produce identical evidence with an explicit
 `not_transcribed` outcome and no downstream handoff. Positive text and every
 confidence band are covered by isolated deterministic tests.
 
+A4.4 adds 16 end-to-end branch cases documented in
+[`speech-integration-tests.md`](speech-integration-tests.md). They run real
+preparation and persistence into this orchestrator with contract-accurate fake model
+runtimes, covering cross-stage sample identity, policy propagation, restarts,
+failures, tampering, and privacy without requiring model downloads.
+
 On a fresh machine, `.\scripts\setup_speech.ps1` installs both pinned local models
 and runs the VAD, extraction, transcription-wrapper, and orchestration smoke tests.
 

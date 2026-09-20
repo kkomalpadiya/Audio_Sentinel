@@ -3,6 +3,8 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import subprocess
+import sys
 from types import SimpleNamespace
 
 import numpy as np
@@ -662,17 +664,12 @@ def test_public_results_and_metadata_are_immutable():
         result.model.model_id = "changed"
 
 
-def test_normal_import_does_not_require_onnxruntime(monkeypatch):
-    import builtins
-    import importlib
-
-    real_import = builtins.__import__
-
-    def guarded_import(name, *args, **kwargs):
-        if name.split(".")[0] == "onnxruntime":
-            raise AssertionError("normal package import must not import ONNX Runtime")
-        return real_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", guarded_import)
-    importlib.reload(vad)
-    assert vad.SILERO_VAD.model_id == "silero-vad"
+def test_normal_import_does_not_require_onnxruntime(tmp_path):
+    code = "import sys, audio_sentinel.vad; assert 'onnxruntime' not in sys.modules"
+    completed = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr

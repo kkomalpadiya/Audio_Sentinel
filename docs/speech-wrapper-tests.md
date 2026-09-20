@@ -75,6 +75,9 @@ The real smoke checks validate the locally installed model artifacts and runtime
 They do not measure speech-detection or transcription accuracy; these tests verify
 the software boundary, not model quality.
 
+A4.4 builds on these isolated checks with the connected integration matrix in
+[`speech-integration-tests.md`](speech-integration-tests.md).
+
 In plain language: both speech-model adapters now have explicit tests for their
 normal behavior and for the dangerous cases where files, runtime contracts, model
 outputs, or limits are wrong. The wrappers must fail closed instead of returning
