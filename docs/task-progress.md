@@ -982,3 +982,39 @@ records which accepted transcript was checked, which rule matched and where, and
 why the result received its category. Negated or unclear words stay visibly
 suppressed or ambiguous, and no language finding is allowed to make the later risk
 or alert decision by itself.
+
+## B5.1 — Complete
+
+Created the versioned English rule artifact at
+`src/audio_sentinel/resources/language-rules-en-v1.json`. Its 59 deterministic
+rules include 17 keywords, 23 phrases, and 19 explicit-negation forms. Distress,
+threat, and weapon-reference categories each have keyword and phrase coverage;
+negation rules assign no category and can only support later context suppression.
+
+Added `src/audio_sentinel/language_rules.py` with immutable contracts, exact NFKC,
+case-folding, apostrophe, and token rules, canonical inventory validation, a 1 MiB
+artifact limit, and a local-only loader. The bundled bytes are pinned by SHA-256,
+and the loader verifies the digest, rule-set identity, version, normalization,
+unique IDs/patterns, reason-code compatibility, and category coverage before use.
+The package configuration now includes JSON resources.
+
+Added the checked-in rule-set JSON Schema, `docs/language-rules.md`, and 64 focused
+tests for the complete inventory, representative patterns, malformed rules,
+ordering, duplicates, missing coverage, metadata and normalization drift, artifact
+tampering, resource limits, stable checkout bytes, schema export, immutability, and
+operation without network or ML runtimes. Full verification passes all 1,162 project tests,
+compilation, and the generated preparation smoke test.
+
+This task does not match transcripts, apply negation scope, produce findings, or
+assign risk. No model, dataset, download, or manual setup is required.
+
+Current tracker: `outputs/b5_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 39 completed tasks out of 72 and A5.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: A5.2 — Implement transcript-analysis engine.
+
+In plain language: the project now has a checked dictionary of concerning words,
+phrases, and negation forms. Its checksum makes unnoticed edits fail loudly. The
+next task will apply this dictionary to accepted transcripts while retaining exact
+positions and context instead of treating a word match as a risk decision.

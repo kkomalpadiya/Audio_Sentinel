@@ -1,0 +1,204 @@
+{
+  "$defs": {
+    "LanguageCategory": {
+      "description": "Limited evidence categories; none is an incident or risk decision.",
+      "enum": [
+        "no_concerning_match",
+        "distress",
+        "threat",
+        "weapon_reference",
+        "ambiguous",
+        "context_suppressed"
+      ],
+      "title": "LanguageCategory",
+      "type": "string"
+    },
+    "LanguageNormalization": {
+      "additionalProperties": false,
+      "description": "Exact text normalization contract that A5.2 must implement.",
+      "properties": {
+        "apostrophe_policy": {
+          "const": "curly_to_ascii_preserve",
+          "default": "curly_to_ascii_preserve",
+          "enum": [
+            "curly_to_ascii_preserve"
+          ],
+          "title": "Apostrophe Policy",
+          "type": "string"
+        },
+        "casefold": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Casefold",
+          "type": "boolean"
+        },
+        "token_pattern": {
+          "const": "^[a-z]+(?:'[a-z]+)?$",
+          "default": "^[a-z]+(?:'[a-z]+)?$",
+          "enum": [
+            "^[a-z]+(?:'[a-z]+)?$"
+          ],
+          "title": "Token Pattern",
+          "type": "string"
+        },
+        "unicode_form": {
+          "const": "NFKC",
+          "default": "NFKC",
+          "enum": [
+            "NFKC"
+          ],
+          "title": "Unicode Form",
+          "type": "string"
+        }
+      },
+      "title": "LanguageNormalization",
+      "type": "object"
+    },
+    "LanguageReasonCode": {
+      "description": "Portable explanations for why a language category was recorded.",
+      "enum": [
+        "no_rule_match",
+        "keyword_match",
+        "phrase_match",
+        "explicit_negation",
+        "hypothetical_or_conditional",
+        "quoted_or_reported_speech",
+        "insufficient_context",
+        "conflicting_signals"
+      ],
+      "title": "LanguageReasonCode",
+      "type": "string"
+    },
+    "LanguageRule": {
+      "additionalProperties": false,
+      "description": "One normalized keyword, phrase, or explicit-negation rule.",
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LanguageCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "$ref": "#/$defs/LanguageRuleKind"
+        },
+        "reason_code": {
+          "$ref": "#/$defs/LanguageReasonCode"
+        },
+        "rule_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "tokens": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Tokens",
+          "type": "array"
+        }
+      },
+      "required": [
+        "rule_id",
+        "kind",
+        "tokens",
+        "reason_code"
+      ],
+      "title": "LanguageRule",
+      "type": "object"
+    },
+    "LanguageRuleKind": {
+      "enum": [
+        "keyword",
+        "phrase",
+        "negation"
+      ],
+      "title": "LanguageRuleKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/language-rule-set.schema.json",
+  "additionalProperties": false,
+  "description": "Complete deterministic rule inventory for the first English baseline.",
+  "properties": {
+    "language": {
+      "const": "en",
+      "default": "en",
+      "enum": [
+        "en"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "negation_window_tokens": {
+      "default": 3,
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Negation Window Tokens",
+      "type": "integer"
+    },
+    "normalization": {
+      "$ref": "#/$defs/LanguageNormalization"
+    },
+    "rule_format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Rule Format Version",
+      "type": "string"
+    },
+    "rule_set_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Rule Set Id",
+      "type": "string"
+    },
+    "rule_set_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Rule Set Version",
+      "type": "string"
+    },
+    "rules": {
+      "items": {
+        "$ref": "#/$defs/LanguageRule"
+      },
+      "maxItems": 10000,
+      "minItems": 1,
+      "title": "Rules",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "rule_set_id",
+    "rule_set_version",
+    "normalization",
+    "rules"
+  ],
+  "title": "LanguageRuleSet",
+  "type": "object"
+}

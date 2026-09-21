@@ -144,8 +144,11 @@ final evidence. A5.1 adds the
 [accepted-only language-evidence contract](docs/language-evidence.md) with six
 bounded categories, typed reason codes, privacy-minimized transcript references,
 exact rule-match spans, and a checked-in JSON Schema. It deliberately excludes
-incidents, severity, risk scores, and alerts. Next is B5.1: create versioned
-keyword, phrase, and negation rule data.
+incidents, severity, risk scores, and alerts. B5.1 adds the
+[versioned English language rules](docs/language-rules.md): 59 integrity-checked
+keyword, phrase, and explicit-negation patterns with a fixed normalization recipe
+and no risk or alert decisions. Next is A5.2: implement the transcript-analysis
+engine.
 
 ## Local panel demonstration
 

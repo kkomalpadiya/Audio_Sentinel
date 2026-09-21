@@ -1,2 +1,5 @@
 # Preserve the official vocabulary bytes used by the SHA-256 integrity check.
 src/audio_sentinel/resources/yamnet_class_map.csv -text
+
+# Preserve the versioned language-rule bytes used by the SHA-256 integrity check.
+src/audio_sentinel/resources/language-rules-en-v1.json -text
