@@ -1,0 +1,430 @@
+{
+  "$defs": {
+    "AcceptedTranscriptReference": {
+      "additionalProperties": false,
+      "description": "Accepted-only A4.3 handoff without duplicating the transcript text.",
+      "properties": {
+        "confidence_kind": {
+          "$ref": "#/$defs/TranscriptConfidenceKind"
+        },
+        "confidence_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence Score",
+          "type": "number"
+        },
+        "downstream_text_allowed": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Downstream Text Allowed",
+          "type": "boolean"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "segment_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        },
+        "transcript_character_count": {
+          "exclusiveMinimum": 0,
+          "maximum": 20000,
+          "title": "Transcript Character Count",
+          "type": "integer"
+        },
+        "transcript_reliability": {
+          "const": "accepted",
+          "default": "accepted",
+          "enum": [
+            "accepted"
+          ],
+          "title": "Transcript Reliability",
+          "type": "string"
+        },
+        "transcript_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Transcript Sha256",
+          "type": "string"
+        },
+        "transcript_utf8_bytes": {
+          "exclusiveMinimum": 0,
+          "maximum": 80000,
+          "title": "Transcript Utf8 Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "segment_id",
+        "start_sample",
+        "end_sample",
+        "start_seconds",
+        "end_seconds",
+        "transcript_sha256",
+        "transcript_character_count",
+        "transcript_utf8_bytes",
+        "confidence_score",
+        "confidence_kind"
+      ],
+      "title": "AcceptedTranscriptReference",
+      "type": "object"
+    },
+    "LanguageCategory": {
+      "description": "Limited evidence categories; none is an incident or risk decision.",
+      "enum": [
+        "no_concerning_match",
+        "distress",
+        "threat",
+        "weapon_reference",
+        "ambiguous",
+        "context_suppressed"
+      ],
+      "title": "LanguageCategory",
+      "type": "string"
+    },
+    "LanguageEvidenceSource": {
+      "additionalProperties": false,
+      "description": "Privacy-minimized link to accepted Phase 4 speech evidence.",
+      "properties": {
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "consent_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "num_samples": {
+          "exclusiveMinimum": 0,
+          "title": "Num Samples",
+          "type": "integer"
+        },
+        "processing_scope": {
+          "const": "acoustic_and_speech",
+          "default": "acoustic_and_speech",
+          "enum": [
+            "acoustic_and_speech"
+          ],
+          "title": "Processing Scope",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "speech_evidence_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Speech Evidence Id",
+          "type": "string"
+        },
+        "speech_evidence_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Speech Evidence Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "speech_evidence_id",
+        "speech_evidence_sha256",
+        "clip_id",
+        "consent_id",
+        "sample_rate_hz",
+        "num_samples"
+      ],
+      "title": "LanguageEvidenceSource",
+      "type": "object"
+    },
+    "LanguageFinding": {
+      "additionalProperties": false,
+      "description": "One explainable language category supported by ordered rule matches.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/LanguageCategory"
+        },
+        "finding_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "matches": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/LanguageRuleMatch"
+          },
+          "title": "Matches",
+          "type": "array"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/LanguageReasonCode"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "finding_id",
+        "category",
+        "reason_codes"
+      ],
+      "title": "LanguageFinding",
+      "type": "object"
+    },
+    "LanguageReasonCode": {
+      "description": "Portable explanations for why a language category was recorded.",
+      "enum": [
+        "no_rule_match",
+        "keyword_match",
+        "phrase_match",
+        "explicit_negation",
+        "hypothetical_or_conditional",
+        "quoted_or_reported_speech",
+        "insufficient_context",
+        "conflicting_signals"
+      ],
+      "title": "LanguageReasonCode",
+      "type": "string"
+    },
+    "LanguageRuleKind": {
+      "enum": [
+        "keyword",
+        "phrase",
+        "negation"
+      ],
+      "title": "LanguageRuleKind",
+      "type": "string"
+    },
+    "LanguageRuleMatch": {
+      "additionalProperties": false,
+      "description": "One rule hit located in the accepted transcript without copying its text.",
+      "properties": {
+        "end_character": {
+          "exclusiveMinimum": 0,
+          "title": "End Character",
+          "type": "integer"
+        },
+        "matched_text_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Matched Text Sha256",
+          "type": "string"
+        },
+        "rule_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "rule_kind": {
+          "$ref": "#/$defs/LanguageRuleKind"
+        },
+        "start_character": {
+          "minimum": 0,
+          "title": "Start Character",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "rule_id",
+        "rule_kind",
+        "start_character",
+        "end_character",
+        "matched_text_sha256"
+      ],
+      "title": "LanguageRuleMatch",
+      "type": "object"
+    },
+    "LanguageRuleSetDescriptor": {
+      "additionalProperties": false,
+      "description": "Exact versioned rule artifact used to produce the findings.",
+      "properties": {
+        "artifact_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "rule_format_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Rule Format Version",
+          "type": "string"
+        },
+        "rule_set_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Rule Set Id",
+          "type": "string"
+        },
+        "rule_set_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Rule Set Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_set_id",
+        "rule_set_version",
+        "artifact_sha256"
+      ],
+      "title": "LanguageRuleSetDescriptor",
+      "type": "object"
+    },
+    "LanguageTranscriptAnalysis": {
+      "additionalProperties": false,
+      "description": "Complete language findings for one accepted downstream transcript.",
+      "properties": {
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/LanguageFinding"
+          },
+          "minItems": 1,
+          "title": "Findings",
+          "type": "array"
+        },
+        "transcript": {
+          "$ref": "#/$defs/AcceptedTranscriptReference"
+        }
+      },
+      "required": [
+        "transcript",
+        "findings"
+      ],
+      "title": "LanguageTranscriptAnalysis",
+      "type": "object"
+    },
+    "TranscriptConfidenceKind": {
+      "description": "Meaning of a normalized score; none of these labels makes it a truth probability.",
+      "enum": [
+        "model_score",
+        "derived_score",
+        "calibrated_probability"
+      ],
+      "title": "TranscriptConfidenceKind",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/language-evidence.schema.json",
+  "additionalProperties": false,
+  "description": "Explainable text evidence; deliberately not an incident or risk contract.",
+  "properties": {
+    "analyses": {
+      "items": {
+        "$ref": "#/$defs/LanguageTranscriptAnalysis"
+      },
+      "title": "Analyses",
+      "type": "array"
+    },
+    "analysis_method": {
+      "const": "versioned_rules",
+      "default": "versioned_rules",
+      "enum": [
+        "versioned_rules"
+      ],
+      "title": "Analysis Method",
+      "type": "string"
+    },
+    "analyzed_transcript_count": {
+      "minimum": 0,
+      "title": "Analyzed Transcript Count",
+      "type": "integer"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "language_evidence",
+      "default": "language_evidence",
+      "enum": [
+        "language_evidence"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "evidence_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Evidence Id",
+      "type": "string"
+    },
+    "finding_count": {
+      "minimum": 0,
+      "title": "Finding Count",
+      "type": "integer"
+    },
+    "input_transcript_count": {
+      "minimum": 0,
+      "title": "Input Transcript Count",
+      "type": "integer"
+    },
+    "rule_set": {
+      "$ref": "#/$defs/LanguageRuleSetDescriptor"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/LanguageEvidenceSource"
+    }
+  },
+  "required": [
+    "evidence_id",
+    "created_at",
+    "source",
+    "rule_set",
+    "input_transcript_count",
+    "analyzed_transcript_count",
+    "finding_count",
+    "analyses"
+  ],
+  "title": "LanguageEvidenceDocument",
+  "type": "object"
+}

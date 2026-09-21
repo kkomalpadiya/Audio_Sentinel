@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "document_type": "language_evidence",
+  "evidence_id": "language-example-001",
+  "created_at": "2026-09-21T12:00:00Z",
+  "source": {
+    "speech_evidence_id": "speech-example-001",
+    "speech_evidence_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "clip_id": "clip-example-001",
+    "consent_id": "consent-example-001",
+    "processing_scope": "acoustic_and_speech",
+    "sample_rate_hz": 16000,
+    "num_samples": 32000
+  },
+  "analysis_method": "versioned_rules",
+  "rule_set": {
+    "rule_set_id": "language-rules-en-v1",
+    "rule_set_version": "1.0.0",
+    "rule_format_version": "1.0",
+    "artifact_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "input_transcript_count": 2,
+  "analyzed_transcript_count": 2,
+  "finding_count": 2,
+  "analyses": [
+    {
+      "transcript": {
+        "segment_id": "speech-0000",
+        "start_sample": 2000,
+        "end_sample": 10000,
+        "start_seconds": 0.125,
+        "end_seconds": 0.625,
+        "transcript_sha256": "2d296f629c3f713b2a595b1ff2307dd8c1893573ff6b44224bd323e9dff36818",
+        "transcript_character_count": 21,
+        "transcript_utf8_bytes": 21,
+        "confidence_score": 0.91,
+        "confidence_kind": "derived_score",
+        "transcript_reliability": "accepted",
+        "downstream_text_allowed": true
+      },
+      "findings": [
+        {
+          "finding_id": "language-finding-0000",
+          "category": "distress",
+          "reason_codes": ["phrase_match"],
+          "matches": [
+            {
+              "rule_id": "distress-phrase-001",
+              "rule_kind": "phrase",
+              "start_character": 7,
+              "end_character": 20,
+              "matched_text_sha256": "6b46450cef1f84ef06203d64b2693adffa09c012179295b9cee5076f06e80f28"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "transcript": {
+        "segment_id": "speech-0001",
+        "start_sample": 18000,
+        "end_sample": 24000,
+        "start_seconds": 1.125,
+        "end_seconds": 1.5,
+        "transcript_sha256": "34fb5e7df9883d160d73dcf9f78db4350682b8300af530722c5eb686c47c146c",
+        "transcript_character_count": 20,
+        "transcript_utf8_bytes": 20,
+        "confidence_score": 0.88,
+        "confidence_kind": "derived_score",
+        "transcript_reliability": "accepted",
+        "downstream_text_allowed": true
+      },
+      "findings": [
+        {
+          "finding_id": "language-finding-0001",
+          "category": "context_suppressed",
+          "reason_codes": ["keyword_match", "explicit_negation"],
+          "matches": [
+            {
+              "rule_id": "negation-not-001",
+              "rule_kind": "negation",
+              "start_character": 5,
+              "end_character": 8,
+              "matched_text_sha256": "254bb97b57f12e1608fefc4517de768427b2fd6d2cffbbfcbc09f3c818198d5f"
+            },
+            {
+              "rule_id": "weapon-keyword-001",
+              "rule_kind": "keyword",
+              "start_character": 16,
+              "end_character": 19,
+              "matched_text_sha256": "3eed0f33297699415de55d2d980e60d30869bf6564e2055b62173d368974a149"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

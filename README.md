@@ -140,7 +140,12 @@ portable results. A4.4 completes the phase with 16
 [speech-branch integration tests](docs/speech-integration-tests.md) spanning real
 preparation and persistence through VAD segmentation, exact waveform reconstruction,
 transcription policy handling, restart determinism, tamper rejection, and portable
-final evidence. Next is A5.1: define the language-analysis evidence contract.
+final evidence. A5.1 adds the
+[accepted-only language-evidence contract](docs/language-evidence.md) with six
+bounded categories, typed reason codes, privacy-minimized transcript references,
+exact rule-match spans, and a checked-in JSON Schema. It deliberately excludes
+incidents, severity, risk scores, and alerts. Next is B5.1: create versioned
+keyword, phrase, and negation rule data.
 
 ## Local panel demonstration
 

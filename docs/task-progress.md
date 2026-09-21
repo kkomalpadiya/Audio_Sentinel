@@ -947,3 +947,38 @@ Next: A5.1 — Define language categories, reason codes, and evidence schema.
 In plain language: Phase 4 now works as a tested chain. Authorized audio can move
 from preparation through speech detection and transcription, while uncertain text,
 changed files, broken models, and partial failures remain blocked and auditable.
+
+## A5.1 — Complete
+
+Defined the Phase 5 language-evidence boundary in
+`src/audio_sentinel/language_contracts.py`. The contract has six closed categories:
+no concerning rule match, distress, threat, weapon reference, ambiguous language,
+and context-suppressed language. Eight typed reason codes distinguish keyword and
+phrase support from explicit negation, hypothetical/conditional wording,
+quoted/reported speech, insufficient context, conflicting signals, and no match.
+
+Only A4.3 accepted downstream transcripts can be represented as automatic inputs.
+The artifact links back to hashed Phase 4 evidence, records exact sample times and
+versioned rule provenance, and uses transcript hashes plus character spans instead
+of copying full text. Validators enforce compatible categories/reasons/rule kinds,
+bounded spans, exact timestamps, unique deterministic inventories, and accurate
+summary counts. The schema contains no incident, severity, risk score, consensus,
+speaker identity, or alert output.
+
+Added the checked-in JSON Schema, a complete example showing an active distress
+phrase and a negated weapon reference, `docs/language-evidence.md`, and 64 focused
+contract tests. Full verification passes all 1,098 project tests, compilation, and
+the generated preparation smoke test. No model, rule artifact, dataset, download,
+or manual setup is required for this contract task.
+
+Current tracker: `outputs/a5_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 38 completed tasks out of 72 and B5.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: B5.1 — Create versioned keyword, phrase, and negation rule data.
+
+In plain language: this task defines a strict receipt for future text analysis. It
+records which accepted transcript was checked, which rule matched and where, and
+why the result received its category. Negated or unclear words stay visibly
+suppressed or ambiguous, and no language finding is allowed to make the later risk
+or alert decision by itself.
