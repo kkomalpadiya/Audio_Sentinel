@@ -102,10 +102,11 @@ Run all project checks before committing:
 
 No download, model installation, or dataset is needed.
 
-## Next task
+## Implemented consumer
 
-A5.2 will implement the transcript-analysis engine over accepted A4.3 downstream
-transcripts using this exact artifact and the A5.1 evidence contract.
+A5.2 now applies this exact artifact to accepted A4.3 downstream transcripts. See
+`docs/language-analysis.md` for matching, character-span, phrase-specificity,
+negation-scope, provenance, and resource-limit behavior.
 
 ## Beginner-friendly explanation
 

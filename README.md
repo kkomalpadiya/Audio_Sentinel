@@ -147,8 +147,12 @@ exact rule-match spans, and a checked-in JSON Schema. It deliberately excludes
 incidents, severity, risk scores, and alerts. B5.1 adds the
 [versioned English language rules](docs/language-rules.md): 59 integrity-checked
 keyword, phrase, and explicit-negation patterns with a fixed normalization recipe
-and no risk or alert decisions. Next is A5.2: implement the transcript-analysis
-engine.
+and no risk or alert decisions. A5.2 adds the
+[deterministic transcript-analysis engine](docs/language-analysis.md). It verifies
+the exact accepted-only Phase 4 handoff, preserves original character spans through
+normalization, prefers specific phrases over contained keywords, applies bounded
+explicit-negation scope, and emits privacy-minimized A5.1 evidence. Next is B5.2:
+create labeled language fixtures including harmless negations.
 
 ## Local panel demonstration
 

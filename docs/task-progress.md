@@ -1018,3 +1018,45 @@ In plain language: the project now has a checked dictionary of concerning words,
 phrases, and negation forms. Its checksum makes unnoticed edits fail loudly. The
 next task will apply this dictionary to accepted transcripts while retaining exact
 positions and context instead of treating a word match as a risk decision.
+
+## A5.2 — Complete
+
+Implemented the deterministic transcript-analysis engine in
+`src/audio_sentinel/language_analysis.py`. It revalidates the complete A4.3 speech
+evidence, recomputes its semantic identifier, reconstructs the policy-accepted
+transcript inventory, and requires the supplied downstream tuple to match exactly.
+Review-required, rejected, missing, changed, reordered, or injected transcript text
+cannot enter automatic language analysis.
+
+The engine applies the exact B5.1 NFKC, case-folding, apostrophe, and English-token
+normalization while retaining original character positions. It matches versioned
+keywords and phrases, prefers a containing phrase over a shorter same-category
+keyword, retains distinct occurrences, and applies the configured three-token
+explicit-negation window without crossing hard sentence boundaries. Suppressed
+findings retain both exact matches and both reason codes; `I cannot breathe` remains
+an active configured distress phrase because its negation token is inside the
+phrase rather than before it.
+
+The result is an immutable A5.1 language-evidence document with hashes instead of
+duplicated transcript text, exact source and rule provenance, deterministic finding
+and evidence IDs, accurate counts, and no risk, severity, incident, or alert output.
+Resource limits bound transcript count, text bytes, tokens, rule checks, and
+findings. Stable safe errors return no partial evidence and do not echo private
+transcript content.
+
+Added `docs/language-analysis.md` and 44 focused engine tests covering normalization,
+phrase specificity, exact original spans and hashes, explicit-negation scope,
+multiple findings, accepted-only gating, tamper detection, deterministic identity,
+privacy, immutability, invalid settings, safe errors, and resource limits. The
+focused Phase 5 suite passes 172 tests. Full verification passes all 1,206 project
+tests, compilation, and the generated preparation smoke test.
+
+Current tracker: `outputs/a5_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 40 completed tasks out of 72 and B5.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: B5.2 — Create labeled language fixtures including harmless negations.
+
+In plain language: accepted text can now be checked against the pinned dictionary
+without turning a word into an alarm. The output is a reproducible receipt showing
+what matched, where it matched, and whether nearby explicit negation suppressed it.
