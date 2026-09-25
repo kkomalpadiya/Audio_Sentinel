@@ -151,8 +151,11 @@ and no risk or alert decisions. A5.2 adds the
 [deterministic transcript-analysis engine](docs/language-analysis.md). It verifies
 the exact accepted-only Phase 4 handoff, preserves original character spans through
 normalization, prefers specific phrases over contained keywords, applies bounded
-explicit-negation scope, and emits privacy-minimized A5.1 evidence. Next is B5.2:
-create labeled language fixtures including harmless negations.
+explicit-negation scope, and emits privacy-minimized A5.1 evidence. B5.2 adds the
+[versioned English language fixtures](docs/language-fixtures.md): 74 synthetic
+accepted-transcript cases with 75 expected findings, full active-rule and negation
+coverage, and prospective hypothetical, quoted, and ambiguous safeguards for A5.3.
+Next is A5.3: execute the fixture matrix and add language false-positive safeguards.
 
 ## Local panel demonstration
 

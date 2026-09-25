@@ -65,8 +65,9 @@ reason and `explicit_negation`. A negation inside an active phrase does not supp
 that phrase, so `I cannot breathe` remains the configured distress phrase.
 
 The A5.1 hypothetical, quoted/reported-speech, and ambiguity reason codes remain
-reserved. This baseline does not claim to solve those contexts; B5.2 and A5.3 will
-add labeled examples and broader false-positive evaluation.
+reserved. This baseline does not claim to solve those contexts. B5.2 now defines
+their expected behavior in a versioned fixture artifact, and A5.3 will execute the
+matrix and add the broader false-positive safeguards.
 
 ## Determinism, provenance, and limits
 
@@ -95,10 +96,11 @@ Run the complete project checks before committing:
 .\scripts\verify_project.ps1
 ```
 
-## Next task
+## Evaluation fixtures
 
-B5.2 will create labeled language fixtures, including harmless negations, for the
-engine and later false-positive evaluation.
+B5.2 supplies the versioned fixture matrix documented in
+`docs/language-fixtures.md`. A5.3 will execute it against this engine and implement
+the remaining context safeguards.
 
 ## Beginner-friendly explanation
 

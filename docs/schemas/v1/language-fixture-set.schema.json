@@ -1,0 +1,246 @@
+{
+  "$defs": {
+    "ExpectedLanguageFinding": {
+      "additionalProperties": false,
+      "description": "Expected portable labels and contributing rule IDs for one finding.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/LanguageCategory"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/LanguageReasonCode"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "rule_ids": {
+          "default": [],
+          "items": {
+            "maxLength": 128,
+            "minLength": 3,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+            "type": "string"
+          },
+          "title": "Rule Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "category",
+        "reason_codes"
+      ],
+      "title": "ExpectedLanguageFinding",
+      "type": "object"
+    },
+    "LanguageCategory": {
+      "description": "Limited evidence categories; none is an incident or risk decision.",
+      "enum": [
+        "no_concerning_match",
+        "distress",
+        "threat",
+        "weapon_reference",
+        "ambiguous",
+        "context_suppressed"
+      ],
+      "title": "LanguageCategory",
+      "type": "string"
+    },
+    "LanguageFixture": {
+      "additionalProperties": false,
+      "description": "One accepted English transcript and its expected language labels.",
+      "properties": {
+        "expected_findings": {
+          "items": {
+            "$ref": "#/$defs/ExpectedLanguageFinding"
+          },
+          "minItems": 1,
+          "title": "Expected Findings",
+          "type": "array"
+        },
+        "fixture_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Fixture Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/LanguageFixtureKind"
+        },
+        "tags": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 3,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Tags",
+          "type": "array"
+        },
+        "text": {
+          "maxLength": 20000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fixture_id",
+        "kind",
+        "text",
+        "tags",
+        "expected_findings"
+      ],
+      "title": "LanguageFixture",
+      "type": "object"
+    },
+    "LanguageFixtureKind": {
+      "enum": [
+        "active_indicator",
+        "no_concerning_match",
+        "context_suppressed",
+        "ambiguous"
+      ],
+      "title": "LanguageFixtureKind",
+      "type": "string"
+    },
+    "LanguageReasonCode": {
+      "description": "Portable explanations for why a language category was recorded.",
+      "enum": [
+        "no_rule_match",
+        "keyword_match",
+        "phrase_match",
+        "explicit_negation",
+        "hypothetical_or_conditional",
+        "quoted_or_reported_speech",
+        "insufficient_context",
+        "conflicting_signals"
+      ],
+      "title": "LanguageReasonCode",
+      "type": "string"
+    },
+    "LanguageRuleSetDescriptor": {
+      "additionalProperties": false,
+      "description": "Exact versioned rule artifact used to produce the findings.",
+      "properties": {
+        "artifact_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "rule_format_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Rule Format Version",
+          "type": "string"
+        },
+        "rule_set_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Rule Set Id",
+          "type": "string"
+        },
+        "rule_set_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Rule Set Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_set_id",
+        "rule_set_version",
+        "artifact_sha256"
+      ],
+      "title": "LanguageRuleSetDescriptor",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/language-fixture-set.schema.json",
+  "additionalProperties": false,
+  "description": "Complete versioned English fixture inventory for A5.3 evaluation.",
+  "properties": {
+    "expected_finding_count": {
+      "maximum": 100000,
+      "minimum": 1,
+      "title": "Expected Finding Count",
+      "type": "integer"
+    },
+    "fixture_count": {
+      "maximum": 10000,
+      "minimum": 1,
+      "title": "Fixture Count",
+      "type": "integer"
+    },
+    "fixture_set_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Fixture Set Id",
+      "type": "string"
+    },
+    "fixture_set_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Fixture Set Version",
+      "type": "string"
+    },
+    "fixtures": {
+      "items": {
+        "$ref": "#/$defs/LanguageFixture"
+      },
+      "maxItems": 10000,
+      "minItems": 1,
+      "title": "Fixtures",
+      "type": "array"
+    },
+    "label_contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Label Contract Version",
+      "type": "string"
+    },
+    "language": {
+      "const": "en",
+      "default": "en",
+      "enum": [
+        "en"
+      ],
+      "title": "Language",
+      "type": "string"
+    },
+    "rule_set": {
+      "$ref": "#/$defs/LanguageRuleSetDescriptor"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "fixture_set_id",
+    "fixture_set_version",
+    "rule_set",
+    "fixture_count",
+    "expected_finding_count",
+    "fixtures"
+  ],
+  "title": "LanguageFixtureSet",
+  "type": "object"
+}

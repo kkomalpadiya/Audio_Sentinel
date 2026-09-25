@@ -1060,3 +1060,40 @@ Next: B5.2 — Create labeled language fixtures including harmless negations.
 In plain language: accepted text can now be checked against the pinned dictionary
 without turning a word into an alarm. The output is a reproducible receipt showing
 what matched, where it matched, and whether nearby explicit negation suppressed it.
+
+## B5.2 — Complete
+
+Created the versioned fixture artifact at
+`src/audio_sentinel/resources/language-fixtures-en-v1.json`. It contains 74 short,
+synthetic English transcript cases with 75 expected A5.1 findings: 43 active
+indicator cases, 23 context-suppressed cases, six no-match cases, and two ambiguous
+cases. Every one of the 40 B5.1 active rules appears in an active fixture, and every
+one of the 19 negation rules appears in a harmless explicit-negation fixture.
+
+The matrix also covers Unicode normalization, punctuation inside phrases, phrase
+specificity, sentence-boundary behavior, multiple findings, token boundaries,
+hypothetical or conditional language, quoted or reported language, and insufficient
+context. The latter context cases define desired behavior for A5.3; B5.2 does not
+change engine output or weaken labels to fit the current implementation.
+
+Added `src/audio_sentinel/language_fixtures.py` with immutable fixture contracts, a
+1 MiB limit, exact A5.1 and B5.1 provenance, canonical ordering and count checks,
+complete active-rule and negation coverage validation, and a SHA-256-pinned local
+loader. Added the checked-in JSON Schema, protected fixture bytes in
+`.gitattributes`, `docs/language-fixtures.md`, and 73 focused tests covering exact
+labels, complete coverage, malformed fixtures, metadata drift, rule mismatches,
+artifact tampering, schema export, immutability, and operation without network,
+model runtimes, or the analysis engine.
+
+Full verification passes all 1,279 project tests, compilation, and the generated
+preparation smoke test.
+
+Current tracker: `outputs/b5_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 41 completed tasks out of 72 and A5.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: A5.3 — Add language-analysis tests and false-positive safeguards.
+
+In plain language: the project now has a checked answer key for language analysis.
+It includes direct matches, ordinary harmless text, every negation form, and context
+cases that the next task can use to measure and improve the engine consistently.

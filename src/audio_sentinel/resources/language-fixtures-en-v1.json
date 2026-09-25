@@ -1,0 +1,538 @@
+{
+  "schema_version": "1.0",
+  "fixture_set_id": "audio-sentinel-language-fixtures-en-v1",
+  "fixture_set_version": "1.0.0",
+  "language": "en",
+  "label_contract_version": "1.0",
+  "rule_set": {
+    "rule_set_id": "audio-sentinel-en-v1",
+    "rule_set_version": "1.0.0",
+    "rule_format_version": "1.0",
+    "artifact_sha256": "24794b01df242c37364f8c8c0740fa14f86c1d64d6d7f1076d03bec1c58d8488"
+  },
+  "fixture_count": 74,
+  "expected_finding_count": 75,
+  "fixtures": [
+    {
+      "fixture_id": "active-distress-keyword-bleeding",
+      "kind": "active_indicator",
+      "text": "bleeding",
+      "tags": ["direct-match", "distress", "keyword"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["keyword_match"], "rule_ids": ["distress-keyword-bleeding"]}]
+    },
+    {
+      "fixture_id": "active-distress-keyword-emergency",
+      "kind": "active_indicator",
+      "text": "emergency",
+      "tags": ["direct-match", "distress", "keyword"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["keyword_match"], "rule_ids": ["distress-keyword-emergency"]}]
+    },
+    {
+      "fixture_id": "active-distress-keyword-help",
+      "kind": "active_indicator",
+      "text": "help",
+      "tags": ["direct-match", "distress", "keyword"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["keyword_match"], "rule_ids": ["distress-keyword-help"]}]
+    },
+    {
+      "fixture_id": "active-distress-keyword-injured",
+      "kind": "active_indicator",
+      "text": "injured",
+      "tags": ["direct-match", "distress", "keyword"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["keyword_match"], "rule_ids": ["distress-keyword-injured"]}]
+    },
+    {
+      "fixture_id": "active-distress-keyword-trapped",
+      "kind": "active_indicator",
+      "text": "trapped",
+      "tags": ["direct-match", "distress", "keyword"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["keyword_match"], "rule_ids": ["distress-keyword-trapped"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-call-an-ambulance",
+      "kind": "active_indicator",
+      "text": "call an ambulance",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-call-an-ambulance"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-call-the-police",
+      "kind": "active_indicator",
+      "text": "call the police",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-call-the-police"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-i-am-bleeding",
+      "kind": "active_indicator",
+      "text": "I am bleeding",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-i-am-bleeding"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-i-am-trapped",
+      "kind": "active_indicator",
+      "text": "I am trapped",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-i-am-trapped"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-i-cannot-breathe",
+      "kind": "active_indicator",
+      "text": "I cannot breathe",
+      "tags": ["distress", "embedded-negation", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-i-cannot-breathe"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-i-need-help",
+      "kind": "active_indicator",
+      "text": "I need help",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-i-need-help"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-please-help-me",
+      "kind": "active_indicator",
+      "text": "Please, help me",
+      "tags": ["distress", "phrase", "punctuation"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-please-help-me"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-someone-is-hurt",
+      "kind": "active_indicator",
+      "text": "someone is hurt",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-someone-is-hurt"]}]
+    },
+    {
+      "fixture_id": "active-distress-phrase-we-are-trapped",
+      "kind": "active_indicator",
+      "text": "we are trapped",
+      "tags": ["direct-match", "distress", "phrase"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-we-are-trapped"]}]
+    },
+    {
+      "fixture_id": "active-threat-keyword-kill",
+      "kind": "active_indicator",
+      "text": "kill",
+      "tags": ["direct-match", "keyword", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["keyword_match"], "rule_ids": ["threat-keyword-kill"]}]
+    },
+    {
+      "fixture_id": "active-threat-keyword-shoot",
+      "kind": "active_indicator",
+      "text": "shoot",
+      "tags": ["direct-match", "keyword", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["keyword_match"], "rule_ids": ["threat-keyword-shoot"]}]
+    },
+    {
+      "fixture_id": "active-threat-keyword-stab",
+      "kind": "active_indicator",
+      "text": "stab",
+      "tags": ["direct-match", "keyword", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["keyword_match"], "rule_ids": ["threat-keyword-stab"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-going-to-shoot-you",
+      "kind": "active_indicator",
+      "text": "going to shoot you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-going-to-shoot-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-going-to-stab-you",
+      "kind": "active_indicator",
+      "text": "going to stab you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-going-to-stab-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-i-am-going-to-kill-you",
+      "kind": "active_indicator",
+      "text": "I am going to kill you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-i-am-going-to-kill-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-i-will-hurt-you",
+      "kind": "active_indicator",
+      "text": "I will hurt you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-i-will-hurt-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-i-will-kill-you",
+      "kind": "active_indicator",
+      "text": "I will kill you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-i-will-kill-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-shoot-you",
+      "kind": "active_indicator",
+      "text": "shoot you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-stab-you",
+      "kind": "active_indicator",
+      "text": "stab you",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-stab-you"]}]
+    },
+    {
+      "fixture_id": "active-threat-phrase-you-are-going-to-die",
+      "kind": "active_indicator",
+      "text": "you are going to die",
+      "tags": ["direct-match", "phrase", "threat"],
+      "expected_findings": [{"category": "threat", "reason_codes": ["phrase_match"], "rule_ids": ["threat-phrase-you-are-going-to-die"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-bomb",
+      "kind": "active_indicator",
+      "text": "bomb",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-bomb"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-explosive",
+      "kind": "active_indicator",
+      "text": "explosive",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-explosive"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-firearm",
+      "kind": "active_indicator",
+      "text": "firearm",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-firearm"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-grenade",
+      "kind": "active_indicator",
+      "text": "grenade",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-grenade"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-gun",
+      "kind": "active_indicator",
+      "text": "ＧＵＮ",
+      "tags": ["keyword", "normalization", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-gun"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-knife",
+      "kind": "active_indicator",
+      "text": "knife",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-knife"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-pistol",
+      "kind": "active_indicator",
+      "text": "pistol",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-pistol"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-rifle",
+      "kind": "active_indicator",
+      "text": "rifle",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-rifle"]}]
+    },
+    {
+      "fixture_id": "active-weapon-keyword-weapon",
+      "kind": "active_indicator",
+      "text": "weapon",
+      "tags": ["direct-match", "keyword", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-weapon"]}]
+    },
+    {
+      "fixture_id": "active-weapon-phrase-armed-with",
+      "kind": "active_indicator",
+      "text": "armed with",
+      "tags": ["direct-match", "phrase", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-armed-with"]}]
+    },
+    {
+      "fixture_id": "active-weapon-phrase-carrying-a-weapon",
+      "kind": "active_indicator",
+      "text": "carrying a weapon",
+      "tags": ["direct-match", "phrase", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-carrying-a-weapon"]}]
+    },
+    {
+      "fixture_id": "active-weapon-phrase-has-a-gun",
+      "kind": "active_indicator",
+      "text": "has a gun",
+      "tags": ["direct-match", "phrase", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-has-a-gun"]}]
+    },
+    {
+      "fixture_id": "active-weapon-phrase-have-a-gun",
+      "kind": "active_indicator",
+      "text": "have a gun",
+      "tags": ["direct-match", "phrase", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-have-a-gun"]}]
+    },
+    {
+      "fixture_id": "active-weapon-phrase-with-a-gun",
+      "kind": "active_indicator",
+      "text": "with a gun",
+      "tags": ["direct-match", "phrase", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-with-a-gun"]}]
+    },
+    {
+      "fixture_id": "active-weapon-phrase-with-a-knife",
+      "kind": "active_indicator",
+      "text": "with a knife",
+      "tags": ["direct-match", "phrase", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-with-a-knife"]}]
+    },
+    {
+      "fixture_id": "ambiguous-shoot-alone",
+      "kind": "ambiguous",
+      "text": "Could you shoot?",
+      "tags": ["ambiguous", "harmless-safeguard", "insufficient-context"],
+      "expected_findings": [{"category": "ambiguous", "reason_codes": ["keyword_match", "insufficient_context"], "rule_ids": ["threat-keyword-shoot"]}]
+    },
+    {
+      "fixture_id": "ambiguous-weapon-alone",
+      "kind": "ambiguous",
+      "text": "They mentioned a weapon.",
+      "tags": ["ambiguous", "harmless-safeguard", "insufficient-context"],
+      "expected_findings": [{"category": "ambiguous", "reason_codes": ["keyword_match", "insufficient_context"], "rule_ids": ["weapon-keyword-weapon"]}]
+    },
+    {
+      "fixture_id": "boundary-negation-period",
+      "kind": "active_indicator",
+      "text": "Do not leave. A gun is on the table.",
+      "tags": ["negation-boundary", "punctuation", "weapon-reference"],
+      "expected_findings": [{"category": "weapon_reference", "reason_codes": ["keyword_match"], "rule_ids": ["weapon-keyword-gun"]}]
+    },
+    {
+      "fixture_id": "boundary-negation-semicolon",
+      "kind": "active_indicator",
+      "text": "Never panic; call an ambulance.",
+      "tags": ["distress", "negation-boundary", "punctuation"],
+      "expected_findings": [{"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-call-an-ambulance"]}]
+    },
+    {
+      "fixture_id": "harmless-bombastic-token-boundary",
+      "kind": "no_concerning_match",
+      "text": "A bombastic speech won the contest.",
+      "tags": ["harmless-context", "no-rule-match", "token-boundary"],
+      "expected_findings": [{"category": "no_concerning_match", "reason_codes": ["no_rule_match"], "rule_ids": []}]
+    },
+    {
+      "fixture_id": "harmless-calm-weather",
+      "kind": "no_concerning_match",
+      "text": "The weather is calm today.",
+      "tags": ["harmless-context", "no-rule-match"],
+      "expected_findings": [{"category": "no_concerning_match", "reason_codes": ["no_rule_match"], "rule_ids": []}]
+    },
+    {
+      "fixture_id": "harmless-helpdesk-token-boundary",
+      "kind": "no_concerning_match",
+      "text": "The helpdesk ticket is open.",
+      "tags": ["harmless-context", "no-rule-match", "token-boundary"],
+      "expected_findings": [{"category": "no_concerning_match", "reason_codes": ["no_rule_match"], "rule_ids": []}]
+    },
+    {
+      "fixture_id": "harmless-kitchen-utensil",
+      "kind": "no_concerning_match",
+      "text": "The kitchen utensil is clean.",
+      "tags": ["harmless-context", "no-rule-match"],
+      "expected_findings": [{"category": "no_concerning_match", "reason_codes": ["no_rule_match"], "rule_ids": []}]
+    },
+    {
+      "fixture_id": "harmless-rifleman-token-boundary",
+      "kind": "no_concerning_match",
+      "text": "The rifleman finished the race.",
+      "tags": ["harmless-context", "no-rule-match", "token-boundary"],
+      "expected_findings": [{"category": "no_concerning_match", "reason_codes": ["no_rule_match"], "rule_ids": []}]
+    },
+    {
+      "fixture_id": "harmless-safety-drill",
+      "kind": "no_concerning_match",
+      "text": "The safety drill ended normally.",
+      "tags": ["harmless-context", "no-rule-match"],
+      "expected_findings": [{"category": "no_concerning_match", "reason_codes": ["no_rule_match"], "rule_ids": []}]
+    },
+    {
+      "fixture_id": "hypothetical-character-shoot-you",
+      "kind": "context_suppressed",
+      "text": "A character might say shoot you in a rehearsal.",
+      "tags": ["harmless-context", "hypothetical", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "hypothetical_or_conditional"], "rule_ids": ["threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "hypothetical-example-kill-you",
+      "kind": "context_suppressed",
+      "text": "If I said I will kill you, it would only be an example.",
+      "tags": ["harmless-context", "hypothetical", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "hypothetical_or_conditional"], "rule_ids": ["threat-phrase-i-will-kill-you"]}]
+    },
+    {
+      "fixture_id": "multi-distress-and-weapon",
+      "kind": "active_indicator",
+      "text": "Please help me, and someone has a gun.",
+      "tags": ["distress", "multi-finding", "weapon-reference"],
+      "expected_findings": [
+        {"category": "distress", "reason_codes": ["phrase_match"], "rule_ids": ["distress-phrase-please-help-me"]},
+        {"category": "weapon_reference", "reason_codes": ["phrase_match"], "rule_ids": ["weapon-phrase-has-a-gun"]}
+      ]
+    },
+    {
+      "fixture_id": "negated-apostrophe-cant-have-a-gun",
+      "kind": "context_suppressed",
+      "text": "can't have a gun",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-cant", "weapon-phrase-have-a-gun"]}]
+    },
+    {
+      "fixture_id": "negated-cannot-have-a-gun",
+      "kind": "context_suppressed",
+      "text": "cannot have a gun",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-cannot", "weapon-phrase-have-a-gun"]}]
+    },
+    {
+      "fixture_id": "negated-did-not-shoot-you",
+      "kind": "context_suppressed",
+      "text": "did not shoot you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-did-not", "threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "negated-didnt-shoot-you",
+      "kind": "context_suppressed",
+      "text": "didn't shoot you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-didnt", "threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "negated-do-not-shoot-you",
+      "kind": "context_suppressed",
+      "text": "do not shoot you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-do-not", "threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "negated-does-not-have-a-gun",
+      "kind": "context_suppressed",
+      "text": "does not have a gun",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-does-not", "weapon-phrase-have-a-gun"]}]
+    },
+    {
+      "fixture_id": "negated-doesnt-have-a-gun",
+      "kind": "context_suppressed",
+      "text": "doesn't have a gun",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-doesnt", "weapon-phrase-have-a-gun"]}]
+    },
+    {
+      "fixture_id": "negated-dont-have-a-gun",
+      "kind": "context_suppressed",
+      "text": "don't have a gun",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-dont", "weapon-phrase-have-a-gun"]}]
+    },
+    {
+      "fixture_id": "negated-never-going-to-shoot-you",
+      "kind": "context_suppressed",
+      "text": "never going to shoot you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-never", "threat-phrase-going-to-shoot-you"]}]
+    },
+    {
+      "fixture_id": "negated-no-gun",
+      "kind": "context_suppressed",
+      "text": "no gun",
+      "tags": ["explicit-negation", "harmless-negation", "keyword"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["keyword_match", "explicit_negation"], "rule_ids": ["negation-no", "weapon-keyword-gun"]}]
+    },
+    {
+      "fixture_id": "negated-not-a-gun",
+      "kind": "context_suppressed",
+      "text": "not a gun",
+      "tags": ["explicit-negation", "harmless-negation", "keyword"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["keyword_match", "explicit_negation"], "rule_ids": ["negation-not", "weapon-keyword-gun"]}]
+    },
+    {
+      "fixture_id": "negated-unarmed-despite-gun",
+      "kind": "context_suppressed",
+      "text": "unarmed despite the gun",
+      "tags": ["explicit-negation", "harmless-negation", "keyword"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["keyword_match", "explicit_negation"], "rule_ids": ["negation-unarmed", "weapon-keyword-gun"]}]
+    },
+    {
+      "fixture_id": "negated-was-not-carrying-a-weapon",
+      "kind": "context_suppressed",
+      "text": "was not carrying a weapon",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-was-not", "weapon-phrase-carrying-a-weapon"]}]
+    },
+    {
+      "fixture_id": "negated-wasnt-carrying-a-weapon",
+      "kind": "context_suppressed",
+      "text": "wasn't carrying a weapon",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-wasnt", "weapon-phrase-carrying-a-weapon"]}]
+    },
+    {
+      "fixture_id": "negated-will-not-shoot-you",
+      "kind": "context_suppressed",
+      "text": "will not shoot you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-will-not", "threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "negated-without-a-knife",
+      "kind": "context_suppressed",
+      "text": "without a knife",
+      "tags": ["explicit-negation", "harmless-negation", "keyword"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["keyword_match", "explicit_negation"], "rule_ids": ["negation-without", "weapon-keyword-knife"]}]
+    },
+    {
+      "fixture_id": "negated-wont-shoot-you",
+      "kind": "context_suppressed",
+      "text": "won't shoot you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-wont", "threat-phrase-shoot-you"]}]
+    },
+    {
+      "fixture_id": "negated-would-not-stab-you",
+      "kind": "context_suppressed",
+      "text": "would not stab you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-would-not", "threat-phrase-stab-you"]}]
+    },
+    {
+      "fixture_id": "negated-wouldnt-stab-you",
+      "kind": "context_suppressed",
+      "text": "wouldn't stab you",
+      "tags": ["explicit-negation", "harmless-negation", "phrase"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "explicit_negation"], "rule_ids": ["negation-wouldnt", "threat-phrase-stab-you"]}]
+    },
+    {
+      "fixture_id": "quoted-report-carrying-a-weapon",
+      "kind": "context_suppressed",
+      "text": "The report said he was carrying a weapon.",
+      "tags": ["harmless-context", "phrase", "quoted-reported"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "quoted_or_reported_speech"], "rule_ids": ["weapon-phrase-carrying-a-weapon"]}]
+    },
+    {
+      "fixture_id": "quoted-script-i-will-hurt-you",
+      "kind": "context_suppressed",
+      "text": "She quoted I will hurt you from the script.",
+      "tags": ["harmless-context", "phrase", "quoted-reported"],
+      "expected_findings": [{"category": "context_suppressed", "reason_codes": ["phrase_match", "quoted_or_reported_speech"], "rule_ids": ["threat-phrase-i-will-hurt-you"]}]
+    }
+  ]
+}
