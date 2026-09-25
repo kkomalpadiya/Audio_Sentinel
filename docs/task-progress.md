@@ -1251,3 +1251,39 @@ In plain language: the analyzer now distinguishes direct concerning wording from
 the same words used as an example, quotation, report, or unclear short question.
 Phase 6 receives better evidence through the interfaces it already had, so its
 completed work stays valid while false-positive scores become less likely.
+
+## B6.2 — Complete
+
+Added `tests/test_risk_scenarios.py` with 54 public-API scenarios for normal and
+edge risk-scoring behavior. Representative evidence now exercises every severity
+level, and complete parameter matrices verify all 13 acoustic labels, all six
+language categories, speech review accumulation, ambiguity review, exact confidence
+and severity boundaries, independent branch caps, and the final 100-point cap.
+
+The tests also cover maximum acoustic aggregation, zero-weight safe and suppressed
+evidence, each missing branch, nonmissing language absence, canonical combined
+reasons, configurable fractional rounding, and exact review behavior immediately
+below and at score 25.
+
+The edge matrix identified one numeric robustness issue in B6.1: a contract-valid
+review-required transcript count larger than floating-point range could overflow
+before the speech cap was applied. `risk_scoring.py` now uses exact integer ratios
+to check whether the count has reached the configured cap before multiplication.
+The regression tests combine a count of `10**400` with both the built-in weight and
+the smallest positive finite custom weight, confirming the branch deterministically
+returns its 12-point cap and requires review.
+
+Added `docs/risk-scoring-tests.md` and updated the scoring and project documentation.
+The focused Phase 6 suite passes 132 tests. Full verification passes all 1,491
+project tests, compilation, and the generated preparation smoke test.
+
+Current tracker: `outputs/b6_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 46 completed tasks out of 72 and A6.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: A6.3 — Add a trainable risk-model interface for future custom training.
+
+In plain language: the scorer now has a complete worked-example test table, from
+quiet input through critical combined evidence. It also stays bounded when a valid
+counter is far larger than ordinary hardware can represent as a floating-point
+number.

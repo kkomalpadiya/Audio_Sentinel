@@ -14,6 +14,10 @@ format version, and artifact digest. A changed configuration therefore produces 
 different assessment identity and cannot silently masquerade as the built-in
 policy.
 
+B6.2 adds the broader scenario matrix documented in
+`docs/risk-scoring-tests.md`. It verifies the documented behavior through the
+public scorer rather than testing private arithmetic helpers.
+
 ## Score calculation
 
 The v1 engine adds three independently capped branch scores, then caps the total at
@@ -34,6 +38,8 @@ The built-in branch behavior is:
 Acoustic aggregation uses the maximum label weight so overlapping detections do not
 multiply the score. Language findings are summed because separate accepted-text
 findings may contribute distinct evidence, but the branch cap bounds repetition.
+Review-required transcript points are capped before multiplication, so even a very
+large contract-valid count cannot overflow numeric conversion.
 
 The built-in active weights are:
 
@@ -102,10 +108,10 @@ The checked-in rule schema is
 
 ## Verification
 
-Run the focused B6.1 tests:
+Run the complete focused Phase 6 tests:
 
 ```powershell
-python -m pytest tests/test_risk_contracts.py tests/test_risk_scoring.py -q
+python -m pytest tests/test_risk_contracts.py tests/test_risk_scoring.py tests/test_risk_integration.py tests/test_risk_scenarios.py -q
 ```
 
 Run the complete project checks before committing:
@@ -116,8 +122,8 @@ Run the complete project checks before committing:
 
 ## Next task
 
-B6.2 will add a broader normal and edge-case scenario matrix around the integrated
-evidence and scoring path.
+A6.3 will define a trainable risk-model interface without changing the deterministic
+v1 scorer or its validated scenario baseline.
 
 ## Beginner-friendly explanation
 

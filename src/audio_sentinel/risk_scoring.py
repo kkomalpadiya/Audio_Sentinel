@@ -329,11 +329,25 @@ def _speech_score(
         points += rules.segment_presence_points
         reasons.add(RiskReasonCode.SPEECH_PRESENT)
     if inputs.review_required_transcript_count > 0:
-        points += min(
-            inputs.review_required_transcript_count
-            * rules.review_required_points_per_transcript,
-            rules.max_review_required_points,
-        )
+        if rules.review_required_points_per_transcript == 0:
+            review_points = 0.0
+        else:
+            weight_numerator, weight_denominator = (
+                rules.review_required_points_per_transcript.as_integer_ratio()
+            )
+            cap_numerator, cap_denominator = (
+                rules.max_review_required_points.as_integer_ratio()
+            )
+            weighted_numerator = (
+                inputs.review_required_transcript_count * weight_numerator
+            )
+            review_points = (
+                rules.max_review_required_points
+                if weighted_numerator * cap_denominator
+                >= cap_numerator * weight_denominator
+                else weighted_numerator / weight_denominator
+            )
+        points += review_points
         reasons.add(RiskReasonCode.TRANSCRIPT_REVIEW_REQUIRED)
     return min(points, rules.max_points), reasons
 

@@ -168,6 +168,10 @@ codes, and human-review triggers for missing or uncertain evidence. A6.2 adds th
 [risk evidence integration boundary](docs/risk-integration.md), which verifies
 cross-branch source and transcript provenance and converts Phase 3-5 evidence into
 privacy-minimized scorer inputs with explicit missing and consent-limited states.
+B6.2 adds the [risk-scoring scenario matrix](docs/risk-scoring-tests.md): 54 normal
+and edge cases covering every built-in acoustic label and language category,
+severity and review boundaries, branch caps, missing-data combinations, canonical
+reasons, fractional scores, and extremely large valid counters.
 
 ## Local panel demonstration
 
