@@ -116,8 +116,8 @@ Run the complete project checks before committing:
 
 ## Next task
 
-A6.2 will convert validated Phase 3, 4, and 5 evidence documents into the A6.1
-`RiskInputSet` consumed by this engine.
+B6.2 will add a broader normal and edge-case scenario matrix around the integrated
+evidence and scoring path.
 
 ## Beginner-friendly explanation
 

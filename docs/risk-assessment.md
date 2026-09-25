@@ -104,8 +104,8 @@ Run the complete project checks before committing:
 
 ## Next task
 
-A6.2 will convert validated acoustic, speech, and language evidence documents into
-the risk inputs consumed by the B6.1 engine.
+B6.2 will add broader normal, missing-data, consent, cap, and score-boundary
+scenarios for the integrated risk path.
 
 ## Beginner-friendly explanation
 

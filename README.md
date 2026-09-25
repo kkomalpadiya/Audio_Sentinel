@@ -162,7 +162,10 @@ missing-data policy that records absent evidence for review instead of treating 
 as safe. B6.1 adds the [configurable risk-scoring engine](docs/risk-scoring.md):
 SHA-256-pinned local score weights, bounded acoustic, speech, and language
 contributions, deterministic assessment IDs, rule provenance, explicit reason
-codes, and human-review triggers for missing or uncertain evidence.
+codes, and human-review triggers for missing or uncertain evidence. A6.2 adds the
+[risk evidence integration boundary](docs/risk-integration.md), which verifies
+cross-branch source and transcript provenance and converts Phase 3-5 evidence into
+privacy-minimized scorer inputs with explicit missing and consent-limited states.
 
 ## Local panel demonstration
 

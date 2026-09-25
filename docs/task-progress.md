@@ -1175,3 +1175,46 @@ In plain language: Phase 6 now has the calculator behind the risk receipt. Its
 numbers come from a small versioned JSON rule file, no branch can contribute beyond
 its cap, missing evidence stays visible, and every result records exactly which
 rules produced it.
+
+## A6.2 — Complete
+
+Implemented `integrate_risk_inputs()` in
+`src/audio_sentinel/risk_integration.py`. The adapter accepts a trusted A6.1 source
+plus available acoustic, speech, and language evidence, revalidates each document,
+checks that the branches belong to the same prepared source, and produces the
+privacy-minimized `RiskInputSet` consumed by B6.1.
+
+Acoustic events are converted to sample-exact risk signals with labels, peak
+scores, and source indexes. Speech evidence is summarized into segment, accepted
+transcript, review-required transcript, and maximum VAD counts. Language findings
+become ordered signals containing only IDs, categories, reason codes, sample spans,
+and match counts. Each present branch records the exact normalized evidence-document
+hash without copying transcript text, matched text, raw audio, model tensors,
+speaker data, or absolute paths.
+
+Cross-branch verification now rejects mismatched clips, consent IDs, sample
+metadata, prepared-manifest hashes, raw-audio hashes, speech evidence references,
+or accepted-transcript provenance. Acoustic-only consent produces explicit
+not-permitted speech and language branches. Missing expected evidence stays
+missing, while a completed speech branch with zero accepted transcripts produces
+the distinct `no_accepted_text` language state.
+
+Added `docs/risk-integration.md` and 17 focused tests covering complete three-branch
+integration through the scorer, exact artifact hashes, missing branches,
+acoustic-only consent, no accepted text, empty language artifacts, cross-source and
+transcript mismatches, invalid input types, and privacy exclusions.
+
+The focused Phase 6 contract, scoring, and integration suite passes 78 tests. Full
+verification passes all 1,357 project tests, compilation, and the generated
+preparation smoke test.
+
+Resumed Excel tracker updates and backfilled sequential A6.1 and B6.1 snapshots
+before creating the A6.2 snapshot. The latest workbook records 44 of 72 tasks
+complete and preserves all formulas, formatting, validation controls, and tabs.
+A5.3 remains not started because no corresponding commit exists in this checkout.
+
+Next: B6.2 — Create risk-scoring tests for normal and edge scenarios.
+
+In plain language: Phase 6 can now take the three evidence reports, prove that they
+belong together, remove private details, and hand a compact trustworthy summary to
+the scoring calculator.
