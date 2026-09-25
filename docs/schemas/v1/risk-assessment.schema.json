@@ -1,0 +1,711 @@
+{
+  "$defs": {
+    "AcousticRiskInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "event_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Event Count",
+          "type": "integer"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RiskEvidenceReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "max_peak_score": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Peak Score"
+        },
+        "signals": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/AcousticRiskSignal"
+          },
+          "title": "Signals",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/RiskInputStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "AcousticRiskInputs",
+      "type": "object"
+    },
+    "AcousticRiskSignal": {
+      "additionalProperties": false,
+      "description": "One acoustic candidate event summarized for risk scoring.",
+      "properties": {
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "end_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "End Seconds",
+          "type": "number"
+        },
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "peak_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Peak Score",
+          "type": "number"
+        },
+        "source_event_index": {
+          "minimum": 0,
+          "title": "Source Event Index",
+          "type": "integer"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        },
+        "start_seconds": {
+          "minimum": 0.0,
+          "title": "Start Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "start_sample",
+        "end_sample",
+        "start_seconds",
+        "end_seconds",
+        "peak_score",
+        "source_event_index"
+      ],
+      "title": "AcousticRiskSignal",
+      "type": "object"
+    },
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "LanguageCategory": {
+      "description": "Limited evidence categories; none is an incident or risk decision.",
+      "enum": [
+        "no_concerning_match",
+        "distress",
+        "threat",
+        "weapon_reference",
+        "ambiguous",
+        "context_suppressed"
+      ],
+      "title": "LanguageCategory",
+      "type": "string"
+    },
+    "LanguageReasonCode": {
+      "description": "Portable explanations for why a language category was recorded.",
+      "enum": [
+        "no_rule_match",
+        "keyword_match",
+        "phrase_match",
+        "explicit_negation",
+        "hypothetical_or_conditional",
+        "quoted_or_reported_speech",
+        "insufficient_context",
+        "conflicting_signals"
+      ],
+      "title": "LanguageReasonCode",
+      "type": "string"
+    },
+    "LanguageRiskInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RiskEvidenceReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "finding_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Finding Count",
+          "type": "integer"
+        },
+        "signals": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/LanguageRiskSignal"
+          },
+          "title": "Signals",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/RiskInputStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "LanguageRiskInputs",
+      "type": "object"
+    },
+    "LanguageRiskSignal": {
+      "additionalProperties": false,
+      "description": "One language finding summarized without transcript text.",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/LanguageCategory"
+        },
+        "end_sample": {
+          "exclusiveMinimum": 0,
+          "title": "End Sample",
+          "type": "integer"
+        },
+        "finding_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/LanguageReasonCode"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "rule_match_count": {
+          "minimum": 0,
+          "title": "Rule Match Count",
+          "type": "integer"
+        },
+        "segment_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Segment Id",
+          "type": "string"
+        },
+        "start_sample": {
+          "minimum": 0,
+          "title": "Start Sample",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "finding_id",
+        "segment_id",
+        "category",
+        "reason_codes",
+        "start_sample",
+        "end_sample",
+        "rule_match_count"
+      ],
+      "title": "LanguageRiskSignal",
+      "type": "object"
+    },
+    "ProcessingScope": {
+      "enum": [
+        "none",
+        "acoustic_only",
+        "acoustic_and_speech"
+      ],
+      "title": "ProcessingScope",
+      "type": "string"
+    },
+    "RiskEvidenceKind": {
+      "enum": [
+        "acoustic",
+        "speech",
+        "language"
+      ],
+      "title": "RiskEvidenceKind",
+      "type": "string"
+    },
+    "RiskEvidenceReference": {
+      "additionalProperties": false,
+      "description": "Hash-pinned reference to a Phase 3, 4, or 5 evidence artifact.",
+      "properties": {
+        "document_type": {
+          "enum": [
+            "acoustic_event_candidates",
+            "speech_evidence_candidates",
+            "language_evidence"
+          ],
+          "title": "Document Type",
+          "type": "string"
+        },
+        "evidence_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "evidence_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Evidence Sha256",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/RiskEvidenceKind"
+        }
+      },
+      "required": [
+        "kind",
+        "document_type",
+        "evidence_id",
+        "evidence_sha256"
+      ],
+      "title": "RiskEvidenceReference",
+      "type": "object"
+    },
+    "RiskInputSet": {
+      "additionalProperties": false,
+      "description": "All evidence summaries made available to the risk scorer.",
+      "properties": {
+        "acoustic": {
+          "$ref": "#/$defs/AcousticRiskInputs"
+        },
+        "language": {
+          "$ref": "#/$defs/LanguageRiskInputs"
+        },
+        "source": {
+          "$ref": "#/$defs/RiskSource"
+        },
+        "speech": {
+          "$ref": "#/$defs/SpeechRiskInputs"
+        }
+      },
+      "required": [
+        "source",
+        "acoustic",
+        "speech",
+        "language"
+      ],
+      "title": "RiskInputSet",
+      "type": "object"
+    },
+    "RiskInputStatus": {
+      "description": "Whether a branch is usable for scoring, absent, or outside consent scope.",
+      "enum": [
+        "present",
+        "missing",
+        "not_permitted",
+        "not_applicable",
+        "no_accepted_text"
+      ],
+      "title": "RiskInputStatus",
+      "type": "string"
+    },
+    "RiskLevel": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    },
+    "RiskMissingDataAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "missing_branches": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RiskEvidenceKind"
+          },
+          "title": "Missing Branches",
+          "type": "array"
+        },
+        "not_permitted_branches": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RiskEvidenceKind"
+          },
+          "title": "Not Permitted Branches",
+          "type": "array"
+        },
+        "reason_codes": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RiskReasonCode"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "review_required": {
+          "title": "Review Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "review_required"
+      ],
+      "title": "RiskMissingDataAssessment",
+      "type": "object"
+    },
+    "RiskMissingDataPolicy": {
+      "additionalProperties": false,
+      "description": "How Phase 6 treats absent branches without calling them safe.",
+      "properties": {
+        "language_required_when_accepted_text_exists": {
+          "default": true,
+          "title": "Language Required When Accepted Text Exists",
+          "type": "boolean"
+        },
+        "missing_required_branch_action": {
+          "const": "review_required",
+          "default": "review_required",
+          "enum": [
+            "review_required"
+          ],
+          "title": "Missing Required Branch Action",
+          "type": "string"
+        },
+        "policy_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "required_branches": {
+          "default": [
+            "acoustic"
+          ],
+          "items": {
+            "$ref": "#/$defs/RiskEvidenceKind"
+          },
+          "title": "Required Branches",
+          "type": "array"
+        },
+        "speech_required_when_permitted": {
+          "default": true,
+          "title": "Speech Required When Permitted",
+          "type": "boolean"
+        }
+      },
+      "title": "RiskMissingDataPolicy",
+      "type": "object"
+    },
+    "RiskReasonCode": {
+      "description": "Portable explanations for a risk score or missing-data review state.",
+      "enum": [
+        "no_risk_evidence",
+        "acoustic_event_candidate",
+        "acoustic_high_confidence",
+        "speech_present",
+        "transcript_review_required",
+        "language_distress",
+        "language_threat",
+        "language_weapon_reference",
+        "language_ambiguous",
+        "language_context_suppressed",
+        "missing_acoustic_evidence",
+        "missing_speech_evidence",
+        "missing_language_evidence",
+        "speech_not_permitted",
+        "language_not_applicable",
+        "missing_data_review_required"
+      ],
+      "title": "RiskReasonCode",
+      "type": "string"
+    },
+    "RiskScoringPolicy": {
+      "additionalProperties": false,
+      "description": "Versioned score range and severity-band definition for B6.1.",
+      "properties": {
+        "missing_data_policy": {
+          "$ref": "#/$defs/RiskMissingDataPolicy"
+        },
+        "policy_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "score_max": {
+          "const": 100,
+          "default": 100,
+          "enum": [
+            100
+          ],
+          "title": "Score Max",
+          "type": "integer"
+        },
+        "score_min": {
+          "const": 0,
+          "default": 0,
+          "enum": [
+            0
+          ],
+          "title": "Score Min",
+          "type": "integer"
+        },
+        "severity_bands": {
+          "items": {
+            "$ref": "#/$defs/RiskSeverityBandDefinition"
+          },
+          "title": "Severity Bands",
+          "type": "array"
+        }
+      },
+      "title": "RiskScoringPolicy",
+      "type": "object"
+    },
+    "RiskSeverityBandDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "max_score": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Max Score",
+          "type": "number"
+        },
+        "min_score": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Min Score",
+          "type": "number"
+        },
+        "risk_level": {
+          "$ref": "#/$defs/RiskLevel"
+        }
+      },
+      "required": [
+        "risk_level",
+        "min_score",
+        "max_score"
+      ],
+      "title": "RiskSeverityBandDefinition",
+      "type": "object"
+    },
+    "RiskSource": {
+      "additionalProperties": false,
+      "description": "Privacy-minimized clip identity shared by all risk branches.",
+      "properties": {
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "consent_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "num_samples": {
+          "exclusiveMinimum": 0,
+          "title": "Num Samples",
+          "type": "integer"
+        },
+        "processing_scope": {
+          "$ref": "#/$defs/ProcessingScope"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "clip_id",
+        "consent_id",
+        "processing_scope",
+        "sample_rate_hz",
+        "num_samples"
+      ],
+      "title": "RiskSource",
+      "type": "object"
+    },
+    "SpeechRiskInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_transcript_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Accepted Transcript Count",
+          "type": "integer"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RiskEvidenceReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "max_vad_score": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Vad Score"
+        },
+        "review_required_transcript_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Review Required Transcript Count",
+          "type": "integer"
+        },
+        "segment_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Segment Count",
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/$defs/RiskInputStatus"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "SpeechRiskInputs",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/risk-assessment.schema.json",
+  "additionalProperties": false,
+  "description": "Versioned risk score output; not a consensus decision or alert.",
+  "properties": {
+    "assessment_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Assessment Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "risk_assessment",
+      "default": "risk_assessment",
+      "enum": [
+        "risk_assessment"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "human_review_required": {
+      "title": "Human Review Required",
+      "type": "boolean"
+    },
+    "inputs": {
+      "$ref": "#/$defs/RiskInputSet"
+    },
+    "missing_data": {
+      "$ref": "#/$defs/RiskMissingDataAssessment"
+    },
+    "reason_codes": {
+      "items": {
+        "$ref": "#/$defs/RiskReasonCode"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "score": {
+      "maximum": 100.0,
+      "minimum": 0.0,
+      "title": "Score",
+      "type": "number"
+    },
+    "scoring_policy": {
+      "$ref": "#/$defs/RiskScoringPolicy"
+    },
+    "severity": {
+      "$ref": "#/$defs/RiskLevel"
+    }
+  },
+  "required": [
+    "assessment_id",
+    "created_at",
+    "scoring_policy",
+    "inputs",
+    "score",
+    "severity",
+    "reason_codes",
+    "missing_data",
+    "human_review_required"
+  ],
+  "title": "RiskAssessmentDocument",
+  "type": "object"
+}

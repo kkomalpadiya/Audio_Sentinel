@@ -1097,3 +1097,40 @@ Next: A5.3 — Add language-analysis tests and false-positive safeguards.
 In plain language: the project now has a checked answer key for language analysis.
 It includes direct matches, ordinary harmless text, every negation form, and context
 cases that the next task can use to measure and improve the engine consistently.
+
+## A6.1 — Complete
+
+Defined the Phase 6 risk-assessment contract in
+`src/audio_sentinel/risk_contracts.py`. The contract summarizes hash-pinned Phase 3
+acoustic evidence, Phase 4 speech evidence, and Phase 5 language evidence without
+copying raw audio, transcript text, speaker identity, consensus decisions, or alert
+details. Each branch now has an explicit status: present, missing, not permitted,
+not applicable, or no accepted text.
+
+The contract pins the risk score to a finite 0-100 range and validates the v1
+severity bands: none at exactly 0, low above 0 through 24, medium from 25 through
+49, high from 50 through 74, and critical from 75 through 100. It also defines the
+missing-data policy: missing evidence is recorded and can require human review
+instead of being interpreted as safety. Consent-limited branches are represented as
+not permitted rather than as missing.
+
+Added `docs/risk-assessment.md`, the checked-in
+`docs/schemas/v1/risk-assessment.schema.json`, a complete example at
+`docs/examples/risk-assessment.json`, and 36 focused tests covering score
+boundaries, branch/evidence compatibility, missing-data review, privacy exclusions,
+canonical reason ordering, exact acoustic timestamps, schema export, and immutable
+public records.
+
+Focused verification passes 36 tests in `tests/test_risk_contracts.py`. Full
+project verification should be run before commit.
+
+Local tracker note: this checkout still shows A5.3 as not started even though the
+working instruction says Phase 5 has been completed and committed. Reconcile or
+pull the A5.3 tracker/code state before updating the Excel tracker for Phase 6.
+
+Next: B6.1 — Implement configurable risk-scoring rules engine.
+
+In plain language: Phase 6 now has the receipt for risk scoring. It records what
+evidence the scorer saw, what was missing, what score band the result belongs to,
+and whether missing data needs a person to review it. The next task will calculate
+the score.

@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "document_type": "risk_assessment",
+  "assessment_id": "risk-example-001",
+  "created_at": "2026-09-25T12:00:00Z",
+  "scoring_policy": {
+    "policy_version": "1.0",
+    "score_min": 0,
+    "score_max": 100,
+    "severity_bands": [
+      {"risk_level": "none", "min_score": 0, "max_score": 0},
+      {"risk_level": "low", "min_score": 1, "max_score": 24},
+      {"risk_level": "medium", "min_score": 25, "max_score": 49},
+      {"risk_level": "high", "min_score": 50, "max_score": 74},
+      {"risk_level": "critical", "min_score": 75, "max_score": 100}
+    ],
+    "missing_data_policy": {
+      "policy_version": "1.0",
+      "required_branches": ["acoustic"],
+      "speech_required_when_permitted": true,
+      "language_required_when_accepted_text_exists": true,
+      "missing_required_branch_action": "review_required"
+    }
+  },
+  "inputs": {
+    "source": {
+      "clip_id": "clip-example-001",
+      "consent_id": "consent-example-001",
+      "processing_scope": "acoustic_and_speech",
+      "sample_rate_hz": 16000,
+      "num_samples": 32000
+    },
+    "acoustic": {
+      "status": "present",
+      "evidence": {
+        "kind": "acoustic",
+        "document_type": "acoustic_event_candidates",
+        "evidence_id": "acoustic-example-001",
+        "evidence_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "event_count": 1,
+      "max_peak_score": 0.93,
+      "signals": [
+        {
+          "label": "explosion",
+          "start_sample": 0,
+          "end_sample": 15600,
+          "start_seconds": 0,
+          "end_seconds": 0.975,
+          "peak_score": 0.93,
+          "source_event_index": 0
+        }
+      ]
+    },
+    "speech": {
+      "status": "present",
+      "evidence": {
+        "kind": "speech",
+        "document_type": "speech_evidence_candidates",
+        "evidence_id": "speech-example-001",
+        "evidence_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "segment_count": 2,
+      "accepted_transcript_count": 1,
+      "review_required_transcript_count": 1,
+      "max_vad_score": 0.94
+    },
+    "language": {
+      "status": "present",
+      "evidence": {
+        "kind": "language",
+        "document_type": "language_evidence",
+        "evidence_id": "language-example-001",
+        "evidence_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "finding_count": 1,
+      "signals": [
+        {
+          "finding_id": "language-finding-0000",
+          "segment_id": "speech-0000",
+          "category": "distress",
+          "reason_codes": ["phrase_match"],
+          "start_sample": 2000,
+          "end_sample": 10000,
+          "rule_match_count": 1
+        }
+      ]
+    }
+  },
+  "score": 82,
+  "severity": "critical",
+  "reason_codes": [
+    "acoustic_event_candidate",
+    "acoustic_high_confidence",
+    "speech_present",
+    "transcript_review_required",
+    "language_distress"
+  ],
+  "missing_data": {
+    "missing_branches": [],
+    "not_permitted_branches": [],
+    "review_required": false,
+    "reason_codes": []
+  },
+  "human_review_required": true
+}

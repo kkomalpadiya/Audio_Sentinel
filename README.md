@@ -155,7 +155,11 @@ explicit-negation scope, and emits privacy-minimized A5.1 evidence. B5.2 adds th
 [versioned English language fixtures](docs/language-fixtures.md): 74 synthetic
 accepted-transcript cases with 75 expected findings, full active-rule and negation
 coverage, and prospective hypothetical, quoted, and ambiguous safeguards for A5.3.
-Next is A5.3: execute the fixture matrix and add language false-positive safeguards.
+A6.1 adds the [risk-assessment contract](docs/risk-assessment.md): hash-pinned
+acoustic, speech, and language evidence summaries; explicit present, missing, and
+not-permitted branch statuses; a fixed 0-100 score range; v1 severity bands; and a
+missing-data policy that records absent evidence for review instead of treating it
+as safe. The scoring rules engine begins in B6.1.
 
 ## Local panel demonstration
 
