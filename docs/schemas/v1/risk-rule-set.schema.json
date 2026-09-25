@@ -1,0 +1,289 @@
+{
+  "$defs": {
+    "AcousticLabelScore": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/EventLabel"
+        },
+        "points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Points",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label",
+        "points"
+      ],
+      "title": "AcousticLabelScore",
+      "type": "object"
+    },
+    "AcousticScoringRules": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregation": {
+          "const": "maximum_label",
+          "default": "maximum_label",
+          "enum": [
+            "maximum_label"
+          ],
+          "title": "Aggregation",
+          "type": "string"
+        },
+        "high_confidence_bonus": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "High Confidence Bonus",
+          "type": "number"
+        },
+        "high_confidence_threshold": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "High Confidence Threshold",
+          "type": "number"
+        },
+        "label_scores": {
+          "items": {
+            "$ref": "#/$defs/AcousticLabelScore"
+          },
+          "minItems": 1,
+          "title": "Label Scores",
+          "type": "array"
+        },
+        "max_points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Max Points",
+          "type": "number"
+        }
+      },
+      "required": [
+        "label_scores",
+        "high_confidence_threshold",
+        "high_confidence_bonus",
+        "max_points"
+      ],
+      "title": "AcousticScoringRules",
+      "type": "object"
+    },
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "HumanReviewRules": {
+      "additionalProperties": false,
+      "properties": {
+        "ambiguous_language": {
+          "default": true,
+          "title": "Ambiguous Language",
+          "type": "boolean"
+        },
+        "minimum_score": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 100.0,
+          "title": "Minimum Score",
+          "type": "number"
+        },
+        "transcript_review_required": {
+          "default": true,
+          "title": "Transcript Review Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "minimum_score"
+      ],
+      "title": "HumanReviewRules",
+      "type": "object"
+    },
+    "LanguageCategory": {
+      "description": "Limited evidence categories; none is an incident or risk decision.",
+      "enum": [
+        "no_concerning_match",
+        "distress",
+        "threat",
+        "weapon_reference",
+        "ambiguous",
+        "context_suppressed"
+      ],
+      "title": "LanguageCategory",
+      "type": "string"
+    },
+    "LanguageCategoryScore": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/LanguageCategory"
+        },
+        "points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Points",
+          "type": "number"
+        }
+      },
+      "required": [
+        "category",
+        "points"
+      ],
+      "title": "LanguageCategoryScore",
+      "type": "object"
+    },
+    "LanguageScoringRules": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregation": {
+          "const": "sum_findings",
+          "default": "sum_findings",
+          "enum": [
+            "sum_findings"
+          ],
+          "title": "Aggregation",
+          "type": "string"
+        },
+        "category_scores": {
+          "items": {
+            "$ref": "#/$defs/LanguageCategoryScore"
+          },
+          "minItems": 1,
+          "title": "Category Scores",
+          "type": "array"
+        },
+        "max_points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Max Points",
+          "type": "number"
+        }
+      },
+      "required": [
+        "category_scores",
+        "max_points"
+      ],
+      "title": "LanguageScoringRules",
+      "type": "object"
+    },
+    "SpeechScoringRules": {
+      "additionalProperties": false,
+      "properties": {
+        "max_points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Max Points",
+          "type": "number"
+        },
+        "max_review_required_points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Max Review Required Points",
+          "type": "number"
+        },
+        "review_required_points_per_transcript": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Review Required Points Per Transcript",
+          "type": "number"
+        },
+        "segment_presence_points": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Segment Presence Points",
+          "type": "number"
+        }
+      },
+      "required": [
+        "segment_presence_points",
+        "review_required_points_per_transcript",
+        "max_review_required_points",
+        "max_points"
+      ],
+      "title": "SpeechScoringRules",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/risk-rule-set.schema.json",
+  "additionalProperties": false,
+  "description": "Complete score weights, caps, and human-review triggers for one policy.",
+  "properties": {
+    "acoustic": {
+      "$ref": "#/$defs/AcousticScoringRules"
+    },
+    "human_review": {
+      "$ref": "#/$defs/HumanReviewRules"
+    },
+    "language": {
+      "$ref": "#/$defs/LanguageScoringRules"
+    },
+    "rule_format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Rule Format Version",
+      "type": "string"
+    },
+    "rule_set_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Rule Set Id",
+      "type": "string"
+    },
+    "rule_set_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Rule Set Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "speech": {
+      "$ref": "#/$defs/SpeechScoringRules"
+    },
+    "total_max_score": {
+      "const": 100,
+      "default": 100,
+      "enum": [
+        100
+      ],
+      "title": "Total Max Score",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "rule_set_id",
+    "rule_set_version",
+    "acoustic",
+    "speech",
+    "language",
+    "human_review"
+  ],
+  "title": "RiskRuleSet",
+  "type": "object"
+}

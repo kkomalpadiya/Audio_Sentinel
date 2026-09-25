@@ -458,6 +458,46 @@
       "title": "RiskReasonCode",
       "type": "string"
     },
+    "RiskRuleSetDescriptor": {
+      "additionalProperties": false,
+      "description": "Exact configurable rule artifact used to calculate a risk score.",
+      "properties": {
+        "artifact_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "rule_format_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Rule Format Version",
+          "type": "string"
+        },
+        "rule_set_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Rule Set Id",
+          "type": "string"
+        },
+        "rule_set_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Rule Set Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_set_id",
+        "rule_set_version",
+        "artifact_sha256"
+      ],
+      "title": "RiskRuleSetDescriptor",
+      "type": "object"
+    },
     "RiskScoringPolicy": {
       "additionalProperties": false,
       "description": "Versioned score range and severity-band definition for B6.1.",
@@ -473,6 +513,9 @@
           ],
           "title": "Policy Version",
           "type": "string"
+        },
+        "rule_set": {
+          "$ref": "#/$defs/RiskRuleSetDescriptor"
         },
         "score_max": {
           "const": 100,
@@ -500,6 +543,9 @@
           "type": "array"
         }
       },
+      "required": [
+        "rule_set"
+      ],
       "title": "RiskScoringPolicy",
       "type": "object"
     },

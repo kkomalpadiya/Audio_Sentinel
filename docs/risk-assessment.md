@@ -10,9 +10,9 @@ the missing-data policy.
 The checked-in JSON Schema is in `docs/schemas/v1/risk-assessment.schema.json`, and
 the complete example is in `docs/examples/risk-assessment.json`.
 
-This task defines a contract. It does not implement the scoring formula, train a
-model, make a consensus decision, create an alert, or claim that an incident
-occurred. B6.1 owns the configurable scoring rules engine.
+This task defines the contract. B6.1 now implements the configurable scoring
+formula described in `docs/risk-scoring.md`. Neither task trains a model, makes a
+consensus decision, creates an alert, or claims that an incident occurred.
 
 ## Input boundary
 
@@ -104,11 +104,12 @@ Run the complete project checks before committing:
 
 ## Next task
 
-B6.1 will implement the configurable rules engine that consumes this contract and
-produces validated risk-assessment documents.
+A6.2 will convert validated acoustic, speech, and language evidence documents into
+the risk inputs consumed by the B6.1 engine.
 
 ## Beginner-friendly explanation
 
 This task creates the receipt format for risk scoring. It says which evidence was
 available, which evidence was missing, how a score must be labeled, and when missing
-data forces human review. It does not decide the scoring formula yet.
+data forces human review. B6.1 now performs the scoring calculation using an
+integrity-checked local rule file.

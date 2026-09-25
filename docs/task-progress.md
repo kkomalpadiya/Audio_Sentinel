@@ -1134,3 +1134,44 @@ In plain language: Phase 6 now has the receipt for risk scoring. It records what
 evidence the scorer saw, what was missing, what score band the result belongs to,
 and whether missing data needs a person to review it. The next task will calculate
 the score.
+
+## B6.1 — Complete
+
+Implemented the configurable deterministic risk-scoring engine in
+`src/audio_sentinel/risk_scoring.py`. The engine consumes a validated A6.1
+`RiskInputSet`, calculates independently capped acoustic, speech, and language
+contributions, caps the final score at 100, assigns the existing v1 severity band,
+emits canonical reason codes, evaluates missing-data and uncertainty review rules,
+and returns a validated `RiskAssessmentDocument`.
+
+Added the versioned built-in scoring artifact at
+`src/audio_sentinel/resources/risk-scoring-rules-v1.json`. The loader bounds the
+artifact size, rejects unknown or malformed fields, validates complete canonical
+label/category coverage, protects non-risk categories from nonzero weights, and
+pins the exact built-in bytes with SHA-256. Risk assessments now include the rule
+set ID, version, format version, and digest, and deterministic assessment IDs change
+when either the inputs or scoring configuration changes.
+
+The built-in rules reproduce the documented example score of 82: 50 acoustic
+points for a high-confidence explosion, 7 speech points for speech plus one
+review-required transcript, and 25 language points for distress. Missing branches
+add no points but require review; consent-limited branches remain distinct from
+missing data. Human review is also required at score 25 or above, for transcript
+uncertainty, or for ambiguous language.
+
+Added `docs/risk-scoring.md`, the checked-in
+`docs/schemas/v1/risk-rule-set.schema.json`, scoring-rule provenance in the risk
+assessment schema and example, and 25 focused scoring tests. The focused B6.1 and
+A6.1 suite passes 61 tests. Full verification passes all 1,340 project tests,
+compilation, and the generated preparation smoke test.
+
+Local tracker note: the latest workbook in this checkout still records A5.3 and
+A6.1 as not started, so it was not advanced for B6.1. Reconcile or pull the missing
+tracker state before marking Phase 6 tasks complete in Excel.
+
+Next: A6.2 — Integrate acoustic, speech, and language evidence into risk inputs.
+
+In plain language: Phase 6 now has the calculator behind the risk receipt. Its
+numbers come from a small versioned JSON rule file, no branch can contribute beyond
+its cap, missing evidence stays visible, and every result records exactly which
+rules produced it.

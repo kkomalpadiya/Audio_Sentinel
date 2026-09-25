@@ -16,6 +16,7 @@ from audio_sentinel.risk_contracts import (
     RiskMissingDataAssessment,
     RiskMissingDataPolicy,
     RiskReasonCode,
+    RiskRuleSetDescriptor,
     RiskScoringPolicy,
     default_risk_severity_bands,
     risk_schema_documents,
@@ -70,7 +71,13 @@ def test_invalid_scores_are_rejected(score: float) -> None:
 
 
 def test_default_policy_pins_v1_score_range_and_bands() -> None:
-    policy = RiskScoringPolicy()
+    policy = RiskScoringPolicy(
+        rule_set=RiskRuleSetDescriptor(
+            rule_set_id="test-risk-rules",
+            rule_set_version="1.0.0",
+            artifact_sha256="a" * 64,
+        )
+    )
 
     assert policy.score_min == 0
     assert policy.score_max == 100
@@ -80,12 +87,19 @@ def test_default_policy_pins_v1_score_range_and_bands() -> None:
 
 
 def test_policy_rejects_changed_or_reordered_severity_bands() -> None:
-    payload = RiskScoringPolicy().model_dump(mode="json")
+    policy = RiskScoringPolicy(
+        rule_set=RiskRuleSetDescriptor(
+            rule_set_id="test-risk-rules",
+            rule_set_version="1.0.0",
+            artifact_sha256="a" * 64,
+        )
+    )
+    payload = policy.model_dump(mode="json")
     payload["severity_bands"][1]["max_score"] = 25
     with pytest.raises(ValidationError, match="documented defaults"):
         RiskScoringPolicy.model_validate(payload)
 
-    payload = RiskScoringPolicy().model_dump(mode="json")
+    payload = policy.model_dump(mode="json")
     payload["severity_bands"].reverse()
     with pytest.raises(ValidationError, match="canonical"):
         RiskScoringPolicy.model_validate(payload)

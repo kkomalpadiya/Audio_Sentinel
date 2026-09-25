@@ -18,6 +18,7 @@ from audio_sentinel.preparation import Identifier
 
 RISK_ASSESSMENT_SCHEMA_VERSION = "1.0"
 RISK_SCORING_POLICY_VERSION = "1.0"
+RISK_RULE_FORMAT_VERSION = "1.0"
 
 
 class RiskEvidenceKind(str, Enum):
@@ -356,12 +357,22 @@ class RiskMissingDataAssessment(RiskContractRecord):
         return self
 
 
+class RiskRuleSetDescriptor(RiskContractRecord):
+    """Exact configurable rule artifact used to calculate a risk score."""
+
+    rule_set_id: Identifier
+    rule_set_version: str = Field(min_length=1, max_length=128)
+    rule_format_version: Literal["1.0"] = RISK_RULE_FORMAT_VERSION
+    artifact_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
 class RiskScoringPolicy(RiskContractRecord):
     """Versioned score range and severity-band definition for B6.1."""
 
     policy_version: Literal["1.0"] = RISK_SCORING_POLICY_VERSION
     score_min: Literal[0] = 0
     score_max: Literal[100] = 100
+    rule_set: RiskRuleSetDescriptor
     severity_bands: tuple[RiskSeverityBandDefinition, ...] = Field(
         default_factory=default_risk_severity_bands
     )

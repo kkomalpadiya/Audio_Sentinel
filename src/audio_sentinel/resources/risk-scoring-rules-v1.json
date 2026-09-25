@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "rule_format_version": "1.0",
+  "rule_set_id": "audio-sentinel-risk-v1",
+  "rule_set_version": "1.0.0",
+  "acoustic": {
+    "aggregation": "maximum_label",
+    "label_scores": [
+      {"label": "ambient", "points": 0},
+      {"label": "no_speech", "points": 0},
+      {"label": "speech_present", "points": 0},
+      {"label": "non_threatening_speech", "points": 0},
+      {"label": "siren", "points": 10},
+      {"label": "smoke_alarm", "points": 15},
+      {"label": "glass_break", "points": 25},
+      {"label": "crowd_panic", "points": 30},
+      {"label": "distress_speech", "points": 30},
+      {"label": "threatening_speech", "points": 40},
+      {"label": "weapon_reference", "points": 40},
+      {"label": "gunshot", "points": 45},
+      {"label": "explosion", "points": 40}
+    ],
+    "high_confidence_threshold": 0.85,
+    "high_confidence_bonus": 10,
+    "max_points": 60
+  },
+  "speech": {
+    "segment_presence_points": 2,
+    "review_required_points_per_transcript": 5,
+    "max_review_required_points": 10,
+    "max_points": 12
+  },
+  "language": {
+    "aggregation": "sum_findings",
+    "category_scores": [
+      {"category": "no_concerning_match", "points": 0},
+      {"category": "distress", "points": 25},
+      {"category": "threat", "points": 40},
+      {"category": "weapon_reference", "points": 35},
+      {"category": "ambiguous", "points": 5},
+      {"category": "context_suppressed", "points": 0}
+    ],
+    "max_points": 50
+  },
+  "human_review": {
+    "minimum_score": 25,
+    "transcript_review_required": true,
+    "ambiguous_language": true
+  },
+  "total_max_score": 100
+}

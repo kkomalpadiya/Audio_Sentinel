@@ -1,12 +1,18 @@
 {
   "schema_version": "1.0",
   "document_type": "risk_assessment",
-  "assessment_id": "risk-example-001",
+  "assessment_id": "df3cdadf02aaf9941a3968c7b4515ee854c8580dc9c8168fe2fca36aa9ae86ac",
   "created_at": "2026-09-25T12:00:00Z",
   "scoring_policy": {
     "policy_version": "1.0",
     "score_min": 0,
     "score_max": 100,
+    "rule_set": {
+      "rule_set_id": "audio-sentinel-risk-v1",
+      "rule_set_version": "1.0.0",
+      "rule_format_version": "1.0",
+      "artifact_sha256": "a34c1972f778d4965b9f71fbf372ab3180a94655c1d1c5cd8b54802d557bfc11"
+    },
     "severity_bands": [
       {"risk_level": "none", "min_score": 0, "max_score": 0},
       {"risk_level": "low", "min_score": 1, "max_score": 24},

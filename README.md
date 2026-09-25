@@ -159,7 +159,10 @@ A6.1 adds the [risk-assessment contract](docs/risk-assessment.md): hash-pinned
 acoustic, speech, and language evidence summaries; explicit present, missing, and
 not-permitted branch statuses; a fixed 0-100 score range; v1 severity bands; and a
 missing-data policy that records absent evidence for review instead of treating it
-as safe. The scoring rules engine begins in B6.1.
+as safe. B6.1 adds the [configurable risk-scoring engine](docs/risk-scoring.md):
+SHA-256-pinned local score weights, bounded acoustic, speech, and language
+contributions, deterministic assessment IDs, rule provenance, explicit reason
+codes, and human-review triggers for missing or uncertain evidence.
 
 ## Local panel demonstration
 
