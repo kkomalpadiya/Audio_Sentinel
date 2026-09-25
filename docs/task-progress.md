@@ -1218,3 +1218,36 @@ Next: B6.2 — Create risk-scoring tests for normal and edge scenarios.
 In plain language: Phase 6 can now take the three evidence reports, prove that they
 belong together, remove private details, and hand a compact trustworthy summary to
 the scoring calculator.
+
+## A5.3 — Complete
+
+Completed the language false-positive safeguards in
+`src/audio_sentinel/language_analysis.py`. The analyzer now recognizes bounded
+hypothetical or conditional speech framing, quoted or reported speech framing, and
+two narrow insufficient-context constructions. Explicit negation remains the
+highest-precedence context rule, and no context cue can cross a hard sentence or
+clause boundary.
+
+Converted the complete B5.2 answer key into executable regression coverage. All 74
+fixtures now run through the real analyzer and compare category, canonical reason
+codes, exact supporting rule IDs, and finding order. Additional cases verify that
+the safeguards generalize within a clause, preserve direct questions with an
+object, respect sentence boundaries, and keep explicit-negation precedence.
+
+This closes the behavioral gap without changing any Phase 6 contract. A6.1 already
+supports `ambiguous` and `context_suppressed`, A6.2 already transports those typed
+findings, and B6.1 already scores context-suppressed language at zero while sending
+ambiguous language to review. The focused analyzer and Phase 6 suite passes 202
+tests. Full verification passes all 1,437 project tests, compilation, and the
+generated preparation smoke test.
+
+Current tracker: `outputs/a5_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 45 completed tasks out of 72 and B6.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: B6.2 — Create risk-scoring tests for normal and edge scenarios.
+
+In plain language: the analyzer now distinguishes direct concerning wording from
+the same words used as an example, quotation, report, or unclear short question.
+Phase 6 receives better evidence through the interfaces it already had, so its
+completed work stays valid while false-positive scores become less likely.

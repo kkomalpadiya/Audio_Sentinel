@@ -154,7 +154,9 @@ normalization, prefers specific phrases over contained keywords, applies bounded
 explicit-negation scope, and emits privacy-minimized A5.1 evidence. B5.2 adds the
 [versioned English language fixtures](docs/language-fixtures.md): 74 synthetic
 accepted-transcript cases with 75 expected findings, full active-rule and negation
-coverage, and prospective hypothetical, quoted, and ambiguous safeguards for A5.3.
+coverage. A5.3 runs that complete matrix against the analyzer and adds bounded
+hypothetical, quoted/reported, and insufficient-context safeguards while preserving
+explicit-negation precedence and hard sentence boundaries.
 A6.1 adds the [risk-assessment contract](docs/risk-assessment.md): hash-pinned
 acoustic, speech, and language evidence summaries; explicit present, missing, and
 not-permitted branch statuses; a fixed 0-100 score range; v1 severity bands; and a

@@ -49,7 +49,7 @@ For example, `please help me` produces one phrase finding rather than both a phr
 and a contained `help` keyword finding. Separate occurrences remain separate and
 are emitted in deterministic character order.
 
-## Explicit-negation scope
+## Context safeguards
 
 The rule artifact sets a three-token negation window. A negation can suppress a
 concerning match only when it:
@@ -64,10 +64,22 @@ suppressed finding records both exact matches and both the original keyword/phra
 reason and `explicit_negation`. A negation inside an active phrase does not suppress
 that phrase, so `I cannot breathe` remains the configured distress phrase.
 
-The A5.1 hypothetical, quoted/reported-speech, and ambiguity reason codes remain
-reserved. This baseline does not claim to solve those contexts. B5.2 now defines
-their expected behavior in a versioned fixture artifact, and A5.3 will execute the
-matrix and add the broader false-positive safeguards.
+A5.3 adds three bounded safeguards after explicit-negation evaluation:
+
+- modal speech framing such as `a character might say ...` and conditional speech
+  framing such as `if I said ...` produce `context_suppressed` with
+  `hypothetical_or_conditional`;
+- report/statement framing and explicit quotation cues produce
+  `context_suppressed` with `quoted_or_reported_speech`; and
+- a keyword-only modal question with no object, or a keyword introduced only as a
+  mentioned/referenced topic, produces `ambiguous` with `insufficient_context`.
+
+These cues operate only inside the same hard-bounded clause as the match. Phrase
+matches and keyword matches with meaningful trailing objects are not downgraded by
+the ambiguity safeguard. Explicit negation takes precedence when more than one
+context cue applies. These rules reduce known false positives; they do not claim to
+infer intent or exhaust every form of quotation, hypothetical language, or
+ambiguity.
 
 ## Determinism, provenance, and limits
 
@@ -84,10 +96,10 @@ network, model, dataset, or download.
 
 ## Verification
 
-Run the focused Phase 5 checks:
+Run the focused Phase 5 checks, including the complete B5.2 fixture matrix:
 
 ```powershell
-python -m pytest tests/test_language_analysis.py tests/test_language_contracts.py tests/test_language_rules.py -q
+python -m pytest tests/test_language_analysis.py tests/test_language_contracts.py tests/test_language_rules.py tests/test_language_fixtures.py -q
 ```
 
 Run the complete project checks before committing:
@@ -99,13 +111,16 @@ Run the complete project checks before committing:
 ## Evaluation fixtures
 
 B5.2 supplies the versioned fixture matrix documented in
-`docs/language-fixtures.md`. A5.3 will execute it against this engine and implement
-the remaining context safeguards.
+`docs/language-fixtures.md`. A5.3 executes all 74 fixtures against this engine and
+compares every category, reason code, and supporting rule ID with the expected
+labels.
 
 ## Beginner-friendly explanation
 
 The project now takes only transcripts that the previous phase explicitly accepted,
 checks them against the versioned dictionary, and creates a receipt for every match.
 It remembers exactly where the words appeared and whether nearby wording such as
-`do not` suppressed them. A match is still only evidence for later stages; it is not
-an emergency decision by itself.
+`do not`, `might say`, or `the report said` changes how they should be understood.
+Short unclear uses are labeled for review instead of being treated as definite. A
+match is still only evidence for later stages; it is not an emergency decision by
+itself.

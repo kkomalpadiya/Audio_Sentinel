@@ -1,4 +1,4 @@
-"""A5.2 tests for deterministic accepted-transcript analysis."""
+"""A5.2/A5.3 tests for deterministic accepted-transcript analysis."""
 
 from dataclasses import FrozenInstanceError, replace
 from datetime import UTC, datetime
@@ -14,6 +14,7 @@ from audio_sentinel.language_contracts import (
     LanguageReasonCode,
     LanguageRuleKind,
 )
+from audio_sentinel.language_fixtures import load_builtin_language_fixture_set
 from audio_sentinel.language_rules import load_builtin_language_rule_set
 from audio_sentinel.speech_contracts import (
     SpeechEvidenceDocument,
@@ -139,6 +140,83 @@ def speech_result(
 
 def analyze(text: str):
     return analysis.analyze_accepted_transcripts(speech_result((text,)), now=NOW)
+
+
+LANGUAGE_FIXTURES = load_builtin_language_fixture_set().fixture_set.fixtures
+
+
+@pytest.mark.parametrize(
+    "fixture",
+    LANGUAGE_FIXTURES,
+    ids=lambda fixture: fixture.fixture_id,
+)
+def test_labeled_language_fixture_matrix(fixture):
+    findings = analyze(fixture.text).evidence.analyses[0].findings
+    actual = tuple(
+        (
+            finding.category,
+            finding.reason_codes,
+            tuple(match.rule_id for match in finding.matches),
+        )
+        for finding in findings
+    )
+    expected = tuple(
+        (finding.category, finding.reason_codes, finding.rule_ids)
+        for finding in fixture.expected_findings
+    )
+
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ("text", "reason"),
+    [
+        (
+            "A character could say stab you during rehearsal.",
+            LanguageReasonCode.HYPOTHETICAL_OR_CONDITIONAL,
+        ),
+        (
+            "The witness quoted going to shoot you from a statement.",
+            LanguageReasonCode.QUOTED_OR_REPORTED_SPEECH,
+        ),
+    ],
+)
+def test_context_safeguards_generalize_within_the_same_clause(text, reason):
+    finding = analyze(text).evidence.analyses[0].findings[0]
+
+    assert finding.category is LanguageCategory.CONTEXT_SUPPRESSED
+    assert finding.reason_codes[-1] is reason
+
+
+def test_context_cue_does_not_cross_a_sentence_boundary():
+    finding = analyze(
+        "The report said this was rehearsal. I will hurt you."
+    ).evidence.analyses[0].findings[0]
+
+    assert finding.category is LanguageCategory.THREAT
+
+
+def test_ambiguity_safeguard_does_not_hide_a_question_with_an_object():
+    finding = analyze("Could you shoot me?").evidence.analyses[0].findings[0]
+
+    assert finding.category is LanguageCategory.THREAT
+
+
+def test_question_mark_after_a_sentence_boundary_does_not_change_the_match():
+    finding = analyze(
+        "Could you shoot. Is that clear?"
+    ).evidence.analyses[0].findings[0]
+
+    assert finding.category is LanguageCategory.THREAT
+
+
+def test_explicit_negation_takes_precedence_over_reported_context():
+    finding = analyze(
+        "The report said do not shoot you."
+    ).evidence.analyses[0].findings[0]
+
+    assert finding.category is LanguageCategory.CONTEXT_SUPPRESSED
+    assert finding.reason_codes[-1] is LanguageReasonCode.EXPLICIT_NEGATION
 
 
 @pytest.mark.parametrize(

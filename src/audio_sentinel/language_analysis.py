@@ -1,4 +1,4 @@
-"""A5.2 deterministic analysis of accepted A4.3 transcripts."""
+"""A5.2/A5.3 deterministic analysis of accepted A4.3 transcripts."""
 
 from __future__ import annotations
 
@@ -42,6 +42,13 @@ from audio_sentinel.speech_transcription import (
 _TOKEN_SCAN_RE = re.compile(r"[a-z]+(?:'[a-z]+)?")
 _HARD_SCOPE_BOUNDARIES = frozenset(".!?;:\n")
 _CATEGORY_ORDER = {category: index for index, category in enumerate(LanguageCategory)}
+_HYPOTHETICAL_SPEECH_MODALS = frozenset({"could", "might", "would"})
+_HYPOTHETICAL_SPEECH_VERBS = frozenset({"say", "said", "write", "wrote"})
+_REPORTED_SPEECH_CUES = frozenset({"quoted", "quoting"})
+_REPORT_NOUNS = frozenset({"report", "statement"})
+_REPORT_VERBS = frozenset({"said", "stated"})
+_AMBIGUOUS_MENTION_VERBS = frozenset({"discussed", "mentioned", "referenced"})
+_AMBIGUOUS_QUESTION_MODALS = frozenset({"could", "would"})
 
 
 class LanguageAnalysisError(RuntimeError):
@@ -365,6 +372,109 @@ def _applicable_negation(
     )
 
 
+def _scope_tokens(
+    text: str,
+    tokens: tuple[_Token, ...],
+    candidate: _Candidate,
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Return token context around a match without crossing hard boundaries."""
+
+    scope_start = candidate.start_token
+    while scope_start > 0:
+        previous = tokens[scope_start - 1]
+        current = tokens[scope_start]
+        if any(
+            character in _HARD_SCOPE_BOUNDARIES
+            for character in text[previous.end_character : current.start_character]
+        ):
+            break
+        scope_start -= 1
+
+    scope_end = candidate.end_token
+    while scope_end < len(tokens):
+        previous = tokens[scope_end - 1]
+        current = tokens[scope_end]
+        if any(
+            character in _HARD_SCOPE_BOUNDARIES
+            for character in text[previous.end_character : current.start_character]
+        ):
+            break
+        scope_end += 1
+
+    return (
+        tuple(token.value for token in tokens[scope_start : candidate.start_token]),
+        tuple(token.value for token in tokens[candidate.end_token : scope_end]),
+    )
+
+
+def _contains_ordered_pair(
+    values: tuple[str, ...],
+    first: frozenset[str],
+    second: frozenset[str],
+    *,
+    max_gap: int,
+) -> bool:
+    for first_index, value in enumerate(values):
+        if value not in first:
+            continue
+        end = min(len(values), first_index + max_gap + 2)
+        if any(candidate in second for candidate in values[first_index + 1 : end]):
+            return True
+    return False
+
+
+def _context_reason(
+    text: str,
+    tokens: tuple[_Token, ...],
+    candidate: _Candidate,
+) -> LanguageReasonCode | None:
+    """Classify bounded framing around a concerning rule match."""
+
+    before, after = _scope_tokens(text, tokens, candidate)
+
+    has_hypothetical_speech = _contains_ordered_pair(
+        before,
+        _HYPOTHETICAL_SPEECH_MODALS,
+        _HYPOTHETICAL_SPEECH_VERBS,
+        max_gap=1,
+    )
+    has_if_speech = "if" in before and any(
+        value in _HYPOTHETICAL_SPEECH_VERBS for value in before
+    )
+    if has_hypothetical_speech or has_if_speech:
+        return LanguageReasonCode.HYPOTHETICAL_OR_CONDITIONAL
+
+    has_report_cue = _contains_ordered_pair(
+        before,
+        _REPORT_NOUNS,
+        _REPORT_VERBS,
+        max_gap=1,
+    )
+    if has_report_cue or any(value in _REPORTED_SPEECH_CUES for value in before):
+        return LanguageReasonCode.QUOTED_OR_REPORTED_SPEECH
+
+    if candidate.rule.kind is not LanguageRuleKind.KEYWORD or after:
+        return None
+    has_modal_question = (
+        len(before) >= 2
+        and before[-2] in _AMBIGUOUS_QUESTION_MODALS
+        and before[-1] in {"he", "i", "she", "they", "we", "you"}
+        and next(
+            (
+                character
+                for character in text[candidate.match.end_character :]
+                if character in _HARD_SCOPE_BOUNDARIES
+            ),
+            None,
+        )
+        == "?"
+    )
+    has_mention_cue = any(value in _AMBIGUOUS_MENTION_VERBS for value in before)
+    if has_modal_question or has_mention_cue:
+        return LanguageReasonCode.INSUFFICIENT_CONTEXT
+    return None
+
+
 def _finding_id(
     segment_id: str,
     category: LanguageCategory,
@@ -383,6 +493,7 @@ def _finding_id(
 
 def _analyze_transcript(
     transcript: DownstreamTranscript,
+    tokens: tuple[_Token, ...],
     active: tuple[_Candidate, ...],
     negations: tuple[_Candidate, ...],
     loaded: LoadedLanguageRuleSet,
@@ -410,11 +521,12 @@ def _analyze_transcript(
             loaded.rule_set.negation_window_tokens,
         )
         primary_reason = candidate.rule.reason_code
-        if negation is None:
-            category = candidate.rule.category
-            reason_codes = (primary_reason,)
-            matches = (candidate.match,)
-        else:
+        context_reason = (
+            None
+            if negation is not None
+            else _context_reason(transcript.text, tokens, candidate)
+        )
+        if negation is not None:
             category = LanguageCategory.CONTEXT_SUPPRESSED
             reason_codes = (primary_reason, LanguageReasonCode.EXPLICIT_NEGATION)
             matches = tuple(
@@ -428,6 +540,18 @@ def _analyze_transcript(
                     ),
                 )
             )
+        elif context_reason is LanguageReasonCode.INSUFFICIENT_CONTEXT:
+            category = LanguageCategory.AMBIGUOUS
+            reason_codes = (primary_reason, context_reason)
+            matches = (candidate.match,)
+        elif context_reason is not None:
+            category = LanguageCategory.CONTEXT_SUPPRESSED
+            reason_codes = (primary_reason, context_reason)
+            matches = (candidate.match,)
+        else:
+            category = candidate.rule.category
+            reason_codes = (primary_reason,)
+            matches = (candidate.match,)
         assert category is not None
         findings.append(
             LanguageFinding(
@@ -522,6 +646,7 @@ def analyze_accepted_transcripts(
         analyses.append(
             _analyze_transcript(
                 transcript,
+                tokens,
                 active,
                 negations,
                 loaded,

@@ -9,8 +9,10 @@ loader and validation contract are in `src/audio_sentinel/language_fixtures.py`,
 the portable JSON Schema is checked in at
 `docs/schemas/v1/language-fixture-set.schema.json`.
 
-The fixtures are evaluation data for A5.3. Loading them does not execute the A5.2
-analysis engine, change its rules, assign risk, or send alerts.
+The fixtures are evaluation data for A5.3. Loading them alone does not execute the
+analysis engine, change its rules, assign risk, or send alerts. The A5.3 regression
+test explicitly runs every fixture through the engine and compares complete output
+signatures.
 
 ## Label structure
 
@@ -44,13 +46,14 @@ fixture. The loader rejects incomplete rule coverage, unknown rule IDs, category
 rule-kind mismatches, rule provenance drift, duplicate IDs or text, unordered
 inventories, invalid counts, unsupported metadata, and changed artifact bytes.
 
-## Important evaluation boundary
+## Evaluation boundary
 
-The fixture labels state desired A5.1 evidence behavior. They are not a claim that
-the current A5.2 engine already passes every example. In particular, hypothetical,
-quoted/reported, and insufficient-context cases intentionally define work for A5.3,
-which will turn this artifact into regression tests and add the corresponding
-false-positive safeguards.
+The fixture labels state desired A5.1 evidence behavior. A5.3 now verifies all 74
+examples against the analyzer, including hypothetical, quoted/reported, and
+insufficient-context cases. The comparison covers category, canonical reason-code
+order, exact supporting rule IDs, and finding order. Additional tests verify that
+context cues cannot cross hard sentence boundaries and that ambiguity handling does
+not hide a question containing an object.
 
 The text is synthetic and contains no recordings, personal data, speaker identity,
 or real incident claims. No external dataset, model, network access, or download is
@@ -65,10 +68,10 @@ immutable result containing the artifact digest and size.
 
 ## Verification
 
-Run the focused fixture checks:
+Run the focused fixture and engine checks:
 
 ```powershell
-python -m pytest tests/test_language_fixtures.py -q
+python -m pytest tests/test_language_fixtures.py tests/test_language_analysis.py -q
 ```
 
 Run the complete project checks before committing:
@@ -77,14 +80,9 @@ Run the complete project checks before committing:
 .\scripts\verify_project.ps1
 ```
 
-## Next task
-
-A5.3 will execute these fixtures against the transcript-analysis engine and add the
-language false-positive safeguards needed to satisfy their expected labels.
-
 ## Beginner-friendly explanation
 
 This artifact is a versioned answer key. It supplies examples of direct concerning
 language, ordinary harmless text, explicit negations, quoted or hypothetical
-language, and unclear short statements. The next task can use that answer key to
-measure the engine and improve it without changing expectations to fit the output.
+language, and unclear short statements. The test suite now grades the engine against
+that answer key without changing expectations to fit the output.
