@@ -214,6 +214,9 @@ engine, and A7.2 final decision service. The generated report pins every policy
 artifact and confirms all four outcomes, alert boundaries, conflicts, uncertainty,
 missing evidence, consent limits, and safe-language behavior without claiming
 empirical incident accuracy or sending notifications.
+The detailed [Phase 7 completion report](docs/phase-7-verification-and-consensus-report.md)
+explains the complete verification flow, algorithms, alternatives, technology
+choices, safety controls, tests, examples, and limitations in common terms.
 
 ## Local panel demonstration
 
