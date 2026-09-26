@@ -190,6 +190,12 @@ with a SHA-256-pinned local rule artifact, explicit acoustic and language suppor
 rules, neutral speech handling, four cross-branch contradiction checks,
 deterministic evaluation identity, and privacy-minimized reason receipts. It
 classifies evidence for A7.2 but does not select or send an alert outcome.
+A7.2 implements the [final verification decision service](docs/consensus-service.md).
+It binds the Phase 6 assessment to its B7.1 evaluation, recomputes the trusted
+agreement result to reject stale or tampered handoffs, and applies the A7.1
+precedence rules to select exactly one outcome. Critical evidence becomes a local
+alert candidate only with clean acoustic and language support; every failed alert
+gate remains reviewable, and the service performs no notification delivery.
 
 ## Local panel demonstration
 

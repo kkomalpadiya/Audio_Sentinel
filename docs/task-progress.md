@@ -1442,3 +1442,45 @@ In plain language: this task is the cross-checker. It compares what the sound,
 speech, and language branches say, keeps ordinary speech neutral, and turns clear
 contradictions into review evidence instead of letting one model silently cancel
 another.
+
+## A7.2 — Complete
+
+Implemented the Phase 7 final verification service in
+`src/audio_sentinel/consensus_service.py`. The service accepts one validated Phase
+6 risk assessment and its B7.1 agreement evaluation, revalidates both documents,
+recomputes the assessment SHA-256, and confirms their identities match. It then
+reruns B7.1 using the trusted hash-pinned agreement rules and requires exact
+equality with the supplied result before making a decision. Custom agreement rules
+are accepted only when the caller explicitly supplies the exact validated rule
+artifact as trusted input.
+
+The service applies the fixed A7.1 precedence policy and returns exactly one
+`no_action`, `log`, `review`, or `alert` outcome. Clean zero scores produce no
+action, clean low positive scores are logged, and score thresholds, Phase 6 review
+flags, missing evidence, conflicts, or failed critical agreement gates produce
+review. A local alert candidate requires a critical score, acoustic and language
+support, no conflicts, no missing evidence, and no blocking uncertainty. The
+service never sends a notification.
+
+Decision IDs are deterministic SHA-256 identities over the policy, pinned risk
+reference, branch states, outcome, and reasons; timestamps are excluded. Outputs
+remain privacy-minimized and retain explicit receipts for consent limits,
+uncertainty, missing evidence, conflicts, and insufficient alert agreement.
+
+Added `docs/consensus-service.md` and 19 focused tests covering all four outcomes,
+every alert safety gate, mismatched and tampered handoffs, explicitly trusted
+custom rules, stable safe failures, deterministic identity, service reuse,
+immutability, JSON portability, and forbidden sensitive fields.
+
+The focused A7.2, B7.1, and A7.1 suites pass all 91 tests. Full verification
+passes all 1,635 project tests and Python compilation.
+
+Current tracker: `outputs/a7_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 51 completed tasks out of 72 and B7.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: B7.2 — Add disagreement, low-confidence, and false-alert safety tests.
+
+In plain language: the final checker now refuses to trust labels alone. It proves
+that the score and agreement report describe the same evidence, independently
+repeats the agreement check, and only then chooses one safe next action.
