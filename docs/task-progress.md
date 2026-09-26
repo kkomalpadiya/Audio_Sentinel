@@ -1522,3 +1522,48 @@ In plain language: the safety net now checks not only the successful alert path,
 but also the near misses and contradictions most likely to create false alerts.
 Evidence just below a threshold stays below it, uncertainty stays reviewable, and
 one strong branch can never act like two independent sources.
+
+## A7.3 — Complete
+
+Added the future-facing trainable verification-model interface in
+`src/audio_sentinel/verification_model.py`. The interface revalidates a Phase 6
+risk assessment and its B7.1 agreement through the A7.2 trusted-source boundary,
+then extracts a fixed-shape feature vector containing the score, severity, review
+state, every Phase 6 reason flag, every branch status and agreement state, every
+B7.1 reason flag, and derived support, conflict, missing, and consent-limited
+counts.
+
+The features exclude source and decision identities, timestamps, transcript and
+matched text, speaker identity, raw audio, paths, tensors, and the current A7.2
+outcome. Canonical JSON hashing gives each vector a deterministic SHA-256. Training
+examples pin both complete source documents and the extracted features while
+allowing only human-reviewed or adjudicated outcome targets.
+
+Added version-pinned model descriptors and probability-bearing candidate
+predictions. Predictions must cover all four outcomes in canonical order, sum to
+one, recommend a maximum-probability outcome, and record matching confidence.
+Every prediction permanently declares that deterministic verification is still
+required and that an alert is only a local candidate. Runtime-checkable trainer
+and predictor protocols leave the future algorithm and runtime open without
+changing the current service.
+
+Added `docs/trainable-verification-model.md` and 40 focused tests covering trusted
+source alignment, exact custom-rule trust, canonical inventories, missing and
+consent-limited branches, privacy and target-leakage exclusions, deterministic
+hashes, reviewed targets, training provenance, descriptor compatibility,
+prediction probabilities and safety receipts, protocol implementations,
+immutability, portable schema export, and offline import without ML runtimes.
+
+The focused A7.3 suite passes all 40 tests. The complete Phase 7 suite passes all
+158 tests, and full verification passes all 1,702 project tests plus Python
+compilation.
+
+Current tracker: `outputs/a7_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 53 completed tasks out of 72 and A7.4 as the next task. Changes remain
+uncommitted for review.
+
+Next: A7.4 — Validate consensus outcomes on end-to-end scenarios.
+
+In plain language: this task creates a safe socket for a future learned verifier.
+It defines exactly what reviewed data may enter, what a model may return, and the
+proof attached to both, while leaving today's deterministic safety gate in charge.

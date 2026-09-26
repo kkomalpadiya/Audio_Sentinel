@@ -108,4 +108,6 @@ python -m pytest -q
 
 B7.2 adds the [consensus safety test matrix](consensus-safety-tests.md) for
 disagreement, exact confidence boundaries, missing and consent-limited evidence,
-and false-alert prevention. A7.3 is the next task.
+and false-alert prevention. A7.3 adds the separate
+[trainable verification-model interface](trainable-verification-model.md); model
+predictions remain candidates and must pass this deterministic service.

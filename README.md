@@ -201,6 +201,12 @@ normal and edge-case checks covering all four outcomes, the exact acoustic
 support boundary, every disagreement rule, all language categories, neutral
 speech, missing and consent-limited evidence, and critical-score false-alert
 blocks. It changes no production decision rule.
+A7.3 defines the [trainable verification-model interface](docs/trainable-verification-model.md)
+for future custom training: trusted Phase 6/B7.1 source validation, canonical
+identity-free features, reviewed outcome targets, hash-pinned examples, reproducible
+model descriptors, probability-bearing candidate predictions, and typed
+trainer/predictor protocols. The interface is inactive and cannot replace A7.2 or
+authorize an alert.
 
 ## Local panel demonstration
 
