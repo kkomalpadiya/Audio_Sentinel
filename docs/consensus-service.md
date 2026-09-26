@@ -111,3 +111,7 @@ disagreement, exact confidence boundaries, missing and consent-limited evidence,
 and false-alert prevention. A7.3 adds the separate
 [trainable verification-model interface](trainable-verification-model.md); model
 predictions remain candidates and must pass this deterministic service.
+A7.4 adds the executable
+[end-to-end consensus validation](consensus-validation.md), which runs a pinned
+scenario corpus through the Phase 6 scorer, B7.1 agreement engine, and this
+service and records the exact expected-versus-observed outcomes.

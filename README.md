@@ -207,6 +207,13 @@ identity-free features, reviewed outcome targets, hash-pinned examples, reproduc
 model descriptors, probability-bearing candidate predictions, and typed
 trainer/predictor protocols. The interface is inactive and cannot replace A7.2 or
 authorize an alert.
+A7.4 completes Phase 7 with an
+[executable end-to-end consensus validation](docs/consensus-validation.md): 13
+SHA-256-pinned scenarios pass through the real Phase 6 scorer, B7.1 agreement
+engine, and A7.2 final decision service. The generated report pins every policy
+artifact and confirms all four outcomes, alert boundaries, conflicts, uncertainty,
+missing evidence, consent limits, and safe-language behavior without claiming
+empirical incident accuracy or sending notifications.
 
 ## Local panel demonstration
 

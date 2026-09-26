@@ -1567,3 +1567,42 @@ Next: A7.4 — Validate consensus outcomes on end-to-end scenarios.
 In plain language: this task creates a safe socket for a future learned verifier.
 It defines exactly what reviewed data may enter, what a model may return, and the
 proof attached to both, while leaving today's deterministic safety gate in charge.
+
+## A7.4 — Complete
+
+Added the executable end-to-end consensus validator in
+`src/audio_sentinel/consensus_validation.py`. It loads a bounded, SHA-256-pinned
+scenario corpus, verifies that the corpus targets the exact built-in risk rules,
+agreement rules, and consensus policy version, and expands each compact case into
+the public Phase 6 input contract.
+
+Every case runs through the real `score_risk()`,
+`evaluate_evidence_agreement()`, and `decide_consensus()` entry points. The
+validator compares score, severity, Phase 6 review state, all three branch status
+and agreement states, supporting and conflicting branches, final outcome, reason
+receipts, review state, and local alert-candidate state. It records a deterministic
+validation identity and refuses to overwrite an existing report.
+
+Added 13 reviewed scenarios covering all four outcomes, the exact acoustic
+support boundary, clean multi-branch alerting, single-branch false-alert blocking,
+all four cross-branch conflicts, transcript uncertainty, missing evidence,
+consent-limited evidence, and safe language. All 13 pass. Only the clean critical
+multi-branch case is a local alert candidate, and it still requires review.
+
+Added `scripts/validate_consensus_pipeline.py`, the generated
+`outputs/a7_4_validation/consensus_pipeline_validation.json` report,
+`docs/consensus-validation.md`, and 24 focused tests. The focused A7.4 suite passes
+all 24 tests. The complete Phase 7 suite passes all 182 tests, and full project
+verification passes all 1,726 tests, Python compilation, and the preparation smoke
+test.
+
+Current tracker: `outputs/a7_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 54 completed tasks out of 72 and A8.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: A8.1 — Build end-to-end evaluator orchestration for one recorded clip.
+
+In plain language: Phase 7 now has a reproducible acceptance certificate. The
+checked synthetic scenarios prove that the deterministic scorer, agreement
+engine, and final verifier work together exactly as documented, while making no
+claim about real-world incident accuracy and sending no notification.

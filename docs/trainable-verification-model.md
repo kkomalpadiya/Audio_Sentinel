@@ -133,7 +133,7 @@ python -m pytest -q
 
 ## Next task
 
-A7.4 will validate consensus outcomes across end-to-end scenarios. The trainable
-interface remains inactive until a later implementation is explicitly selected,
-trained on reviewed data, evaluated, and integrated behind the deterministic
-verification boundary.
+A7.4 validates consensus outcomes across end-to-end scenarios in
+`docs/consensus-validation.md`. The trainable interface remains inactive: this
+validation exercises the deterministic scorer, agreement engine, and final
+decision service, not an untrained prediction implementation.

@@ -1,0 +1,1019 @@
+{
+  "schema_version": "1.0",
+  "document_type": "consensus_pipeline_validation",
+  "validation_id": "a7-4-a6ba3a24383fe818178d8545c7c80705a7eca86ebcf36d72087bf60b4d61b852",
+  "created_at": "2026-09-26T18:40:00.779236Z",
+  "decision_status": "validated_for_deterministic_v1_scenarios",
+  "suite_id": "audio-sentinel-consensus-validation-v1",
+  "suite_version": "1.0.0",
+  "suite_sha256": "bef7dcd275b2f21b5c7e07de9337ce60d4789f8182f1b1e01feb9ab375d7bf63",
+  "risk_rule_set": {
+    "rule_set_id": "audio-sentinel-risk-v1",
+    "rule_set_version": "1.0.0",
+    "rule_format_version": "1.0",
+    "artifact_sha256": "a34c1972f778d4965b9f71fbf372ab3180a94655c1d1c5cd8b54802d557bfc11"
+  },
+  "agreement_rule_set": {
+    "rule_set_id": "audio-sentinel-consensus-agreement-v1",
+    "rule_set_version": "1.0.0",
+    "rule_format_version": "1.0",
+    "artifact_sha256": "f2c913f921157f39a0e84b59c600e53f91c43828a9da9b83b84acaaf57d10d79"
+  },
+  "consensus_policy": {
+    "policy_version": "1.0",
+    "no_action_score": 0,
+    "log_max_score": 24,
+    "review_min_score": 25,
+    "alert_min_score": 75,
+    "alert_min_supporting_branches": 2,
+    "alert_support_eligible_branches": [
+      "acoustic",
+      "language"
+    ],
+    "conflicts_block_alert": true,
+    "missing_evidence_blocks_alert": true,
+    "uncertainty_blocks_alert": true,
+    "alert_requires_critical_severity": true,
+    "alert_is_local_candidate_only": true,
+    "outcome_precedence": [
+      "alert",
+      "review",
+      "log",
+      "no_action"
+    ]
+  },
+  "coverage": [
+    "outcome_no_action",
+    "outcome_log",
+    "outcome_review",
+    "outcome_alert",
+    "multi_branch_alert",
+    "support_threshold_below",
+    "support_threshold_at",
+    "single_branch_alert_block",
+    "acoustic_no_speech_conflict",
+    "speech_absence_conflict",
+    "non_threatening_language_conflict",
+    "language_without_transcript_conflict",
+    "uncertainty_blocks_alert",
+    "missing_evidence_review",
+    "consent_limited_review",
+    "safe_language_neutral"
+  ],
+  "scenario_count": 13,
+  "passed_count": 13,
+  "failed_count": 0,
+  "cases": [
+    {
+      "case_id": "quiet-present-no-action",
+      "coverage": [
+        "outcome_no_action"
+      ],
+      "expected": {
+        "risk_score": 0.0,
+        "risk_severity": "none",
+        "risk_review_required": false,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "no_action",
+        "reason_codes": [
+          "no_risk_evidence"
+        ],
+        "review_required": false,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 0.0,
+        "risk_severity": "none",
+        "risk_review_required": false,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "no_action",
+        "reason_codes": [
+          "no_risk_evidence"
+        ],
+        "review_required": false,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "low-siren-log",
+      "coverage": [
+        "outcome_log"
+      ],
+      "expected": {
+        "risk_score": 10.0,
+        "risk_severity": "low",
+        "risk_review_required": false,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "log",
+        "reason_codes": [
+          "low_risk_logged"
+        ],
+        "review_required": false,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 10.0,
+        "risk_severity": "low",
+        "risk_review_required": false,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "log",
+        "reason_codes": [
+          "low_risk_logged"
+        ],
+        "review_required": false,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "medium-score-review",
+      "coverage": [
+        "outcome_review"
+      ],
+      "expected": {
+        "risk_score": 25.0,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 25.0,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "critical-below-acoustic-support",
+      "coverage": [
+        "support_threshold_below",
+        "single_branch_alert_block"
+      ],
+      "expected": {
+        "risk_score": 82.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          }
+        ],
+        "supporting_branches": [
+          "language"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "insufficient_alert_agreement"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 82.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          }
+        ],
+        "supporting_branches": [
+          "language"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "insufficient_alert_agreement"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "critical-clean-alert",
+      "coverage": [
+        "outcome_alert",
+        "multi_branch_alert",
+        "support_threshold_at"
+      ],
+      "expected": {
+        "risk_score": 92.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic",
+          "language"
+        ],
+        "conflicting_branches": [],
+        "outcome": "alert",
+        "reason_codes": [
+          "critical_risk",
+          "multi_branch_alert_agreement",
+          "alert_candidate"
+        ],
+        "review_required": true,
+        "alert_candidate": true
+      },
+      "observed": {
+        "risk_score": 92.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic",
+          "language"
+        ],
+        "conflicting_branches": [],
+        "outcome": "alert",
+        "reason_codes": [
+          "critical_risk",
+          "multi_branch_alert_agreement",
+          "alert_candidate"
+        ],
+        "review_required": true,
+        "alert_candidate": true
+      },
+      "passed": true
+    },
+    {
+      "case_id": "no-speech-cross-branch-conflict",
+      "coverage": [
+        "acoustic_no_speech_conflict"
+      ],
+      "expected": {
+        "risk_score": 42.0,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [
+          "acoustic",
+          "speech",
+          "language"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 42.0,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [
+          "acoustic",
+          "speech",
+          "language"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "speech-signal-without-vad",
+      "coverage": [
+        "speech_absence_conflict"
+      ],
+      "expected": {
+        "risk_score": 50.0,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [
+          "acoustic",
+          "speech"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 50.0,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "language",
+            "input_status": "no_accepted_text",
+            "agreement": "not_applicable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [
+          "acoustic",
+          "speech"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "non-threatening-language-conflict",
+      "coverage": [
+        "non_threatening_language_conflict"
+      ],
+      "expected": {
+        "risk_score": 42.0,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [
+          "acoustic",
+          "language"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 42.0,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [
+          "acoustic",
+          "language"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "language-without-accepted-transcript",
+      "coverage": [
+        "language_without_transcript_conflict"
+      ],
+      "expected": {
+        "risk_score": 92.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic"
+        ],
+        "conflicting_branches": [
+          "speech",
+          "language"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required",
+          "insufficient_alert_agreement"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 92.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "conflicts_risk"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic"
+        ],
+        "conflicting_branches": [
+          "speech",
+          "language"
+        ],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "evidence_conflict_review_required",
+          "insufficient_alert_agreement"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "transcript-review-blocks-alert",
+      "coverage": [
+        "uncertainty_blocks_alert"
+      ],
+      "expected": {
+        "risk_score": 97.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic",
+          "language"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "risk_uncertainty_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 97.0,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic",
+          "language"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "risk_uncertainty_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "all-branches-missing",
+      "coverage": [
+        "missing_evidence_review"
+      ],
+      "expected": {
+        "risk_score": 0.0,
+        "risk_severity": "none",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "missing",
+            "agreement": "unavailable"
+          },
+          {
+            "kind": "speech",
+            "input_status": "missing",
+            "agreement": "unavailable"
+          },
+          {
+            "kind": "language",
+            "input_status": "missing",
+            "agreement": "unavailable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "risk_uncertainty_review_required",
+          "missing_evidence_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 0.0,
+        "risk_severity": "none",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "missing",
+            "agreement": "unavailable"
+          },
+          {
+            "kind": "speech",
+            "input_status": "missing",
+            "agreement": "unavailable"
+          },
+          {
+            "kind": "language",
+            "input_status": "missing",
+            "agreement": "unavailable"
+          }
+        ],
+        "supporting_branches": [],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "risk_uncertainty_review_required",
+          "missing_evidence_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "acoustic-only-consent-review",
+      "coverage": [
+        "consent_limited_review"
+      ],
+      "expected": {
+        "risk_score": 50.0,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "not_permitted",
+            "agreement": "not_permitted"
+          },
+          {
+            "kind": "language",
+            "input_status": "not_permitted",
+            "agreement": "not_permitted"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "consent_limited_evidence"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 50.0,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "not_permitted",
+            "agreement": "not_permitted"
+          },
+          {
+            "kind": "language",
+            "input_status": "not_permitted",
+            "agreement": "not_permitted"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required",
+          "consent_limited_evidence"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    },
+    {
+      "case_id": "safe-language-stays-neutral",
+      "coverage": [
+        "safe_language_neutral"
+      ],
+      "expected": {
+        "risk_score": 57.0,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "neutral"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "observed": {
+        "risk_score": 57.0,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {
+            "kind": "acoustic",
+            "input_status": "present",
+            "agreement": "supports_risk"
+          },
+          {
+            "kind": "speech",
+            "input_status": "present",
+            "agreement": "neutral"
+          },
+          {
+            "kind": "language",
+            "input_status": "present",
+            "agreement": "neutral"
+          }
+        ],
+        "supporting_branches": [
+          "acoustic"
+        ],
+        "conflicting_branches": [],
+        "outcome": "review",
+        "reason_codes": [
+          "score_review_required"
+        ],
+        "review_required": true,
+        "alert_candidate": false
+      },
+      "passed": true
+    }
+  ],
+  "limitation": "synthetic_acceptance_validation_not_empirical_incident_accuracy"
+}

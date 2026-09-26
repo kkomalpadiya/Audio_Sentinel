@@ -1,0 +1,302 @@
+{
+  "schema_version": "1.0",
+  "suite_id": "audio-sentinel-consensus-validation-v1",
+  "suite_version": "1.0.0",
+  "risk_rule_set_sha256": "a34c1972f778d4965b9f71fbf372ab3180a94655c1d1c5cd8b54802d557bfc11",
+  "agreement_rule_set_sha256": "f2c913f921157f39a0e84b59c600e53f91c43828a9da9b83b84acaaf57d10d79",
+  "consensus_policy_version": "1.0",
+  "cases": [
+    {
+      "case_id": "quiet-present-no-action",
+      "description": "Present quiet evidence produces no action.",
+      "coverage": ["outcome_no_action"],
+      "language": {"status": "no_accepted_text"},
+      "expected": {
+        "risk_score": 0,
+        "risk_severity": "none",
+        "risk_review_required": false,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "neutral"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "no_accepted_text", "agreement": "not_applicable"}
+        ],
+        "outcome": "no_action",
+        "reason_codes": ["no_risk_evidence"],
+        "review_required": false,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "low-siren-log",
+      "description": "A low positive acoustic score is logged without promotion.",
+      "coverage": ["outcome_log"],
+      "acoustic": {"signals": [{"label": "siren", "peak_score": 0.84}]},
+      "language": {"status": "no_accepted_text"},
+      "expected": {
+        "risk_score": 10,
+        "risk_severity": "low",
+        "risk_review_required": false,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "neutral"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "no_accepted_text", "agreement": "not_applicable"}
+        ],
+        "outcome": "log",
+        "reason_codes": ["low_risk_logged"],
+        "review_required": false,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "medium-score-review",
+      "description": "The Phase 6 review threshold produces a review outcome.",
+      "coverage": ["outcome_review"],
+      "acoustic": {"signals": [{"label": "glass_break", "peak_score": 0.84}]},
+      "language": {"status": "no_accepted_text"},
+      "expected": {
+        "risk_score": 25,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "neutral"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "no_accepted_text", "agreement": "not_applicable"}
+        ],
+        "outcome": "review",
+        "reason_codes": ["score_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "critical-below-acoustic-support",
+      "description": "A critical score below acoustic support confidence stays in review.",
+      "coverage": ["support_threshold_below", "single_branch_alert_block"],
+      "acoustic": {"signals": [{"label": "explosion", "peak_score": 0.849999}]},
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["threat"]},
+      "expected": {
+        "risk_score": 82,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "neutral"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "present", "agreement": "supports_risk"}
+        ],
+        "supporting_branches": ["language"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "insufficient_alert_agreement"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "critical-clean-alert",
+      "description": "Clean critical acoustic and language support creates a local alert candidate.",
+      "coverage": ["outcome_alert", "multi_branch_alert", "support_threshold_at"],
+      "acoustic": {"signals": [{"label": "explosion", "peak_score": 0.85}]},
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["threat"]},
+      "expected": {
+        "risk_score": 92,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "supports_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "present", "agreement": "supports_risk"}
+        ],
+        "supporting_branches": ["acoustic", "language"],
+        "outcome": "alert",
+        "reason_codes": ["critical_risk", "multi_branch_alert_agreement", "alert_candidate"],
+        "review_required": true,
+        "alert_candidate": true
+      }
+    },
+    {
+      "case_id": "no-speech-cross-branch-conflict",
+      "description": "High-confidence no-speech evidence conflicts with VAD and language evidence.",
+      "coverage": ["acoustic_no_speech_conflict"],
+      "acoustic": {"signals": [{"label": "no_speech", "peak_score": 0.85}]},
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["threat"]},
+      "expected": {
+        "risk_score": 42,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "conflicts_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "conflicts_risk"},
+          {"kind": "language", "input_status": "present", "agreement": "conflicts_risk"}
+        ],
+        "conflicting_branches": ["acoustic", "speech", "language"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "evidence_conflict_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "speech-signal-without-vad",
+      "description": "Acoustic speech evidence conflicts with an empty VAD branch.",
+      "coverage": ["speech_absence_conflict"],
+      "acoustic": {"signals": [{"label": "threatening_speech", "peak_score": 0.85}]},
+      "language": {"status": "no_accepted_text"},
+      "expected": {
+        "risk_score": 50,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "conflicts_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "conflicts_risk"},
+          {"kind": "language", "input_status": "no_accepted_text", "agreement": "not_applicable"}
+        ],
+        "conflicting_branches": ["acoustic", "speech"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "evidence_conflict_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "non-threatening-language-conflict",
+      "description": "Non-threatening acoustic speech conflicts with active threat language.",
+      "coverage": ["non_threatening_language_conflict"],
+      "acoustic": {"signals": [{"label": "non_threatening_speech", "peak_score": 0.85}]},
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["threat"]},
+      "expected": {
+        "risk_score": 42,
+        "risk_severity": "medium",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "conflicts_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "present", "agreement": "conflicts_risk"}
+        ],
+        "conflicting_branches": ["acoustic", "language"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "evidence_conflict_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "language-without-accepted-transcript",
+      "description": "Language findings without an accepted transcript cannot authorize an alert.",
+      "coverage": ["language_without_transcript_conflict"],
+      "acoustic": {"signals": [{"label": "explosion", "peak_score": 0.85}]},
+      "speech": {"segment_count": 1},
+      "language": {"categories": ["threat"]},
+      "expected": {
+        "risk_score": 92,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "supports_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "conflicts_risk"},
+          {"kind": "language", "input_status": "present", "agreement": "conflicts_risk"}
+        ],
+        "supporting_branches": ["acoustic"],
+        "conflicting_branches": ["speech", "language"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "evidence_conflict_review_required", "insufficient_alert_agreement"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "transcript-review-blocks-alert",
+      "description": "Transcript uncertainty blocks an otherwise clean critical alert.",
+      "coverage": ["uncertainty_blocks_alert"],
+      "acoustic": {"signals": [{"label": "explosion", "peak_score": 0.85}]},
+      "speech": {"segment_count": 2, "accepted_transcript_count": 1, "review_required_transcript_count": 1},
+      "language": {"categories": ["threat"]},
+      "expected": {
+        "risk_score": 97,
+        "risk_severity": "critical",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "supports_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "present", "agreement": "supports_risk"}
+        ],
+        "supporting_branches": ["acoustic", "language"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "risk_uncertainty_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "all-branches-missing",
+      "description": "Missing evidence stays explicit and requires review rather than no action.",
+      "coverage": ["missing_evidence_review"],
+      "acoustic": {"status": "missing"},
+      "speech": {"status": "missing"},
+      "language": {"status": "missing"},
+      "expected": {
+        "risk_score": 0,
+        "risk_severity": "none",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "missing", "agreement": "unavailable"},
+          {"kind": "speech", "input_status": "missing", "agreement": "unavailable"},
+          {"kind": "language", "input_status": "missing", "agreement": "unavailable"}
+        ],
+        "outcome": "review",
+        "reason_codes": ["risk_uncertainty_review_required", "missing_evidence_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "acoustic-only-consent-review",
+      "description": "Consent-limited high acoustic risk remains reviewable and explicit.",
+      "coverage": ["consent_limited_review"],
+      "processing_scope": "acoustic_only",
+      "acoustic": {"signals": [{"label": "explosion", "peak_score": 0.85}]},
+      "speech": {"status": "not_permitted"},
+      "language": {"status": "not_permitted"},
+      "expected": {
+        "risk_score": 50,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "supports_risk"},
+          {"kind": "speech", "input_status": "not_permitted", "agreement": "not_permitted"},
+          {"kind": "language", "input_status": "not_permitted", "agreement": "not_permitted"}
+        ],
+        "supporting_branches": ["acoustic"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required", "consent_limited_evidence"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    },
+    {
+      "case_id": "safe-language-stays-neutral",
+      "description": "Safe language stays neutral and cannot add alert support.",
+      "coverage": ["safe_language_neutral"],
+      "acoustic": {"signals": [{"label": "gunshot", "peak_score": 0.85}]},
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["no_concerning_match"]},
+      "expected": {
+        "risk_score": 57,
+        "risk_severity": "high",
+        "risk_review_required": true,
+        "branches": [
+          {"kind": "acoustic", "input_status": "present", "agreement": "supports_risk"},
+          {"kind": "speech", "input_status": "present", "agreement": "neutral"},
+          {"kind": "language", "input_status": "present", "agreement": "neutral"}
+        ],
+        "supporting_branches": ["acoustic"],
+        "outcome": "review",
+        "reason_codes": ["score_review_required"],
+        "review_required": true,
+        "alert_candidate": false
+      }
+    }
+  ]
+}
