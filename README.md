@@ -217,6 +217,14 @@ empirical incident accuracy or sending notifications.
 The detailed [Phase 7 completion report](docs/phase-7-verification-and-consensus-report.md)
 explains the complete verification flow, algorithms, alternatives, technology
 choices, safety controls, tests, examples, and limitations in common terms.
+A8.1 adds the [one-call offline recorded-clip evaluator](docs/offline-evaluator.md).
+It connects the existing preparation, acoustic, consent-aware speech, language,
+risk, agreement, and final-verification stages without duplicating their rules.
+Acoustic-only consent skips speech and language completely; speech-authorized
+evaluation requires both verified local speech models before any output is written.
+The evaluator returns typed stage results and a privacy-minimized summary, but it
+does not serialize the later B8.1 final report or send a notification. A Phase 7
+alert remains a local candidate that requires review.
 
 ## Local panel demonstration
 

@@ -1606,3 +1606,44 @@ In plain language: Phase 7 now has a reproducible acceptance certificate. The
 checked synthetic scenarios prove that the deterministic scorer, agreement
 engine, and final verifier work together exactly as documented, while making no
 claim about real-world incident accuracy and sending no notification.
+
+## A8.1 — Complete
+
+Added `src/audio_sentinel/evaluator.py` with a one-call offline evaluator for one
+authorized recorded clip. The service accepts already loaded local models and an
+explicit acoustic aggregation policy, then connects the existing preparation,
+YAMNet inference, acoustic aggregation and evidence persistence, consent-aware
+speech segmentation and transcription, accepted-only language analysis, Phase 6
+risk integration and scoring, B7.1 agreement evaluation, and A7.2 final decision
+service.
+
+The evaluator checks its mono 16 kHz recipe and required speech-model pair before
+writing output. Acoustic-only consent skips VAD, transcription, and language
+analysis and records both branches as not permitted. Full consent runs the complete
+speech path. Stage exceptions retain their original typed error and stable code,
+while evaluator preflight errors have their own safe codes. A returned alert stays
+a local candidate with human review required; the evaluator has no notification
+publisher.
+
+Added an immutable typed result containing every stage handoff. Its diagnostic
+summary includes only identities, counts, score, severity, outcome, review state,
+and alert-candidate state. It excludes transcript text, matched phrases, raw audio,
+tensors, and local paths, and explicitly reports that no notification was sent.
+Final versioned report serialization remains B8.1 work.
+
+Added `docs/offline-evaluator.md` and 12 focused tests covering a complete clean
+alert-candidate path, acoustic-only consent, no-speech completion, missing-model
+preflight, incompatible recipes, unchanged stage failures, deterministic retry and
+artifact reuse, privacy-minimized JSON-ready summaries, immutability, and safe
+invalid inputs. The focused A8.1 suite passes all 12 tests.
+
+Current tracker: `outputs/a8_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 55 completed tasks out of 72 and B8.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: B8.1 — Implement versioned final JSON report serialization.
+
+In plain language: one authorized recording can now travel through every existing
+analysis and safety stage with one call. The evaluator preserves consent limits and
+source provenance throughout, and even its strongest result remains a local record
+for human review rather than a sent alert.
