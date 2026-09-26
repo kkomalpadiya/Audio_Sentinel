@@ -122,8 +122,12 @@ Run the complete project checks before committing:
 
 ## Next task
 
-A6.3 will define a trainable risk-model interface without changing the deterministic
-v1 scorer or its validated scenario baseline.
+A6.3 defines the separate future-facing trainable interface in
+`docs/trainable-risk-model.md`. The deterministic v1 scorer remains the active
+implementation and its validated scenario baseline is unchanged.
+
+A6.4 will validate risk-score behavior and thresholds across the supported scoring
+boundaries.
 
 ## Beginner-friendly explanation
 

@@ -171,7 +171,11 @@ privacy-minimized scorer inputs with explicit missing and consent-limited states
 B6.2 adds the [risk-scoring scenario matrix](docs/risk-scoring-tests.md): 54 normal
 and edge cases covering every built-in acoustic label and language category,
 severity and review boundaries, branch caps, missing-data combinations, canonical
-reasons, fractional scores, and extremely large valid counters.
+reasons, fractional scores, and extremely large valid counters. A6.3 adds a
+[trainable risk-model interface](docs/trainable-risk-model.md) for future custom
+training: canonical identity-free features, reviewed training targets, hash-pinned
+examples, reproducible model descriptors, and typed trainer/predictor protocols.
+It does not replace or change the deterministic B6.1 scorer.
 
 ## Local panel demonstration
 

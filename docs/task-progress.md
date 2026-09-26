@@ -1287,3 +1287,36 @@ In plain language: the scorer now has a complete worked-example test table, from
 quiet input through critical combined evidence. It also stays bounded when a valid
 counter is far larger than ordinary hardware can represent as a floating-point
 number.
+
+## A6.3 — Complete
+
+Added the future-facing trainable risk-model interface in
+`src/audio_sentinel/risk_model.py` without changing the deterministic B6.1 scorer.
+The module defines immutable, versioned contracts for canonical feature vectors,
+reviewed training targets and examples, reproducible model descriptors, and typed
+predictions. Runtime-checkable trainer and predictor protocols leave the eventual
+algorithm and model runtime replaceable while preserving one stable data boundary.
+
+The feature extractor converts validated A6.1 inputs into ordered acoustic and
+language inventories plus bounded speech workflow aggregates. It excludes source
+identity, evidence IDs, transcript and matched text, speaker data, raw audio,
+paths, and tensors. Canonical SHA-256 digests pin both source inputs and extracted
+features, and validation rejects inventory drift, inconsistent totals or maxima,
+non-present branches carrying data, altered hashes, mismatched severity bands, and
+incomplete model provenance.
+
+Added `docs/trainable-risk-model.md` and 34 focused tests covering deterministic and
+content-sensitive hashes, privacy exclusions, missing and consent-limited branches,
+all score-band boundaries, reviewed-label requirements, descriptor provenance,
+prediction validation, protocol implementations, immutability, portable schema
+export, and import without network or machine-learning runtime access.
+
+The complete Phase 6 suite passes 166 tests. Full verification passes all 1,525
+project tests, compilation, and the generated preparation smoke test.
+
+Next: A6.4 — Validate risk-score behavior and thresholds.
+
+In plain language: Phase 6 now has a carefully labeled socket for a future trained
+model. The current rules calculator still makes today’s scores, while a later model
+can receive the same compact evidence shape and return a score with enough version
+and hash information to reproduce where it came from.
