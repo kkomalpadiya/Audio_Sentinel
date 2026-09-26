@@ -1,0 +1,408 @@
+{
+  "$defs": {
+    "BranchAgreement": {
+      "description": "How one evidence branch relates to the recorded risk assessment.",
+      "enum": [
+        "supports_risk",
+        "neutral",
+        "conflicts_risk",
+        "unavailable",
+        "not_permitted",
+        "not_applicable"
+      ],
+      "title": "BranchAgreement",
+      "type": "string"
+    },
+    "ConsensusBranchState": {
+      "additionalProperties": false,
+      "description": "Typed B7.1 handoff for one Phase 6 evidence branch.",
+      "properties": {
+        "agreement": {
+          "$ref": "#/$defs/BranchAgreement"
+        },
+        "input_status": {
+          "$ref": "#/$defs/RiskInputStatus"
+        },
+        "kind": {
+          "$ref": "#/$defs/RiskEvidenceKind"
+        }
+      },
+      "required": [
+        "kind",
+        "input_status",
+        "agreement"
+      ],
+      "title": "ConsensusBranchState",
+      "type": "object"
+    },
+    "ConsensusOutcome": {
+      "description": "The one primary action selected by the verification layer.",
+      "enum": [
+        "no_action",
+        "log",
+        "review",
+        "alert"
+      ],
+      "title": "ConsensusOutcome",
+      "type": "string"
+    },
+    "ConsensusPolicy": {
+      "additionalProperties": false,
+      "description": "Fixed v1 action thresholds and alert safety gates.",
+      "properties": {
+        "alert_is_local_candidate_only": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Alert Is Local Candidate Only",
+          "type": "boolean"
+        },
+        "alert_min_score": {
+          "const": 75,
+          "default": 75,
+          "enum": [
+            75
+          ],
+          "title": "Alert Min Score",
+          "type": "integer"
+        },
+        "alert_min_supporting_branches": {
+          "const": 2,
+          "default": 2,
+          "enum": [
+            2
+          ],
+          "title": "Alert Min Supporting Branches",
+          "type": "integer"
+        },
+        "alert_requires_critical_severity": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Alert Requires Critical Severity",
+          "type": "boolean"
+        },
+        "alert_support_eligible_branches": {
+          "default": [
+            "acoustic",
+            "language"
+          ],
+          "items": {
+            "$ref": "#/$defs/RiskEvidenceKind"
+          },
+          "title": "Alert Support Eligible Branches",
+          "type": "array"
+        },
+        "conflicts_block_alert": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Conflicts Block Alert",
+          "type": "boolean"
+        },
+        "log_max_score": {
+          "const": 24,
+          "default": 24,
+          "enum": [
+            24
+          ],
+          "title": "Log Max Score",
+          "type": "integer"
+        },
+        "missing_evidence_blocks_alert": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Missing Evidence Blocks Alert",
+          "type": "boolean"
+        },
+        "no_action_score": {
+          "const": 0,
+          "default": 0,
+          "enum": [
+            0
+          ],
+          "title": "No Action Score",
+          "type": "integer"
+        },
+        "outcome_precedence": {
+          "default": [
+            "alert",
+            "review",
+            "log",
+            "no_action"
+          ],
+          "items": {
+            "$ref": "#/$defs/ConsensusOutcome"
+          },
+          "title": "Outcome Precedence",
+          "type": "array"
+        },
+        "policy_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "review_min_score": {
+          "const": 25,
+          "default": 25,
+          "enum": [
+            25
+          ],
+          "title": "Review Min Score",
+          "type": "integer"
+        },
+        "uncertainty_blocks_alert": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Uncertainty Blocks Alert",
+          "type": "boolean"
+        }
+      },
+      "title": "ConsensusPolicy",
+      "type": "object"
+    },
+    "ConsensusReasonCode": {
+      "description": "Portable explanations for the selected consensus outcome.",
+      "enum": [
+        "no_risk_evidence",
+        "low_risk_logged",
+        "score_review_required",
+        "risk_uncertainty_review_required",
+        "missing_evidence_review_required",
+        "evidence_conflict_review_required",
+        "insufficient_alert_agreement",
+        "consent_limited_evidence",
+        "critical_risk",
+        "multi_branch_alert_agreement",
+        "alert_candidate"
+      ],
+      "title": "ConsensusReasonCode",
+      "type": "string"
+    },
+    "ConsensusRiskReference": {
+      "additionalProperties": false,
+      "description": "Hash-pinned, privacy-minimized snapshot of one Phase 6 assessment.",
+      "properties": {
+        "assessment_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "assessment_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Assessment Sha256",
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "human_review_required": {
+          "title": "Human Review Required",
+          "type": "boolean"
+        },
+        "missing_branches": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RiskEvidenceKind"
+          },
+          "title": "Missing Branches",
+          "type": "array"
+        },
+        "not_permitted_branches": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RiskEvidenceKind"
+          },
+          "title": "Not Permitted Branches",
+          "type": "array"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/RiskReasonCode"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "score": {
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Score",
+          "type": "number"
+        },
+        "severity": {
+          "$ref": "#/$defs/RiskLevel"
+        }
+      },
+      "required": [
+        "assessment_id",
+        "assessment_sha256",
+        "clip_id",
+        "score",
+        "severity",
+        "human_review_required",
+        "reason_codes"
+      ],
+      "title": "ConsensusRiskReference",
+      "type": "object"
+    },
+    "RiskEvidenceKind": {
+      "enum": [
+        "acoustic",
+        "speech",
+        "language"
+      ],
+      "title": "RiskEvidenceKind",
+      "type": "string"
+    },
+    "RiskInputStatus": {
+      "description": "Whether a branch is usable for scoring, absent, or outside consent scope.",
+      "enum": [
+        "present",
+        "missing",
+        "not_permitted",
+        "not_applicable",
+        "no_accepted_text"
+      ],
+      "title": "RiskInputStatus",
+      "type": "string"
+    },
+    "RiskLevel": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "RiskLevel",
+      "type": "string"
+    },
+    "RiskReasonCode": {
+      "description": "Portable explanations for a risk score or missing-data review state.",
+      "enum": [
+        "no_risk_evidence",
+        "acoustic_event_candidate",
+        "acoustic_high_confidence",
+        "speech_present",
+        "transcript_review_required",
+        "language_distress",
+        "language_threat",
+        "language_weapon_reference",
+        "language_ambiguous",
+        "language_context_suppressed",
+        "missing_acoustic_evidence",
+        "missing_speech_evidence",
+        "missing_language_evidence",
+        "speech_not_permitted",
+        "language_not_applicable",
+        "missing_data_review_required"
+      ],
+      "title": "RiskReasonCode",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/consensus-decision.schema.json",
+  "additionalProperties": false,
+  "description": "Versioned consensus outcome; alert means a local candidate, not delivery.",
+  "properties": {
+    "alert_candidate": {
+      "title": "Alert Candidate",
+      "type": "boolean"
+    },
+    "branch_states": {
+      "items": {
+        "$ref": "#/$defs/ConsensusBranchState"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Branch States",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "decision_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Decision Id",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "consensus_decision",
+      "default": "consensus_decision",
+      "enum": [
+        "consensus_decision"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "outcome": {
+      "$ref": "#/$defs/ConsensusOutcome"
+    },
+    "policy": {
+      "$ref": "#/$defs/ConsensusPolicy"
+    },
+    "reason_codes": {
+      "items": {
+        "$ref": "#/$defs/ConsensusReasonCode"
+      },
+      "minItems": 1,
+      "title": "Reason Codes",
+      "type": "array"
+    },
+    "review_required": {
+      "title": "Review Required",
+      "type": "boolean"
+    },
+    "risk_assessment": {
+      "$ref": "#/$defs/ConsensusRiskReference"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "decision_id",
+    "created_at",
+    "risk_assessment",
+    "branch_states",
+    "outcome",
+    "reason_codes",
+    "review_required",
+    "alert_candidate"
+  ],
+  "title": "ConsensusDecisionDocument",
+  "type": "object"
+}

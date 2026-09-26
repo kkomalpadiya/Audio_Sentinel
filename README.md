@@ -180,6 +180,11 @@ phase with an [executable risk-policy validation](docs/risk-score-validation.md)
 13 hash-pinned acceptance scenarios verify the built-in severity levels,
 thresholds, caps, review triggers, missing-data behavior, and consent states while
 explicitly avoiding any claim of empirical incident calibration.
+A7.1 defines the [consensus policy and outcome contract](docs/consensus-policy.md):
+one hash-pinned Phase 6 risk snapshot, typed acoustic/speech/language agreement
+states, mutually exclusive no-action/log/review/alert outcomes, and conservative
+alert gates requiring clean critical multi-branch support. An alert outcome is only
+a local candidate for later Phase 8 handling; A7.1 sends no notification.
 
 ## Local panel demonstration
 

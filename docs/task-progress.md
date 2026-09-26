@@ -1356,3 +1356,41 @@ In plain language: Phase 6 now has a signed-off behavior checklist, not just a p
 of tests. The built-in scorer produces every required worked outcome and records
 the exact thresholds it used, while clearly stating that real-world accuracy still
 needs representative labeled evaluation later.
+
+## A7.1 — Complete
+
+Defined the Phase 7 consensus contract in
+`src/audio_sentinel/consensus_contracts.py`. Every decision references one Phase 6
+risk assessment by ID and canonical SHA-256, preserves its score, severity, reasons,
+missing branches, and consent-limited branches, and records one typed agreement
+state for each acoustic, speech, and language branch.
+
+The v1 policy defines four mutually exclusive primary outcomes: `no_action` for a
+complete zero-risk result, `log` for a low positive score without review triggers,
+`review` for medium-or-higher risk or safety uncertainty, and `alert` for a local
+alert candidate. Alert is permitted only for a critical score of at least 75 with
+both acoustic and language support, no conflict, no missing evidence, and no Phase
+6 transcript, ambiguity, or missing-data uncertainty reason. Speech presence alone
+cannot count as risk support. Alert decisions retain the human-review requirement
+instead of erasing it.
+
+Added `docs/consensus-policy.md`, the checked-in
+`docs/schemas/v1/consensus-decision.schema.json`, a complete example at
+`docs/examples/consensus-decision.json`, and 30 focused tests. The tests cover all
+four outcomes, exact policy thresholds, branch/status compatibility, canonical
+ordering, risk-snapshot alignment, every alert gate, review-reason completeness,
+privacy exclusions, immutable typed records, schema generation, and offline use.
+
+Focused verification passes 30 tests. Full verification passes all 1,574 project
+tests, compilation, and the generated preparation smoke test.
+
+Current tracker: `outputs/a7_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 49 completed tasks out of 72 and B7.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: B7.1 — Implement evidence-agreement and conflict-detection rules.
+
+In plain language: the score is one opinion, and consensus is the safety gate that
+decides what the system may do with it. Small clean signals can be logged,
+uncertainty goes to a person, and only a clean critical result supported by both
+sound and language can become a local alert candidate.
