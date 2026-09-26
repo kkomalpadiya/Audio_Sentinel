@@ -1484,3 +1484,41 @@ Next: B7.2 — Add disagreement, low-confidence, and false-alert safety tests.
 In plain language: the final checker now refuses to trust labels alone. It proves
 that the score and agreement report describe the same evidence, independently
 repeats the agreement check, and only then chooses one safe next action.
+
+## B7.2 — Complete
+
+Added the Phase 7 consensus safety matrix in
+`tests/test_consensus_safety.py`. The suite sends 15 representative evidence
+combinations through the real Phase 6 scorer, B7.1 agreement engine, and A7.2
+decision service, then checks the score, branch support, branch conflicts,
+outcome, reason receipts, review state, and local alert-candidate flag together.
+
+The matrix covers clean no-action, log, review, and alert paths; the exact `0.85`
+acoustic support boundary; low-confidence evidence immediately below that
+boundary; all four cross-branch disagreement families; transcript and language
+uncertainty; missing acoustic evidence; consent-limited processing; and safe
+language alongside high-confidence acoustic evidence. Additional parameterized
+checks cover all six language categories, four acoustic boundary values, and the
+rule that speech presence alone is always neutral.
+
+Three critical-score cases specifically protect against false alerts: one has
+only a single eligible supporting branch, one has a language/transcript conflict,
+and one has transcript-review uncertainty. Every case remains in review with an
+explicit safety reason and `alert_candidate=false`. Only the clean critical case
+with acoustic and language support becomes a local alert candidate. No production
+threshold or decision rule changed.
+
+Added `docs/consensus-safety-tests.md` and 27 focused tests. The B7.2 suite passes
+all 27 tests. The complete Phase 7 suite passes all 118 tests, and full
+verification passes all 1,662 project tests plus Python compilation.
+
+Current tracker: `outputs/b7_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 52 completed tasks out of 72 and A7.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: A7.3 — Add a custom verification-model interface for future training.
+
+In plain language: the safety net now checks not only the successful alert path,
+but also the near misses and contradictions most likely to create false alerts.
+Evidence just below a threshold stays below it, uncertainty stays reviewable, and
+one strong branch can never act like two independent sources.

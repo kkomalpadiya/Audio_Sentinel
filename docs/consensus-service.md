@@ -104,8 +104,8 @@ Run the complete project suite:
 python -m pytest -q
 ```
 
-## Next task
+## Safety coverage
 
-B7.2 will add disagreement, low-confidence, and false-alert safety tests. It must
-preserve the fail-closed provenance checks and the rule that an alert is only a
-local candidate.
+B7.2 adds the [consensus safety test matrix](consensus-safety-tests.md) for
+disagreement, exact confidence boundaries, missing and consent-limited evidence,
+and false-alert prevention. A7.3 is the next task.

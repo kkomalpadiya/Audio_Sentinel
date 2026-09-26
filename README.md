@@ -196,6 +196,11 @@ agreement result to reject stale or tampered handoffs, and applies the A7.1
 precedence rules to select exactly one outcome. Critical evidence becomes a local
 alert candidate only with clean acoustic and language support; every failed alert
 gate remains reviewable, and the service performs no notification delivery.
+B7.2 adds the [consensus safety test matrix](docs/consensus-safety-tests.md): 27
+normal and edge-case checks covering all four outcomes, the exact acoustic
+support boundary, every disagreement rule, all language categories, neutral
+speech, missing and consent-limited evidence, and critical-score false-alert
+blocks. It changes no production decision rule.
 
 ## Local panel demonstration
 
