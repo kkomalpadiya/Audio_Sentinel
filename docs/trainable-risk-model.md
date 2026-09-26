@@ -104,4 +104,7 @@ Run the complete project checks before committing:
 
 ## Next task
 
-A6.4 will validate risk-score behavior and thresholds.
+A6.4 validates the active deterministic policy separately in
+`docs/risk-score-validation.md`. A7.1 will define consensus outcomes; the future
+trainable interface remains inactive until a later implementation is explicitly
+selected and validated.

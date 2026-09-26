@@ -175,7 +175,11 @@ reasons, fractional scores, and extremely large valid counters. A6.3 adds a
 [trainable risk-model interface](docs/trainable-risk-model.md) for future custom
 training: canonical identity-free features, reviewed training targets, hash-pinned
 examples, reproducible model descriptors, and typed trainer/predictor protocols.
-It does not replace or change the deterministic B6.1 scorer.
+It does not replace or change the deterministic B6.1 scorer. A6.4 completes the
+phase with an [executable risk-policy validation](docs/risk-score-validation.md):
+13 hash-pinned acceptance scenarios verify the built-in severity levels,
+thresholds, caps, review triggers, missing-data behavior, and consent states while
+explicitly avoiding any claim of empirical incident calibration.
 
 ## Local panel demonstration
 

@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0",
+  "suite_id": "audio-sentinel-risk-validation-v1",
+  "suite_version": "1.0.0",
+  "rule_set_sha256": "a34c1972f778d4965b9f71fbf372ab3180a94655c1d1c5cd8b54802d557bfc11",
+  "cases": [
+    {
+      "case_id": "quiet-present-evidence",
+      "description": "Empty present branches produce no risk and no review.",
+      "coverage": ["severity_none", "human_review_below_threshold"],
+      "expected": {
+        "score": 0,
+        "severity": "none",
+        "human_review_required": false,
+        "reason_codes": ["no_risk_evidence"],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "siren-below-confidence-bonus",
+      "description": "A siren below the confidence boundary receives its base weight only.",
+      "coverage": ["severity_low", "acoustic_confidence_below"],
+      "acoustic": {
+        "signals": [{"label": "siren", "peak_score": 0.849999}]
+      },
+      "expected": {
+        "score": 10,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": ["acoustic_event_candidate"],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "gunshot-at-confidence-boundary",
+      "description": "The acoustic confidence boundary is inclusive.",
+      "coverage": ["severity_high", "acoustic_confidence_at"],
+      "acoustic": {
+        "signals": [{"label": "gunshot", "peak_score": 0.85}]
+      },
+      "expected": {
+        "score": 55,
+        "severity": "high",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence"
+        ],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "glass-break-at-review-boundary",
+      "description": "A score exactly at the human-review boundary requires review.",
+      "coverage": ["severity_medium", "human_review_at_threshold"],
+      "acoustic": {
+        "signals": [{"label": "glass_break", "peak_score": 0.84}]
+      },
+      "expected": {
+        "score": 25,
+        "severity": "medium",
+        "human_review_required": true,
+        "reason_codes": ["acoustic_event_candidate"],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "critical-multibranch-evidence",
+      "description": "Acoustic, speech, and distress evidence combine into critical risk.",
+      "coverage": ["severity_critical"],
+      "acoustic": {
+        "signals": [{"label": "explosion", "peak_score": 0.9}]
+      },
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["distress"]},
+      "expected": {
+        "score": 77,
+        "severity": "critical",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence",
+          "speech_present",
+          "language_distress"
+        ],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "speech-review-cap",
+      "description": "Repeated review-required transcripts stop at the speech cap.",
+      "coverage": ["speech_cap"],
+      "speech": {"segment_count": 3, "review_required_transcript_count": 3},
+      "expected": {
+        "score": 12,
+        "severity": "low",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "transcript_review_required"
+        ],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "language-sum-cap",
+      "description": "Repeated threat findings stop at the language cap.",
+      "coverage": ["language_cap"],
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["threat", "threat"]},
+      "expected": {
+        "score": 52,
+        "severity": "high",
+        "human_review_required": true,
+        "reason_codes": ["speech_present", "language_threat"],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "total-score-cap",
+      "description": "Strong evidence across all branches stops at the total cap.",
+      "coverage": ["total_cap"],
+      "acoustic": {
+        "signals": [{"label": "gunshot", "peak_score": 0.9}]
+      },
+      "speech": {
+        "segment_count": 2,
+        "accepted_transcript_count": 1,
+        "review_required_transcript_count": 1
+      },
+      "language": {"categories": ["threat", "threat"]},
+      "expected": {
+        "score": 100,
+        "severity": "critical",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence",
+          "speech_present",
+          "transcript_review_required",
+          "language_threat"
+        ],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "ambiguous-language-review",
+      "description": "Ambiguous language requires review below the score threshold.",
+      "coverage": ["ambiguous_language_review"],
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["ambiguous"]},
+      "expected": {
+        "score": 7,
+        "severity": "low",
+        "human_review_required": true,
+        "reason_codes": ["speech_present", "language_ambiguous"],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "context-suppressed-language",
+      "description": "Context-suppressed language adds no language points or review.",
+      "coverage": ["context_suppressed_zero_weight"],
+      "speech": {"segment_count": 1, "accepted_transcript_count": 1},
+      "language": {"categories": ["context_suppressed"]},
+      "expected": {
+        "score": 2,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "speech_present",
+          "language_context_suppressed"
+        ],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "all-branches-missing",
+      "description": "Missing evidence adds no points but always requires review.",
+      "coverage": ["missing_data_review"],
+      "acoustic": {"status": "missing"},
+      "speech": {"status": "missing"},
+      "language": {"status": "missing"},
+      "expected": {
+        "score": 0,
+        "severity": "none",
+        "human_review_required": true,
+        "reason_codes": [
+          "no_risk_evidence",
+          "missing_acoustic_evidence",
+          "missing_speech_evidence",
+          "missing_language_evidence",
+          "missing_data_review_required"
+        ],
+        "missing_branches": ["acoustic", "speech", "language"]
+      }
+    },
+    {
+      "case_id": "acoustic-only-consent",
+      "description": "Consent-limited branches are not treated as missing evidence.",
+      "coverage": ["consent_limited_not_missing"],
+      "processing_scope": "acoustic_only",
+      "speech": {"status": "not_permitted"},
+      "language": {"status": "not_permitted"},
+      "expected": {
+        "score": 0,
+        "severity": "none",
+        "human_review_required": false,
+        "reason_codes": [
+          "no_risk_evidence",
+          "speech_not_permitted",
+          "language_not_applicable"
+        ],
+        "missing_branches": []
+      }
+    },
+    {
+      "case_id": "no-accepted-language-text",
+      "description": "No accepted transcript is distinct from missing language evidence.",
+      "coverage": ["no_accepted_text_not_missing"],
+      "speech": {"segment_count": 1},
+      "language": {"status": "no_accepted_text"},
+      "expected": {
+        "score": 2,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": ["speech_present", "language_not_applicable"],
+        "missing_branches": []
+      }
+    }
+  ]
+}

@@ -1320,3 +1320,39 @@ In plain language: Phase 6 now has a carefully labeled socket for a future train
 model. The current rules calculator still makes today’s scores, while a later model
 can receive the same compact evidence shape and return a score with enough version
 and hash information to reproduce where it came from.
+
+## A6.4 — Complete
+
+Added the executable deterministic risk-policy acceptance boundary in
+`src/audio_sentinel/risk_validation.py`. It loads a SHA-256-pinned 13-case suite,
+expands each compact scenario through the public A6.1 `RiskInputSet` contract, runs
+the public B6.1 scorer, and compares the exact score, severity, review decision,
+reason codes, and missing branches with the expected result.
+
+The checked-in suite validates all five severity levels, the inclusive 0.85
+acoustic-confidence boundary, the score-25 human-review boundary, speech and
+language branch caps, the total 100-point cap, transcript and ambiguity review,
+context-suppressed zero weighting, missing-data review, consent-limited branches,
+and the no-accepted-text state. The suite pins the exact built-in rule artifact, so
+it cannot silently validate a different policy.
+
+Generated `outputs/a6_4_validation/risk_score_validation.json` with 13 passed and
+zero failed scenarios. Its validation ID is deterministic across run timestamps,
+and the report records the suite hash, rule hash, threshold snapshot, complete
+expected/observed results, and the explicit limitation that synthetic acceptance
+validation is not empirical incident calibration.
+
+Added `scripts/validate_risk_policy.py`, `docs/risk-score-validation.md`, and 19
+focused tests covering suite integrity, required coverage, A6.1 expansion, exact
+threshold metadata, passing and failing reports, rule mismatch, timestamp identity,
+invalid scenarios, overwrite protection, CLI output, and offline operation.
+
+The complete Phase 6 suite passes 185 tests. Full verification passes all 1,544
+project tests, compilation, and the generated preparation smoke test.
+
+Next: A7.1 — Define consensus policy and outcomes: no action, log, review, alert.
+
+In plain language: Phase 6 now has a signed-off behavior checklist, not just a pile
+of tests. The built-in scorer produces every required worked outcome and records
+the exact thresholds it used, while clearly stating that real-world accuracy still
+needs representative labeled evaluation later.

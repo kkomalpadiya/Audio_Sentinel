@@ -1,0 +1,451 @@
+{
+  "schema_version": "1.0",
+  "document_type": "risk_policy_validation",
+  "validation_id": "a6-4-da9dc69673fe5bf9248a3543b7ec91152e501aebab2334d1e6e648fba6522f70",
+  "created_at": "2026-09-26T00:39:52.674406Z",
+  "decision_status": "validated_for_deterministic_v1_scenarios",
+  "suite_id": "audio-sentinel-risk-validation-v1",
+  "suite_version": "1.0.0",
+  "suite_sha256": "bd23748af8f9e403705e005714b1b369ea4ce20a67db009fac69d5c5d2e49884",
+  "rule_set": {
+    "rule_set_id": "audio-sentinel-risk-v1",
+    "rule_set_version": "1.0.0",
+    "rule_format_version": "1.0",
+    "artifact_sha256": "a34c1972f778d4965b9f71fbf372ab3180a94655c1d1c5cd8b54802d557bfc11"
+  },
+  "thresholds": {
+    "acoustic_high_confidence_threshold": 0.85,
+    "human_review_minimum_score": 25.0,
+    "acoustic_max_points": 60.0,
+    "speech_max_points": 12.0,
+    "language_max_points": 50.0,
+    "total_max_score": 100.0,
+    "severity_bands": [
+      {
+        "risk_level": "none",
+        "min_score": 0.0,
+        "max_score": 0.0
+      },
+      {
+        "risk_level": "low",
+        "min_score": 1.0,
+        "max_score": 24.0
+      },
+      {
+        "risk_level": "medium",
+        "min_score": 25.0,
+        "max_score": 49.0
+      },
+      {
+        "risk_level": "high",
+        "min_score": 50.0,
+        "max_score": 74.0
+      },
+      {
+        "risk_level": "critical",
+        "min_score": 75.0,
+        "max_score": 100.0
+      }
+    ]
+  },
+  "coverage": [
+    "severity_none",
+    "severity_low",
+    "severity_medium",
+    "severity_high",
+    "severity_critical",
+    "acoustic_confidence_below",
+    "acoustic_confidence_at",
+    "human_review_below_threshold",
+    "human_review_at_threshold",
+    "speech_cap",
+    "language_cap",
+    "total_cap",
+    "ambiguous_language_review",
+    "context_suppressed_zero_weight",
+    "missing_data_review",
+    "consent_limited_not_missing",
+    "no_accepted_text_not_missing"
+  ],
+  "scenario_count": 13,
+  "passed_count": 13,
+  "failed_count": 0,
+  "cases": [
+    {
+      "case_id": "quiet-present-evidence",
+      "coverage": [
+        "severity_none",
+        "human_review_below_threshold"
+      ],
+      "expected": {
+        "score": 0.0,
+        "severity": "none",
+        "human_review_required": false,
+        "reason_codes": [
+          "no_risk_evidence"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 0.0,
+        "severity": "none",
+        "human_review_required": false,
+        "reason_codes": [
+          "no_risk_evidence"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "siren-below-confidence-bonus",
+      "coverage": [
+        "severity_low",
+        "acoustic_confidence_below"
+      ],
+      "expected": {
+        "score": 10.0,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "acoustic_event_candidate"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 10.0,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "acoustic_event_candidate"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "gunshot-at-confidence-boundary",
+      "coverage": [
+        "severity_high",
+        "acoustic_confidence_at"
+      ],
+      "expected": {
+        "score": 55.0,
+        "severity": "high",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 55.0,
+        "severity": "high",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "glass-break-at-review-boundary",
+      "coverage": [
+        "severity_medium",
+        "human_review_at_threshold"
+      ],
+      "expected": {
+        "score": 25.0,
+        "severity": "medium",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 25.0,
+        "severity": "medium",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "critical-multibranch-evidence",
+      "coverage": [
+        "severity_critical"
+      ],
+      "expected": {
+        "score": 77.0,
+        "severity": "critical",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence",
+          "speech_present",
+          "language_distress"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 77.0,
+        "severity": "critical",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence",
+          "speech_present",
+          "language_distress"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "speech-review-cap",
+      "coverage": [
+        "speech_cap"
+      ],
+      "expected": {
+        "score": 12.0,
+        "severity": "low",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "transcript_review_required"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 12.0,
+        "severity": "low",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "transcript_review_required"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "language-sum-cap",
+      "coverage": [
+        "language_cap"
+      ],
+      "expected": {
+        "score": 52.0,
+        "severity": "high",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "language_threat"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 52.0,
+        "severity": "high",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "language_threat"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "total-score-cap",
+      "coverage": [
+        "total_cap"
+      ],
+      "expected": {
+        "score": 100.0,
+        "severity": "critical",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence",
+          "speech_present",
+          "transcript_review_required",
+          "language_threat"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 100.0,
+        "severity": "critical",
+        "human_review_required": true,
+        "reason_codes": [
+          "acoustic_event_candidate",
+          "acoustic_high_confidence",
+          "speech_present",
+          "transcript_review_required",
+          "language_threat"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "ambiguous-language-review",
+      "coverage": [
+        "ambiguous_language_review"
+      ],
+      "expected": {
+        "score": 7.0,
+        "severity": "low",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "language_ambiguous"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 7.0,
+        "severity": "low",
+        "human_review_required": true,
+        "reason_codes": [
+          "speech_present",
+          "language_ambiguous"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "context-suppressed-language",
+      "coverage": [
+        "context_suppressed_zero_weight"
+      ],
+      "expected": {
+        "score": 2.0,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "speech_present",
+          "language_context_suppressed"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 2.0,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "speech_present",
+          "language_context_suppressed"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "all-branches-missing",
+      "coverage": [
+        "missing_data_review"
+      ],
+      "expected": {
+        "score": 0.0,
+        "severity": "none",
+        "human_review_required": true,
+        "reason_codes": [
+          "no_risk_evidence",
+          "missing_acoustic_evidence",
+          "missing_speech_evidence",
+          "missing_language_evidence",
+          "missing_data_review_required"
+        ],
+        "missing_branches": [
+          "acoustic",
+          "speech",
+          "language"
+        ]
+      },
+      "observed": {
+        "score": 0.0,
+        "severity": "none",
+        "human_review_required": true,
+        "reason_codes": [
+          "no_risk_evidence",
+          "missing_acoustic_evidence",
+          "missing_speech_evidence",
+          "missing_language_evidence",
+          "missing_data_review_required"
+        ],
+        "missing_branches": [
+          "acoustic",
+          "speech",
+          "language"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "case_id": "acoustic-only-consent",
+      "coverage": [
+        "consent_limited_not_missing"
+      ],
+      "expected": {
+        "score": 0.0,
+        "severity": "none",
+        "human_review_required": false,
+        "reason_codes": [
+          "no_risk_evidence",
+          "speech_not_permitted",
+          "language_not_applicable"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 0.0,
+        "severity": "none",
+        "human_review_required": false,
+        "reason_codes": [
+          "no_risk_evidence",
+          "speech_not_permitted",
+          "language_not_applicable"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    },
+    {
+      "case_id": "no-accepted-language-text",
+      "coverage": [
+        "no_accepted_text_not_missing"
+      ],
+      "expected": {
+        "score": 2.0,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "speech_present",
+          "language_not_applicable"
+        ],
+        "missing_branches": []
+      },
+      "observed": {
+        "score": 2.0,
+        "severity": "low",
+        "human_review_required": false,
+        "reason_codes": [
+          "speech_present",
+          "language_not_applicable"
+        ],
+        "missing_branches": []
+      },
+      "passed": true
+    }
+  ],
+  "limitation": "synthetic_acceptance_validation_not_empirical_incident_calibration"
+}

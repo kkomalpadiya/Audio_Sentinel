@@ -76,3 +76,10 @@ These tests use the scorer like a table of worked examples. They check ordinary
 quiet, low, medium, high, and critical cases, then press on exact boundaries and
 unusually large values. That makes the documented numbers executable and catches
 failures that a few happy-path examples would miss.
+
+## Acceptance validation
+
+A6.4 builds on this matrix with a separately pinned, reviewable acceptance suite
+and generated validation report. See `docs/risk-score-validation.md`. B6.2 remains
+the detailed edge-case regression layer; A6.4 records whether the exact bundled
+policy passes its required release-facing behaviors.
