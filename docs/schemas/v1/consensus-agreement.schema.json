@@ -1,0 +1,219 @@
+{
+  "$defs": {
+    "AgreementReasonCode": {
+      "description": "Portable explanations for one branch agreement classification.",
+      "enum": [
+        "branch_missing",
+        "branch_not_permitted",
+        "branch_not_applicable",
+        "no_risk_signal",
+        "low_confidence_risk_signal",
+        "high_confidence_risk_signal",
+        "speech_absent",
+        "speech_present_neutral",
+        "safe_language_context",
+        "ambiguous_language",
+        "active_language_risk",
+        "acoustic_no_speech_conflict",
+        "acoustic_speech_absence_conflict",
+        "non_threatening_language_conflict",
+        "language_without_accepted_transcript_conflict"
+      ],
+      "title": "AgreementReasonCode",
+      "type": "string"
+    },
+    "AgreementRuleSetDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "rule_format_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "enum": [
+            "1.0"
+          ],
+          "title": "Rule Format Version",
+          "type": "string"
+        },
+        "rule_set_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Rule Set Id",
+          "type": "string"
+        },
+        "rule_set_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Rule Set Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_set_id",
+        "rule_set_version",
+        "artifact_sha256"
+      ],
+      "title": "AgreementRuleSetDescriptor",
+      "type": "object"
+    },
+    "BranchAgreement": {
+      "description": "How one evidence branch relates to the recorded risk assessment.",
+      "enum": [
+        "supports_risk",
+        "neutral",
+        "conflicts_risk",
+        "unavailable",
+        "not_permitted",
+        "not_applicable"
+      ],
+      "title": "BranchAgreement",
+      "type": "string"
+    },
+    "BranchAgreementEvaluation": {
+      "additionalProperties": false,
+      "properties": {
+        "agreement": {
+          "$ref": "#/$defs/BranchAgreement"
+        },
+        "input_status": {
+          "$ref": "#/$defs/RiskInputStatus"
+        },
+        "kind": {
+          "$ref": "#/$defs/RiskEvidenceKind"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/AgreementReasonCode"
+          },
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "kind",
+        "input_status",
+        "agreement",
+        "reason_codes"
+      ],
+      "title": "BranchAgreementEvaluation",
+      "type": "object"
+    },
+    "RiskEvidenceKind": {
+      "enum": [
+        "acoustic",
+        "speech",
+        "language"
+      ],
+      "title": "RiskEvidenceKind",
+      "type": "string"
+    },
+    "RiskInputStatus": {
+      "description": "Whether a branch is usable for scoring, absent, or outside consent scope.",
+      "enum": [
+        "present",
+        "missing",
+        "not_permitted",
+        "not_applicable",
+        "no_accepted_text"
+      ],
+      "title": "RiskInputStatus",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/consensus-agreement.schema.json",
+  "additionalProperties": false,
+  "description": "Deterministic B7.1 result consumed by the later decision service.",
+  "properties": {
+    "assessment_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Assessment Id",
+      "type": "string"
+    },
+    "assessment_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Assessment Sha256",
+      "type": "string"
+    },
+    "branches": {
+      "items": {
+        "$ref": "#/$defs/BranchAgreementEvaluation"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Branches",
+      "type": "array"
+    },
+    "conflicting_branches": {
+      "items": {
+        "$ref": "#/$defs/RiskEvidenceKind"
+      },
+      "title": "Conflicting Branches",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "consensus_agreement",
+      "default": "consensus_agreement",
+      "enum": [
+        "consensus_agreement"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "evaluation_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Evaluation Id",
+      "type": "string"
+    },
+    "has_conflict": {
+      "title": "Has Conflict",
+      "type": "boolean"
+    },
+    "rule_set": {
+      "$ref": "#/$defs/AgreementRuleSetDescriptor"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "supporting_branches": {
+      "items": {
+        "$ref": "#/$defs/RiskEvidenceKind"
+      },
+      "title": "Supporting Branches",
+      "type": "array"
+    }
+  },
+  "required": [
+    "evaluation_id",
+    "created_at",
+    "assessment_id",
+    "assessment_sha256",
+    "rule_set",
+    "branches",
+    "supporting_branches",
+    "conflicting_branches",
+    "has_conflict"
+  ],
+  "title": "ConsensusAgreementEvaluation",
+  "type": "object"
+}

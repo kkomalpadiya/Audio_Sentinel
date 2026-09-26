@@ -1394,3 +1394,51 @@ In plain language: the score is one opinion, and consensus is the safety gate th
 decides what the system may do with it. Small clean signals can be logged,
 uncertainty goes to a person, and only a clean critical result supported by both
 sound and language can become a local alert candidate.
+
+## B7.1 — Complete
+
+Implemented the deterministic evidence-agreement and conflict engine in
+`src/audio_sentinel/consensus_rules.py`. It revalidates one Phase 6 risk assessment,
+pins its canonical SHA-256, loads a bounded local agreement-rule artifact, and
+classifies acoustic, speech, and language branches using the A7.1 agreement states.
+The result records ordered branch reasons, supporting and conflicting branch lists,
+exact rule provenance, and a deterministic evaluation ID that excludes the run
+timestamp.
+
+The built-in rules require a risk-bearing acoustic signal to reach the inclusive
+0.85 peak-score threshold before it supports risk. Active distress, threat, or
+weapon-reference language supports risk; safe, suppressed, and ambiguous language
+remains neutral. Speech presence is always neutral by itself. Four cross-branch
+checks detect high-confidence `no_speech` versus VAD speech, acoustic speech versus
+zero VAD segments, non-threatening acoustic speech versus active language, and
+language findings without an accepted transcript. Conflicts override support for
+the involved branches instead of being averaged away.
+
+Added the SHA-256-pinned
+`src/audio_sentinel/resources/consensus-agreement-rules-v1.json`, two checked-in
+JSON Schemas, `docs/examples/consensus-agreement.json`,
+`docs/consensus-agreement.md`, and 42 focused tests. The tests cover artifact
+integrity, taxonomy completeness, exact confidence boundaries, every support and
+neutral category, all four conflicts, missing and consent-limited states, custom
+thresholds, deterministic identities, immutable portable results, privacy, safe
+failures, schema export, and offline loading.
+
+The new zero-confidence case exposed and fixed one A6.1 validation bug:
+`max_peak_score=0.0` had been mistaken for a missing value by a truthiness check.
+The contract now compares zero correctly, and the regression remains in the B7.1
+suite.
+
+The focused B7.1, A7.1, and affected A6.1 suites pass 108 tests. Full verification
+passes all 1,616 project tests, compilation, and the generated preparation smoke
+test.
+
+Current tracker: `outputs/b7_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 50 completed tasks out of 72 and A7.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: A7.2 — Implement the final verification decision service.
+
+In plain language: this task is the cross-checker. It compares what the sound,
+speech, and language branches say, keeps ordinary speech neutral, and turns clear
+contradictions into review evidence instead of letting one model silently cancel
+another.

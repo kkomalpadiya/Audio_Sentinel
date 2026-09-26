@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "rule_format_version": "1.0",
+  "rule_set_id": "audio-sentinel-consensus-agreement-v1",
+  "rule_set_version": "1.0.0",
+  "acoustic_support": {
+    "minimum_peak_score": 0.85,
+    "support_labels": [
+      "siren",
+      "smoke_alarm",
+      "glass_break",
+      "crowd_panic",
+      "distress_speech",
+      "threatening_speech",
+      "weapon_reference",
+      "gunshot",
+      "explosion"
+    ]
+  },
+  "speech_consistency": {
+    "minimum_peak_score": 0.85,
+    "no_speech_label": "no_speech",
+    "speech_like_labels": [
+      "speech_present",
+      "non_threatening_speech",
+      "distress_speech",
+      "threatening_speech",
+      "weapon_reference"
+    ],
+    "non_threatening_speech_label": "non_threatening_speech"
+  },
+  "language_support": {
+    "support_categories": [
+      "distress",
+      "threat",
+      "weapon_reference"
+    ],
+    "neutral_categories": [
+      "no_concerning_match",
+      "ambiguous",
+      "context_suppressed"
+    ]
+  },
+  "conflicts": {
+    "no_speech_vs_vad_speech": true,
+    "speech_signal_vs_zero_vad_segments": true,
+    "non_threatening_speech_vs_active_language": true,
+    "language_findings_require_accepted_transcript": true
+  }
+}

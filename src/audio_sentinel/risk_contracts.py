@@ -153,7 +153,12 @@ class AcousticRiskInputs(RiskContractRecord):
         if expected_peak is None:
             if self.max_peak_score is not None:
                 raise ValueError("empty acoustic signals require null max_peak_score")
-        elif not math.isclose(self.max_peak_score or -1, expected_peak, rel_tol=0, abs_tol=1e-12):
+        elif not math.isclose(
+            -1 if self.max_peak_score is None else self.max_peak_score,
+            expected_peak,
+            rel_tol=0,
+            abs_tol=1e-12,
+        ):
             raise ValueError("acoustic max_peak_score must equal the signal maximum")
         return self
 

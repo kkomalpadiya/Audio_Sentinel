@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "document_type": "consensus_agreement",
+  "evaluation_id": "agreement-f61b4288a5d39e06bd257f25ec1e49d4d1edf7b4c86d60ae55f252016caf38a1",
+  "created_at": "2026-09-26T12:00:00Z",
+  "assessment_id": "df3cdadf02aaf9941a3968c7b4515ee854c8580dc9c8168fe2fca36aa9ae86ac",
+  "assessment_sha256": "399153d8d4597d06d97ecfb4836e9afc1f6a85c01722b3288f99a9f2e324c2da",
+  "rule_set": {
+    "rule_set_id": "audio-sentinel-consensus-agreement-v1",
+    "rule_set_version": "1.0.0",
+    "rule_format_version": "1.0",
+    "artifact_sha256": "f2c913f921157f39a0e84b59c600e53f91c43828a9da9b83b84acaaf57d10d79"
+  },
+  "branches": [
+    {
+      "kind": "acoustic",
+      "input_status": "present",
+      "agreement": "supports_risk",
+      "reason_codes": [
+        "high_confidence_risk_signal"
+      ]
+    },
+    {
+      "kind": "speech",
+      "input_status": "present",
+      "agreement": "neutral",
+      "reason_codes": [
+        "speech_present_neutral"
+      ]
+    },
+    {
+      "kind": "language",
+      "input_status": "present",
+      "agreement": "supports_risk",
+      "reason_codes": [
+        "active_language_risk"
+      ]
+    }
+  ],
+  "supporting_branches": [
+    "acoustic",
+    "language"
+  ],
+  "conflicting_branches": [],
+  "has_conflict": false
+}

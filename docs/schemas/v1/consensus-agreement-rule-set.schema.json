@@ -1,0 +1,233 @@
+{
+  "$defs": {
+    "AcousticSupportRules": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum_peak_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Peak Score",
+          "type": "number"
+        },
+        "support_labels": {
+          "items": {
+            "$ref": "#/$defs/EventLabel"
+          },
+          "minItems": 1,
+          "title": "Support Labels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "minimum_peak_score",
+        "support_labels"
+      ],
+      "title": "AcousticSupportRules",
+      "type": "object"
+    },
+    "ConflictRules": {
+      "additionalProperties": false,
+      "properties": {
+        "language_findings_require_accepted_transcript": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Language Findings Require Accepted Transcript",
+          "type": "boolean"
+        },
+        "no_speech_vs_vad_speech": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "No Speech Vs Vad Speech",
+          "type": "boolean"
+        },
+        "non_threatening_speech_vs_active_language": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Non Threatening Speech Vs Active Language",
+          "type": "boolean"
+        },
+        "speech_signal_vs_zero_vad_segments": {
+          "const": true,
+          "default": true,
+          "enum": [
+            true
+          ],
+          "title": "Speech Signal Vs Zero Vad Segments",
+          "type": "boolean"
+        }
+      },
+      "title": "ConflictRules",
+      "type": "object"
+    },
+    "EventLabel": {
+      "description": "The deliberately small, stable event taxonomy for the first release.",
+      "enum": [
+        "ambient",
+        "no_speech",
+        "speech_present",
+        "non_threatening_speech",
+        "siren",
+        "smoke_alarm",
+        "glass_break",
+        "crowd_panic",
+        "distress_speech",
+        "threatening_speech",
+        "weapon_reference",
+        "gunshot",
+        "explosion"
+      ],
+      "title": "EventLabel",
+      "type": "string"
+    },
+    "LanguageCategory": {
+      "description": "Limited evidence categories; none is an incident or risk decision.",
+      "enum": [
+        "no_concerning_match",
+        "distress",
+        "threat",
+        "weapon_reference",
+        "ambiguous",
+        "context_suppressed"
+      ],
+      "title": "LanguageCategory",
+      "type": "string"
+    },
+    "LanguageSupportRules": {
+      "additionalProperties": false,
+      "properties": {
+        "neutral_categories": {
+          "items": {
+            "$ref": "#/$defs/LanguageCategory"
+          },
+          "minItems": 1,
+          "title": "Neutral Categories",
+          "type": "array"
+        },
+        "support_categories": {
+          "items": {
+            "$ref": "#/$defs/LanguageCategory"
+          },
+          "minItems": 1,
+          "title": "Support Categories",
+          "type": "array"
+        }
+      },
+      "required": [
+        "support_categories",
+        "neutral_categories"
+      ],
+      "title": "LanguageSupportRules",
+      "type": "object"
+    },
+    "SpeechConsistencyRules": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum_peak_score": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Minimum Peak Score",
+          "type": "number"
+        },
+        "no_speech_label": {
+          "const": "no_speech",
+          "default": "no_speech",
+          "enum": [
+            "no_speech"
+          ],
+          "title": "No Speech Label",
+          "type": "string"
+        },
+        "non_threatening_speech_label": {
+          "const": "non_threatening_speech",
+          "default": "non_threatening_speech",
+          "enum": [
+            "non_threatening_speech"
+          ],
+          "title": "Non Threatening Speech Label",
+          "type": "string"
+        },
+        "speech_like_labels": {
+          "items": {
+            "$ref": "#/$defs/EventLabel"
+          },
+          "minItems": 1,
+          "title": "Speech Like Labels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "minimum_peak_score",
+        "speech_like_labels"
+      ],
+      "title": "SpeechConsistencyRules",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/consensus-agreement-rule-set.schema.json",
+  "additionalProperties": false,
+  "description": "Versioned branch-support and contradiction rules for B7.1.",
+  "properties": {
+    "acoustic_support": {
+      "$ref": "#/$defs/AcousticSupportRules"
+    },
+    "conflicts": {
+      "$ref": "#/$defs/ConflictRules"
+    },
+    "language_support": {
+      "$ref": "#/$defs/LanguageSupportRules"
+    },
+    "rule_format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Rule Format Version",
+      "type": "string"
+    },
+    "rule_set_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Rule Set Id",
+      "type": "string"
+    },
+    "rule_set_version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Rule Set Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "speech_consistency": {
+      "$ref": "#/$defs/SpeechConsistencyRules"
+    }
+  },
+  "required": [
+    "rule_set_id",
+    "rule_set_version",
+    "acoustic_support",
+    "speech_consistency",
+    "language_support",
+    "conflicts"
+  ],
+  "title": "AgreementRuleSet",
+  "type": "object"
+}

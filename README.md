@@ -185,6 +185,11 @@ one hash-pinned Phase 6 risk snapshot, typed acoustic/speech/language agreement
 states, mutually exclusive no-action/log/review/alert outcomes, and conservative
 alert gates requiring clean critical multi-branch support. An alert outcome is only
 a local candidate for later Phase 8 handling; A7.1 sends no notification.
+B7.1 implements the [evidence-agreement and conflict engine](docs/consensus-agreement.md)
+with a SHA-256-pinned local rule artifact, explicit acoustic and language support
+rules, neutral speech handling, four cross-branch contradiction checks,
+deterministic evaluation identity, and privacy-minimized reason receipts. It
+classifies evidence for A7.2 but does not select or send an alert outcome.
 
 ## Local panel demonstration
 
