@@ -230,6 +230,13 @@ validated, written atomically, safely reusable, and reloadable from
 raw audio, tensors, and local paths. A Phase 7 alert remains a local candidate that
 requires review; report creation sends no notification and grants no delivery
 authority.
+A8.2 adds [local alert creation and immutable audit records](docs/local-alert-audit.md).
+Every saved final report receives an audit receipt. Only a verified `alert` outcome
+creates a local `alert.json`, which starts in pending human review and remains
+local-only. Non-alert outcomes are explicitly recorded without creating an alert.
+Both documents are hash-bound to the final report, persisted atomically, and safely
+reusable. They contain no recipient or transport data and permanently record that
+notification delivery was not sent or authorized.
 
 ## Local panel demonstration
 

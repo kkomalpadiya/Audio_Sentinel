@@ -1,0 +1,205 @@
+{
+  "$defs": {
+    "AlertAuditAction": {
+      "description": "The local action recorded for one verified final report.",
+      "enum": [
+        "local_alert_created",
+        "no_alert_created"
+      ],
+      "title": "AlertAuditAction",
+      "type": "string"
+    },
+    "AlertAuditReason": {
+      "description": "Portable reason for the recorded local action.",
+      "enum": [
+        "alert_candidate_recorded",
+        "consensus_outcome_not_alert"
+      ],
+      "title": "AlertAuditReason",
+      "type": "string"
+    },
+    "ConsensusOutcome": {
+      "description": "The one primary action selected by the verification layer.",
+      "enum": [
+        "no_action",
+        "log",
+        "review",
+        "alert"
+      ],
+      "title": "ConsensusOutcome",
+      "type": "string"
+    },
+    "FinalReportReference": {
+      "additionalProperties": false,
+      "description": "Hash-pinned final-report identity without a filesystem path.",
+      "properties": {
+        "assessment_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "decision_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "report_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Report Id",
+          "type": "string"
+        },
+        "report_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Report Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "report_id",
+        "report_sha256",
+        "clip_id",
+        "decision_id",
+        "assessment_id"
+      ],
+      "title": "FinalReportReference",
+      "type": "object"
+    },
+    "LocalAlertReference": {
+      "additionalProperties": false,
+      "description": "Semantic identity of the optional alert stored beside an audit record.",
+      "properties": {
+        "alert_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Alert Id",
+          "type": "string"
+        },
+        "alert_semantic_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Alert Semantic Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "alert_id",
+        "alert_semantic_sha256"
+      ],
+      "title": "LocalAlertReference",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/alert-audit-record.schema.json",
+  "additionalProperties": false,
+  "description": "Immutable receipt for the local handling of one final report.",
+  "properties": {
+    "action": {
+      "$ref": "#/$defs/AlertAuditAction"
+    },
+    "alert": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LocalAlertReference"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "alert_delivery_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Alert Delivery Authorized",
+      "type": "boolean"
+    },
+    "audit_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Audit Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "decision_outcome": {
+      "$ref": "#/$defs/ConsensusOutcome"
+    },
+    "document_type": {
+      "const": "alert_audit_record",
+      "default": "alert_audit_record",
+      "enum": [
+        "alert_audit_record"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Format Version",
+      "type": "string"
+    },
+    "notification_delivery": {
+      "const": "not_sent",
+      "default": "not_sent",
+      "enum": [
+        "not_sent"
+      ],
+      "title": "Notification Delivery",
+      "type": "string"
+    },
+    "reason": {
+      "$ref": "#/$defs/AlertAuditReason"
+    },
+    "report": {
+      "$ref": "#/$defs/FinalReportReference"
+    },
+    "review_required": {
+      "title": "Review Required",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audit_id",
+    "created_at",
+    "report",
+    "decision_outcome",
+    "action",
+    "reason",
+    "review_required"
+  ],
+  "title": "AlertAuditRecord",
+  "type": "object"
+}

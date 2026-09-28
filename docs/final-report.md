@@ -73,6 +73,8 @@ Every report states:
 
 An `alert` outcome remains a local candidate with human review required. B8.1 has no
 network client, recipient field, notification publisher, or delivery side effect.
+The A8.2 [local alert and audit layer](local-alert-audit.md) consumes only a saved,
+revalidated report and preserves this no-delivery boundary.
 
 ## Identity and retry behavior
 

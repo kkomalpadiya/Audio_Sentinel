@@ -19,3 +19,7 @@ Only invoke `SpeechProcessor` and `LanguageAnalyzer` when the clip consent allow
 ## Implementation Rule
 
 Concrete implementations belong in later phases. They must implement the matching protocol from `audio_sentinel.interfaces` and return its declared data types. This lets a baseline acoustic model, a transcription provider, and an alert transport be replaced independently.
+
+A8.2 adds local alert documents and audit persistence without implementing
+`AlertPublisher`. Local record creation is intentionally separate from any future
+transport, recipient selection, or delivery authorization.

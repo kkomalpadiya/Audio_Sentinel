@@ -1,0 +1,203 @@
+{
+  "$defs": {
+    "ConsensusReasonCode": {
+      "description": "Portable explanations for the selected consensus outcome.",
+      "enum": [
+        "no_risk_evidence",
+        "low_risk_logged",
+        "score_review_required",
+        "risk_uncertainty_review_required",
+        "missing_evidence_review_required",
+        "evidence_conflict_review_required",
+        "insufficient_alert_agreement",
+        "consent_limited_evidence",
+        "critical_risk",
+        "multi_branch_alert_agreement",
+        "alert_candidate"
+      ],
+      "title": "ConsensusReasonCode",
+      "type": "string"
+    },
+    "FinalReportReference": {
+      "additionalProperties": false,
+      "description": "Hash-pinned final-report identity without a filesystem path.",
+      "properties": {
+        "assessment_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Assessment Id",
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "decision_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "report_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Report Id",
+          "type": "string"
+        },
+        "report_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Report Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "report_id",
+        "report_sha256",
+        "clip_id",
+        "decision_id",
+        "assessment_id"
+      ],
+      "title": "FinalReportReference",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/local-alert.schema.json",
+  "additionalProperties": false,
+  "description": "Local-only alert candidate created from an alert-eligible final report.",
+  "properties": {
+    "alert_delivery_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Alert Delivery Authorized",
+      "type": "boolean"
+    },
+    "alert_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Alert Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "decision_reason_codes": {
+      "items": {
+        "$ref": "#/$defs/ConsensusReasonCode"
+      },
+      "minItems": 1,
+      "title": "Decision Reason Codes",
+      "type": "array"
+    },
+    "document_type": {
+      "const": "local_alert",
+      "default": "local_alert",
+      "enum": [
+        "local_alert"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Format Version",
+      "type": "string"
+    },
+    "local_only": {
+      "const": true,
+      "default": true,
+      "enum": [
+        true
+      ],
+      "title": "Local Only",
+      "type": "boolean"
+    },
+    "notification_delivery": {
+      "const": "not_sent",
+      "default": "not_sent",
+      "enum": [
+        "not_sent"
+      ],
+      "title": "Notification Delivery",
+      "type": "string"
+    },
+    "outcome": {
+      "const": "alert",
+      "default": "alert",
+      "enum": [
+        "alert"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "report": {
+      "$ref": "#/$defs/FinalReportReference"
+    },
+    "review_required": {
+      "const": true,
+      "default": true,
+      "enum": [
+        true
+      ],
+      "title": "Review Required",
+      "type": "boolean"
+    },
+    "review_status": {
+      "const": "pending",
+      "default": "pending",
+      "enum": [
+        "pending"
+      ],
+      "title": "Review Status",
+      "type": "string"
+    },
+    "risk_score": {
+      "maximum": 100.0,
+      "minimum": 0.0,
+      "title": "Risk Score",
+      "type": "number"
+    },
+    "risk_severity": {
+      "const": "critical",
+      "default": "critical",
+      "enum": [
+        "critical"
+      ],
+      "title": "Risk Severity",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "alert_id",
+    "created_at",
+    "report",
+    "risk_score",
+    "decision_reason_codes"
+  ],
+  "title": "LocalAlertDocument",
+  "type": "object"
+}

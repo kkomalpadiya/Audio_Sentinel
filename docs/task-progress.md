@@ -1688,3 +1688,43 @@ In plain language: the completed evaluation can now be saved as one portable,
 self-checking local JSON record. It preserves the decision evidence needed for later
 review while deliberately carrying neither sensitive transcript content nor any
 permission or mechanism to notify someone.
+
+## A8.2 — Complete
+
+Added `src/audio_sentinel/alert_audit.py` with strict, immutable v1 contracts for a
+local alert and its audit record. The service accepts only a saved B8.1 report and
+reloads that report before handling it. Every consensus outcome receives an audit
+record. Only an actual `alert` outcome creates a local alert; review, log, and
+no-action outcomes explicitly record that no alert was created.
+
+Local alerts are hash-bound to the final report, critical risk result, and consensus
+decision. They start with `review_status=pending`, retain
+`review_required=true`, and are permanently marked local-only. Alerts and audits
+both record `notification_delivery=not_sent` and
+`alert_delivery_authorized=false`. Neither contract contains transcript text, audio,
+paths, recipient data, or transport settings, and A8.2 does not implement the legacy
+`AlertPublisher` boundary.
+
+Added bounded, atomic persistence under
+`data/processed/alert-audit/<audit_id>/`. Every bundle contains `audit.json`; alert
+outcomes also contain `alert.json`. Staged documents are flushed, revalidated,
+checked against the referenced final report, atomically published, and reloaded.
+Semantic identities make retries idempotent. Conflicts are not overwritten, and
+loading rejects unsafe paths, oversized or tampered files, incorrect inventories,
+wrong identity directories, missing reports, and cross-document mismatches.
+
+Added `docs/local-alert-audit.md`, two checked-in v1 JSON Schemas, project and
+interface documentation updates, and 15 focused tests covering alert and non-alert
+paths, pending review, privacy, deterministic identity, time ordering, persistence,
+reuse, limits, unsafe paths, tampering, inventory, referenced-report verification,
+strict immutability, and schema parity.
+
+Current tracker: `outputs/a8_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 57 completed tasks out of 72 and B8.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: B8.2 — Implement CLI commands for evaluation and report inspection.
+
+In plain language: every final report now leaves a durable local handling receipt,
+and only the strongest verified outcome becomes a pending local alert. Nothing is
+sent, nobody is contacted, and the records themselves cannot authorize delivery.
