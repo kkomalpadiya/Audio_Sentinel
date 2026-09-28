@@ -1647,3 +1647,44 @@ In plain language: one authorized recording can now travel through every existin
 analysis and safety stage with one call. The evaluator preserves consent limits and
 source provenance throughout, and even its strongest result remains a local record
 for human review rather than a sent alert.
+
+## B8.1 — Complete
+
+Added `src/audio_sentinel/final_report.py` with a strict, immutable, versioned final
+report contract and a serializer for the completed A8.1 evaluator result. The report
+uses canonical SHA-256 semantic identity, embeds the trusted Phase 6 risk assessment,
+B7.1 agreement evaluation, and A7.2 decision, and records ordered hash-pinned
+acoustic, speech, and language evidence receipts. Cross-document validation checks
+the source, branch statuses, risk identity, agreement hash, decision reference and
+identity, branch states, derived summary, and report identity.
+
+Added bounded, link-resistant persistence at
+`data/processed/final-reports/<report_id>/report.json`. Saving verifies the current
+acoustic evidence, writes and flushes a private staging bundle, validates the staged
+JSON, atomically publishes it, and reloads the result. Identical retries reuse the
+existing immutable bundle; conflicts are never overwritten. Loading rejects unsafe
+paths, oversized files, malformed or tampered documents, wrong identity directories,
+and unexpected bundle inventory.
+
+The report excludes transcript text, matched phrases, raw audio, tensors, and local
+paths. Its summary explicitly records `notification_delivery=not_sent` and
+`alert_delivery_authorized=false`; an alert outcome is still only a local candidate
+for later reviewed handling.
+
+Added `docs/final-report.md`, checked in the generated v1 JSON Schema at
+`docs/schemas/v1/final-report.schema.json`, updated the evaluator and project docs,
+and added 14 focused tests. The tests cover both consent scopes, no accepted text,
+deterministic identity, atomic persistence and reuse, limits, unsafe paths, tamper
+detection, bundle inventory, evaluator integrity, strict immutability, privacy, and
+schema parity.
+
+Current tracker: `outputs/b8_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 56 completed tasks out of 72 and A8.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: A8.2 — Implement local alert creation and audit records.
+
+In plain language: the completed evaluation can now be saved as one portable,
+self-checking local JSON record. It preserves the decision evidence needed for later
+review while deliberately carrying neither sensitive transcript content nor any
+permission or mechanism to notify someone.

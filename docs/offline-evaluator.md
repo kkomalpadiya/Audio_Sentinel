@@ -106,8 +106,10 @@ identities, counts, score, severity, outcome, review state, and alert-candidate
 state. It excludes transcript text, matched phrases, raw audio, tensors, and local
 paths. The summary explicitly records `notification_sent=false`.
 
-The result is not the versioned final JSON report. B8.1 owns that contract and its
-serialization rules.
+The result is the validated in-process input to the B8.1
+[versioned final JSON report](final-report.md). Report serialization remains a
+separate explicit call, so ordinary evaluation still writes no final report and
+sends no notification.
 
 ## Failure behavior
 
@@ -139,4 +141,3 @@ audio recipes, stage-error preservation, deterministic retry and output reuse,
 privacy-minimized summaries, immutability, and safe invalid-input handling. All
 models used by this focused suite are deterministic local test doubles that satisfy
 the real model metadata contracts; no model download or network access is needed.
-

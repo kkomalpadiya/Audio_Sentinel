@@ -222,9 +222,14 @@ It connects the existing preparation, acoustic, consent-aware speech, language,
 risk, agreement, and final-verification stages without duplicating their rules.
 Acoustic-only consent skips speech and language completely; speech-authorized
 evaluation requires both verified local speech models before any output is written.
-The evaluator returns typed stage results and a privacy-minimized summary, but it
-does not serialize the later B8.1 final report or send a notification. A Phase 7
-alert remains a local candidate that requires review.
+The evaluator returns typed stage results and a privacy-minimized summary. B8.1 adds
+the [versioned final JSON report](docs/final-report.md), which hash-pins the evidence
+receipts and embeds the trusted risk, agreement, and decision documents. Reports are
+validated, written atomically, safely reusable, and reloadable from
+`data/processed/final-reports/<report_id>/report.json`. They exclude transcript text,
+raw audio, tensors, and local paths. A Phase 7 alert remains a local candidate that
+requires review; report creation sends no notification and grants no delivery
+authority.
 
 ## Local panel demonstration
 
