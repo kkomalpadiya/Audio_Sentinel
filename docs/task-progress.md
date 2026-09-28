@@ -1728,3 +1728,39 @@ Next: B8.2 — Implement CLI commands for evaluation and report inspection.
 In plain language: every final report now leaves a durable local handling receipt,
 and only the strongest verified outcome becomes a pending local alert. Nothing is
 sent, nobody is contacted, and the records themselves cannot authorize delivery.
+
+## B8.2 — Complete
+
+Added `src/audio_sentinel/cli.py` with two Typer commands and the installed
+`audio-sentinel` console entry point. `evaluate` accepts one path relative to
+`data/raw`, opaque clip and consent IDs, an authorized processing scope, timezone-
+aware consent times, explicit device authorization, a documented source name, and
+an explicit experimental acoustic threshold. It loads the verified local YAMNet
+model for every evaluation and loads Silero VAD plus Faster-Whisper only when the
+authorized scope includes speech. It then delegates to A8.1, B8.1, and A8.2 to run
+the pipeline, save the final report, and record the local alert audit.
+
+Added `inspect-report`, which accepts only a relative path inside
+`data/processed`, reloads the report through the existing bounded and tamper-aware
+B8.1 verifier, and prints its source receipt, evidence receipts, trusted document
+identities, and derived summary. Neither command prints transcript text, raw audio,
+tensors, or absolute paths. Success and failure output are machine-readable JSON;
+typed pipeline errors preserve their stable safe codes, while unknown exception
+details are redacted.
+
+Added `docs/cli.md`, updated the package entry point and project overview, and added
+9 focused tests. The tests cover help and command discovery, acoustic-only model
+gating, the complete speech-authorized alert path, report and audit persistence,
+verified report inspection, compact JSON, explicit device authorization, timezone
+validation, unsafe report and config paths, privacy, and unknown-error redaction.
+
+Current tracker: `outputs/b8_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 58 completed tasks out of 72 and A8.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: A8.3 — Implement local API endpoint and request validation.
+
+In plain language: an authorized operator can now run the entire offline pipeline
+from one command and inspect the resulting self-checking report from another. The
+CLI exposes the workflow without weakening the existing consent, integrity,
+privacy, review, or no-notification safeguards.

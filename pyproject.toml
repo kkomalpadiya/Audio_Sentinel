@@ -20,6 +20,9 @@ dependencies = [
   "typer>=0.12,<1",
 ]
 
+[project.scripts]
+audio-sentinel = "audio_sentinel.cli:main"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8,<9",

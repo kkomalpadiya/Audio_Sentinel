@@ -175,7 +175,109 @@ portable results. A4.4 completes the phase with 16
 [speech-branch integration tests](docs/speech-integration-tests.md) spanning real
 preparation and persistence through VAD segmentation, exact waveform reconstruction,
 transcription policy handling, restart determinism, tamper rejection, and portable
-final evidence. Next is A5.1: define the language-analysis evidence contract.
+final evidence. A5.1 adds the
+[accepted-only language-evidence contract](docs/language-evidence.md) with six
+bounded categories, typed reason codes, privacy-minimized transcript references,
+exact rule-match spans, and a checked-in JSON Schema. It deliberately excludes
+incidents, severity, risk scores, and alerts. B5.1 adds the
+[versioned English language rules](docs/language-rules.md): 59 integrity-checked
+keyword, phrase, and explicit-negation patterns with a fixed normalization recipe
+and no risk or alert decisions. A5.2 adds the
+[deterministic transcript-analysis engine](docs/language-analysis.md). It verifies
+the exact accepted-only Phase 4 handoff, preserves original character spans through
+normalization, prefers specific phrases over contained keywords, applies bounded
+explicit-negation scope, and emits privacy-minimized A5.1 evidence. B5.2 adds the
+[versioned English language fixtures](docs/language-fixtures.md): 74 synthetic
+accepted-transcript cases with 75 expected findings, full active-rule and negation
+coverage. A5.3 runs that complete matrix against the analyzer and adds bounded
+hypothetical, quoted/reported, and insufficient-context safeguards while preserving
+explicit-negation precedence and hard sentence boundaries.
+A6.1 adds the [risk-assessment contract](docs/risk-assessment.md): hash-pinned
+acoustic, speech, and language evidence summaries; explicit present, missing, and
+not-permitted branch statuses; a fixed 0-100 score range; v1 severity bands; and a
+missing-data policy that records absent evidence for review instead of treating it
+as safe. B6.1 adds the [configurable risk-scoring engine](docs/risk-scoring.md):
+SHA-256-pinned local score weights, bounded acoustic, speech, and language
+contributions, deterministic assessment IDs, rule provenance, explicit reason
+codes, and human-review triggers for missing or uncertain evidence. A6.2 adds the
+[risk evidence integration boundary](docs/risk-integration.md), which verifies
+cross-branch source and transcript provenance and converts Phase 3-5 evidence into
+privacy-minimized scorer inputs with explicit missing and consent-limited states.
+B6.2 adds the [risk-scoring scenario matrix](docs/risk-scoring-tests.md): 54 normal
+and edge cases covering every built-in acoustic label and language category,
+severity and review boundaries, branch caps, missing-data combinations, canonical
+reasons, fractional scores, and extremely large valid counters. A6.3 adds a
+[trainable risk-model interface](docs/trainable-risk-model.md) for future custom
+training: canonical identity-free features, reviewed training targets, hash-pinned
+examples, reproducible model descriptors, and typed trainer/predictor protocols.
+It does not replace or change the deterministic B6.1 scorer. A6.4 completes the
+phase with an [executable risk-policy validation](docs/risk-score-validation.md):
+13 hash-pinned acceptance scenarios verify the built-in severity levels,
+thresholds, caps, review triggers, missing-data behavior, and consent states while
+explicitly avoiding any claim of empirical incident calibration.
+A7.1 defines the [consensus policy and outcome contract](docs/consensus-policy.md):
+one hash-pinned Phase 6 risk snapshot, typed acoustic/speech/language agreement
+states, mutually exclusive no-action/log/review/alert outcomes, and conservative
+alert gates requiring clean critical multi-branch support. An alert outcome is only
+a local candidate for later Phase 8 handling; A7.1 sends no notification.
+B7.1 implements the [evidence-agreement and conflict engine](docs/consensus-agreement.md)
+with a SHA-256-pinned local rule artifact, explicit acoustic and language support
+rules, neutral speech handling, four cross-branch contradiction checks,
+deterministic evaluation identity, and privacy-minimized reason receipts. It
+classifies evidence for A7.2 but does not select or send an alert outcome.
+A7.2 implements the [final verification decision service](docs/consensus-service.md).
+It binds the Phase 6 assessment to its B7.1 evaluation, recomputes the trusted
+agreement result to reject stale or tampered handoffs, and applies the A7.1
+precedence rules to select exactly one outcome. Critical evidence becomes a local
+alert candidate only with clean acoustic and language support; every failed alert
+gate remains reviewable, and the service performs no notification delivery.
+B7.2 adds the [consensus safety test matrix](docs/consensus-safety-tests.md): 27
+normal and edge-case checks covering all four outcomes, the exact acoustic
+support boundary, every disagreement rule, all language categories, neutral
+speech, missing and consent-limited evidence, and critical-score false-alert
+blocks. It changes no production decision rule.
+A7.3 defines the [trainable verification-model interface](docs/trainable-verification-model.md)
+for future custom training: trusted Phase 6/B7.1 source validation, canonical
+identity-free features, reviewed outcome targets, hash-pinned examples, reproducible
+model descriptors, probability-bearing candidate predictions, and typed
+trainer/predictor protocols. The interface is inactive and cannot replace A7.2 or
+authorize an alert.
+A7.4 completes Phase 7 with an
+[executable end-to-end consensus validation](docs/consensus-validation.md): 13
+SHA-256-pinned scenarios pass through the real Phase 6 scorer, B7.1 agreement
+engine, and A7.2 final decision service. The generated report pins every policy
+artifact and confirms all four outcomes, alert boundaries, conflicts, uncertainty,
+missing evidence, consent limits, and safe-language behavior without claiming
+empirical incident accuracy or sending notifications.
+The detailed [Phase 7 completion report](docs/phase-7-verification-and-consensus-report.md)
+explains the complete verification flow, algorithms, alternatives, technology
+choices, safety controls, tests, examples, and limitations in common terms.
+A8.1 adds the [one-call offline recorded-clip evaluator](docs/offline-evaluator.md).
+It connects the existing preparation, acoustic, consent-aware speech, language,
+risk, agreement, and final-verification stages without duplicating their rules.
+Acoustic-only consent skips speech and language completely; speech-authorized
+evaluation requires both verified local speech models before any output is written.
+The evaluator returns typed stage results and a privacy-minimized summary. B8.1 adds
+the [versioned final JSON report](docs/final-report.md), which hash-pins the evidence
+receipts and embeds the trusted risk, agreement, and decision documents. Reports are
+validated, written atomically, safely reusable, and reloadable from
+`data/processed/final-reports/<report_id>/report.json`. They exclude transcript text,
+raw audio, tensors, and local paths. A Phase 7 alert remains a local candidate that
+requires review; report creation sends no notification and grants no delivery
+authority.
+A8.2 adds [local alert creation and immutable audit records](docs/local-alert-audit.md).
+Every saved final report receives an audit receipt. Only a verified `alert` outcome
+creates a local `alert.json`, which starts in pending human review and remains
+local-only. Non-alert outcomes are explicitly recorded without creating an alert.
+Both documents are hash-bound to the final report, persisted atomically, and safely
+reusable. They contain no recipient or transport data and permanently record that
+notification delivery was not sent or authorized.
+B8.2 adds the [offline evaluation CLI](docs/cli.md). `evaluate` accepts explicit
+consent, scope, source, and threshold inputs, loads only the locally verified models
+permitted by that scope, then saves the final report and local audit. `inspect-report`
+revalidates a saved report before printing its privacy-minimized summary. Both
+commands emit machine-readable JSON, exclude transcript text and absolute paths,
+and preserve the rule that no notification is sent or authorized.
 
 ## Local panel demonstration
 

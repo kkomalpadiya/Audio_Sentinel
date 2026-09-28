@@ -237,6 +237,12 @@ local-only. Non-alert outcomes are explicitly recorded without creating an alert
 Both documents are hash-bound to the final report, persisted atomically, and safely
 reusable. They contain no recipient or transport data and permanently record that
 notification delivery was not sent or authorized.
+B8.2 adds the [offline evaluation CLI](docs/cli.md). `evaluate` accepts explicit
+consent, scope, source, and threshold inputs, loads only the locally verified models
+permitted by that scope, then saves the final report and local audit. `inspect-report`
+revalidates a saved report before printing its privacy-minimized summary. Both
+commands emit machine-readable JSON, exclude transcript text and absolute paths,
+and preserve the rule that no notification is sent or authorized.
 
 ## Local panel demonstration
 
