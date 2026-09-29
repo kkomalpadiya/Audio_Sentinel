@@ -1873,3 +1873,60 @@ Next: B9.1 — Build repeatable evaluation manifest and metric calculations.
 In plain language: the local API now has full-workflow evidence that it reaches the
 real offline evaluator, writes verified local records, contains real stage failures,
 and remains available for a safe retry.
+
+## B9.1 — Complete
+
+Added `src/audio_sentinel/evaluation_manifest.py` with strict, immutable v1
+contracts for a content-addressed evaluation manifest and a privacy-minimized
+evaluation-run report. Every manifest case contains the existing A8.3
+`EvaluationRequest`, an explicit binary truth label, an optional exact expected
+consensus outcome, and non-sensitive analysis categories. Manifest IDs exclude
+only creation time, and loading enforces a 2 MiB bound, regular-file input,
+optional SHA-256 pinning, unique case and clip IDs, canonical positive-outcome
+ordering, authorization rules, and semantic identity.
+
+The collection runner processes cases in manifest order by calling the shared
+Phase 8 `run_evaluation` application service. It does not create another model or
+pipeline path. Completed cases retain only opaque IDs, expected/observed labels,
+risk results, and report/audit/alert receipts. Failed cases remain visible through
+stable safe error codes; unexpected exception messages, audio paths, consent IDs,
+transcripts, and local paths are omitted. Any failure marks the run incomplete,
+but does not hide the other cases or silently turn the failed case into a negative
+prediction.
+
+Added deterministic confusion counts and accuracy, precision, recall, specificity,
+F1, balanced accuracy, false-positive rate, and false-negative rate over completed
+cases. Exact consensus-outcome accuracy is reported separately for cases carrying
+that label. Every denominator is explicit, undefined rates are JSON `null`, and
+total/completed/failed counts plus completion rate prevent operational failures
+from disappearing from the measurement. Run IDs exclude creation time, and saving
+reuses only a semantically identical existing report without overwriting a
+conflict.
+
+Added `scripts/run_evaluation_manifest.py`, a validated example manifest,
+`docs/evaluation-manifest.md`, and checked-in JSON Schemas for both public
+contracts. The command accepts optional manifest SHA-256 pinning, writes a
+content-addressed result by default, prints a compact safe summary, and preserves
+the permanent `notification_delivery=not_sent` and
+`alert_delivery_authorized=false` state.
+
+Added 12 focused tests covering deterministic identities, strict truth and outcome
+mapping, duplicate rejection, checksum and tamper detection, every confusion-
+matrix cell, exact-outcome metrics, zero-denominator handling, explicit failure
+coverage, shared-service request reuse, error redaction, privacy, idempotent report
+reuse, conflict protection, schema parity, and immutability. Python compilation and
+the full project suite pass: 1,825 tests, with two pre-existing Pydantic deprecation
+warnings from the API OpenAPI test.
+
+Current tracker: `outputs/b9_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 62 completed tasks out of 72 and A9.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: A9.1 — Run evaluation and document false-positive and false-negative
+findings.
+
+In plain language: the project can now describe an authorized labeled collection
+once, run every clip through the same evaluator used by the CLI and API, and obtain
+repeatable metrics that distinguish model mistakes from clips that failed to run.
+This task defines how to measure performance; it does not yet claim that the sample
+data is representative or that the configured thresholds are production-ready.

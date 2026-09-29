@@ -264,6 +264,12 @@ The detailed [Phase 8 completion report](docs/phase-8-offline-evaluator-and-aler
 explains the complete workflow, task-by-task implementation, algorithms and
 alternatives, technology choices, safety controls, tests, examples, and limitations
 in common terms.
+B9.1 adds [repeatable evaluation manifests and metric calculations](docs/evaluation-manifest.md).
+Each strict, content-addressed manifest reuses the shared Phase 8 request service for
+an ordered labeled collection. The resulting privacy-minimized run report keeps
+operational failures visible, calculates confusion counts and standard binary plus
+exact-outcome metrics with explicit denominators, and cannot authorize or deliver a
+notification.
 
 ## Local panel demonstration
 

@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "ConsensusOutcome": {
+      "description": "The one primary action selected by the verification layer.",
+      "enum": [
+        "no_action",
+        "log",
+        "review",
+        "alert"
+      ],
+      "title": "ConsensusOutcome",
+      "type": "string"
+    },
+    "EvaluationManifestCase": {
+      "additionalProperties": false,
+      "description": "One authorized input and its human-supplied evaluation truth.",
+      "properties": {
+        "case_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Case Id",
+          "type": "string"
+        },
+        "categories": {
+          "default": [],
+          "items": {
+            "maxLength": 128,
+            "minLength": 3,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Categories",
+          "type": "array"
+        },
+        "expected_outcome": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConsensusOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "expected_positive": {
+          "title": "Expected Positive",
+          "type": "boolean"
+        },
+        "request": {
+          "$ref": "#/$defs/EvaluationRequest"
+        }
+      },
+      "required": [
+        "case_id",
+        "request",
+        "expected_positive"
+      ],
+      "title": "EvaluationManifestCase",
+      "type": "object"
+    },
+    "EvaluationRequest": {
+      "additionalProperties": false,
+      "description": "Validated, identity-only request shared by local CLI and HTTP callers.",
+      "properties": {
+        "acoustic_threshold": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Acoustic Threshold",
+          "type": "number"
+        },
+        "audio_path": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Audio Path",
+          "type": "string"
+        },
+        "clip_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "consent_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "device_authorized": {
+          "title": "Device Authorized",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "granted_at": {
+          "format": "date-time",
+          "title": "Granted At",
+          "type": "string"
+        },
+        "processing_scope": {
+          "$ref": "#/$defs/EvaluationScope"
+        },
+        "source_dataset": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Dataset",
+          "type": "string"
+        }
+      },
+      "required": [
+        "audio_path",
+        "clip_id",
+        "consent_id",
+        "processing_scope",
+        "device_authorized",
+        "granted_at",
+        "source_dataset",
+        "acoustic_threshold"
+      ],
+      "title": "EvaluationRequest",
+      "type": "object"
+    },
+    "EvaluationScope": {
+      "description": "The two scopes that can authorize an evaluation run.",
+      "enum": [
+        "acoustic_only",
+        "acoustic_and_speech"
+      ],
+      "title": "EvaluationScope",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/evaluation-manifest.schema.json",
+  "additionalProperties": false,
+  "description": "Content-addressed list of authorized clips and expected results.",
+  "properties": {
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/EvaluationManifestCase"
+      },
+      "maxItems": 10000,
+      "minItems": 1,
+      "title": "Cases",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "evaluation_manifest",
+      "default": "evaluation_manifest",
+      "enum": [
+        "evaluation_manifest"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "manifest_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Manifest Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "positive_outcomes": {
+      "default": [
+        "review",
+        "alert"
+      ],
+      "items": {
+        "$ref": "#/$defs/ConsensusOutcome"
+      },
+      "title": "Positive Outcomes",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "manifest_id",
+    "created_at",
+    "name",
+    "cases"
+  ],
+  "title": "EvaluationManifestDocument",
+  "type": "object"
+}
