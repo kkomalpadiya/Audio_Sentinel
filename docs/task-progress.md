@@ -1764,3 +1764,41 @@ In plain language: an authorized operator can now run the entire offline pipelin
 from one command and inspect the resulting self-checking report from another. The
 CLI exposes the workflow without weakening the existing consent, integrity,
 privacy, review, or no-notification safeguards.
+
+## A8.3 — Complete
+
+Added `src/audio_sentinel/evaluation_service.py` as the shared application boundary
+for CLI and HTTP evaluation. Its strict request contract permits only relative
+`data/raw` paths, the two authorized processing scopes, explicit device approval,
+timezone-aware consent times, bounded identifiers and source labels, and a numeric
+experimental threshold. Its response contract binds report, audit, and optional
+alert paths to their artifact identities and preserves the local-only,
+not-delivered alert state. The B8.2 CLI now delegates to this service instead of
+owning a second orchestration sequence.
+
+Added `src/audio_sentinel/api.py` and registered `POST /api/v1/evaluations` in the
+FastAPI application. The route rejects non-loopback callers, accepts no upload or
+URL, runs only one model evaluation at a time, and returns HTTP 201 with the
+privacy-minimized shared response. Typed pipeline failures retain safe codes and
+map to meaningful 400, 403, 404, 409, or 503 statuses. Request-validation details
+and unexpected exception details are redacted. Every failure path releases the
+evaluation lock, and no API input can authorize notification delivery.
+
+Added `docs/local-api.md`, updated project/interface documentation and current API
+status, and added 23 focused request-boundary cases. They cover success, path and
+scope restrictions, strict authorization and threshold types, timezone/expiry
+rules, unknown fields, loopback enforcement, concurrency, typed status mapping,
+privacy-safe failures, lock release, frozen records, and OpenAPI documentation.
+The CLI and presentation API regression suites remain green with the shared
+service and validation handler.
+
+Current tracker: `outputs/a8_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 59 completed tasks out of 72 and B8.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: B8.3 — Add CLI and report integration tests.
+
+In plain language: an authorized local program can now request the same evaluation
+as the command line without uploading audio or opening a remote service. The API
+checks the request before model work, returns only safe local record references,
+and cannot send an alert.

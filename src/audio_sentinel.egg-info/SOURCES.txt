@@ -8,6 +8,7 @@ src/audio_sentinel/acoustic_inference.py
 src/audio_sentinel/acoustic_loader.py
 src/audio_sentinel/acoustic_model.py
 src/audio_sentinel/alert_audit.py
+src/audio_sentinel/api.py
 src/audio_sentinel/audio_arrays.py
 src/audio_sentinel/audio_loader.py
 src/audio_sentinel/audio_transforms.py
@@ -19,6 +20,7 @@ src/audio_sentinel/consensus_service.py
 src/audio_sentinel/consensus_validation.py
 src/audio_sentinel/contracts.py
 src/audio_sentinel/demo.py
+src/audio_sentinel/evaluation_service.py
 src/audio_sentinel/evaluator.py
 src/audio_sentinel/feature_persistence.py
 src/audio_sentinel/feature_pipeline.py
@@ -77,6 +79,7 @@ tests/test_acoustic_inference.py
 tests/test_acoustic_loader.py
 tests/test_acoustic_model.py
 tests/test_alert_audit.py
+tests/test_api.py
 tests/test_audio_loader.py
 tests/test_audio_transforms.py
 tests/test_cli.py

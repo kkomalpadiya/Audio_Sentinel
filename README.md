@@ -243,6 +243,12 @@ permitted by that scope, then saves the final report and local audit. `inspect-r
 revalidates a saved report before printing its privacy-minimized summary. Both
 commands emit machine-readable JSON, exclude transcript text and absolute paths,
 and preserve the rule that no notification is sent or authorized.
+A8.3 adds the [loopback-only evaluation API](docs/local-api.md) at
+`POST /api/v1/evaluations`. Its strict request contract accepts only a relative
+local recording path and bounded consent/evaluation metadata. It rejects external
+clients, serializes model runs, redacts validation and unexpected-failure details,
+and returns the same privacy-minimized report/audit references as the CLI. The API
+accepts no upload, URL, recipient, transport setting, or notification authority.
 
 ## Local panel demonstration
 

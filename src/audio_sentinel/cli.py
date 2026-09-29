@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 import json
 from pathlib import Path
 from typing import Callable
@@ -11,24 +10,10 @@ from typing import Callable
 from pydantic import ValidationError
 import typer
 
-from audio_sentinel.acoustic_aggregation import AcousticAggregationSettings
-from audio_sentinel.acoustic_loader import load_yamnet
-from audio_sentinel.alert_audit import save_alert_audit
+from audio_sentinel import evaluation_service
 from audio_sentinel.config import AudioSentinelSettings, load_settings
-from audio_sentinel.contracts import (
-    ConsentRecord,
-    ConsentStatus,
-    ProcessingScope,
-)
-from audio_sentinel.evaluator import (
-    OfflineClipEvaluator,
-    OfflineEvaluatorModels,
-    OfflineEvaluatorPolicies,
-)
-from audio_sentinel.final_report import FinalReportDocument, load_final_report, save_final_report
-from audio_sentinel.interfaces import InputAudio
-from audio_sentinel.transcription import load_transcription_model
-from audio_sentinel.vad import load_silero_vad
+from audio_sentinel.evaluation_service import EvaluationRequest, EvaluationScope
+from audio_sentinel.final_report import FinalReportDocument, load_final_report
 
 
 app = typer.Typer(
@@ -45,13 +30,6 @@ class CliInputError(ValueError):
     def __init__(self, code: str, message: str) -> None:
         self.code = code
         super().__init__(message)
-
-
-class EvaluationScope(str, Enum):
-    """The two scopes that can authorize an evaluation run."""
-
-    ACOUSTIC_ONLY = ProcessingScope.ACOUSTIC_ONLY.value
-    ACOUSTIC_AND_SPEECH = ProcessingScope.ACOUSTIC_AND_SPEECH.value
 
 
 def _parse_timestamp(value: str, option_name: str) -> datetime:
@@ -92,15 +70,6 @@ def _load_cli_settings(project_root: Path, audio_config: Path | None) -> AudioSe
     settings = load_settings(root, audio_config_path=resolved_audio_config)
     settings.ensure_directories()
     return settings
-
-
-def _relative_processed_path(settings: AudioSentinelSettings, path: Path) -> str:
-    try:
-        return path.relative_to(settings.paths.processed_data).as_posix()
-    except ValueError as error:
-        raise CliInputError(
-            "invalid_output_path", "Generated output is outside data/processed."
-        ) from error
 
 
 def _report_summary(report: FinalReportDocument) -> dict[str, object]:
@@ -145,68 +114,20 @@ def _evaluate_command(
             "device_authorization_required",
             "Evaluation requires explicit confirmation that the recording device is authorized.",
         )
-    processing_scope = ProcessingScope(scope.value)
-
-    consent = ConsentRecord(
+    request = EvaluationRequest(
+        audio_path=audio.as_posix(),
+        clip_id=clip_id,
         consent_id=consent_id,
-        status=ConsentStatus.GRANTED,
-        processing_scope=processing_scope,
+        processing_scope=scope,
         device_authorized=True,
-        raw_audio_retention_allowed=False,
         granted_at=_parse_timestamp(granted_at, "granted-at"),
         expires_at=(
             None if expires_at is None else _parse_timestamp(expires_at, "expires-at")
         ),
-    )
-    acoustic = load_yamnet(settings.paths)
-    vad = None
-    transcription = None
-    if processing_scope is ProcessingScope.ACOUSTIC_AND_SPEECH:
-        vad = load_silero_vad(settings.paths)
-        transcription = load_transcription_model(settings.paths)
-
-    evaluator = OfflineClipEvaluator(
-        settings=settings,
         source_dataset=source_dataset,
-        models=OfflineEvaluatorModels(
-            acoustic=acoustic,
-            vad=vad,
-            transcription=transcription,
-        ),
-        policies=OfflineEvaluatorPolicies(
-            acoustic_aggregation=AcousticAggregationSettings.uniform(
-                acoustic_threshold
-            )
-        ),
+        acoustic_threshold=acoustic_threshold,
     )
-    result = evaluator.evaluate(InputAudio(clip_id, audio, consent))
-    saved_report = save_final_report(settings.paths, result)
-    report_relative = _relative_processed_path(settings, saved_report.report_path)
-    saved_audit = save_alert_audit(settings.paths, report_relative)
-
-    return {
-        "clip_id": result.clip_id,
-        "processing_scope": processing_scope.value,
-        "outcome": result.decision.outcome.value,
-        "risk_score": result.risk_assessment.score,
-        "risk_severity": result.risk_assessment.severity.value,
-        "review_required": result.decision.review_required,
-        "alert_candidate": result.decision.alert_candidate,
-        "report_id": saved_report.report.report_id,
-        "report_path": report_relative,
-        "report_reused": saved_report.reused,
-        "audit_id": saved_audit.audit.audit_id,
-        "audit_path": _relative_processed_path(settings, saved_audit.audit_path),
-        "audit_reused": saved_audit.reused,
-        "alert_id": None if saved_audit.alert is None else saved_audit.alert.alert_id,
-        "alert_path": (
-            None
-            if saved_audit.alert_path is None
-            else _relative_processed_path(settings, saved_audit.alert_path)
-        ),
-        "notification_delivery": "not_sent",
-        "alert_delivery_authorized": False,
-    }
+    return evaluation_service.run_evaluation(settings, request).model_dump(mode="json")
 
 
 def _inspect_report_command(

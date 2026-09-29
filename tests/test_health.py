@@ -15,4 +15,8 @@ def test_health_check_reports_missing_directories(temporary_settings: AudioSenti
 
 def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
-    assert project_status()["next_step"] == "Evaluate acoustic detection against labeled samples (A3.4)."
+    status = project_status()
+    assert status["current_focus"] == (
+        "Offline evaluation is available through local CLI and API boundaries."
+    )
+    assert status["next_step"] == "Add CLI and report integration tests (B8.3)."

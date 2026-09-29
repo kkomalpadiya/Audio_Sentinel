@@ -65,15 +65,17 @@ def evaluation_args(root: Path, scope: str = "acoustic_only") -> list[str]:
 
 def install_fake_models(monkeypatch) -> None:
     monkeypatch.setattr(
-        cli,
+        cli.evaluation_service,
         "load_yamnet",
         lambda _paths: loaded_acoustic(FakeAcousticModel(label=EventLabel.EXPLOSION)),
     )
     monkeypatch.setattr(
-        cli, "load_silero_vad", lambda _paths: loaded_vad(FakeVadSession(0.9))
+        cli.evaluation_service,
+        "load_silero_vad",
+        lambda _paths: loaded_vad(FakeVadSession(0.9)),
     )
     monkeypatch.setattr(
-        cli,
+        cli.evaluation_service,
         "load_transcription_model",
         lambda _paths: loaded_transcriber(FakeTranscriber("I will kill you")),
     )
@@ -93,12 +95,12 @@ def test_acoustic_only_evaluation_saves_report_and_audit_without_speech_models(
     root = project(tmp_path)
     install_fake_models(monkeypatch)
     monkeypatch.setattr(
-        cli,
+        cli.evaluation_service,
         "load_silero_vad",
         lambda _paths: (_ for _ in ()).throw(AssertionError("VAD must not load")),
     )
     monkeypatch.setattr(
-        cli,
+        cli.evaluation_service,
         "load_transcription_model",
         lambda _paths: (_ for _ in ()).throw(AssertionError("ASR must not load")),
     )
@@ -173,7 +175,7 @@ def test_evaluation_requires_explicit_device_authorization_before_loading_models
 ):
     root = project(tmp_path)
     monkeypatch.setattr(
-        cli,
+        cli.evaluation_service,
         "load_yamnet",
         lambda _paths: (_ for _ in ()).throw(AssertionError("must not load")),
     )

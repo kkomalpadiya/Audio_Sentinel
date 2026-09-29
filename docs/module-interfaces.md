@@ -23,3 +23,7 @@ Concrete implementations belong in later phases. They must implement the matchin
 A8.2 adds local alert documents and audit persistence without implementing
 `AlertPublisher`. Local record creation is intentionally separate from any future
 transport, recipient selection, or delivery authorization.
+
+B8.2 and A8.3 share `evaluation_service.run_evaluation` as their application
+boundary. The CLI and loopback-only HTTP route therefore use the same evaluator,
+report, and audit services; neither implements or invokes `AlertPublisher`.

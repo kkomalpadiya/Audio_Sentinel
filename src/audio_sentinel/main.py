@@ -1,14 +1,27 @@
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from audio_sentinel.api import router as evaluation_router
 from audio_sentinel.config import load_settings
 from audio_sentinel.demo import WEB_DIRECTORY, router as demo_router
 from audio_sentinel.health import check_project_health
 
 app = FastAPI(title="Audio Sentinel")
+app.include_router(evaluation_router)
 app.include_router(demo_router)
 app.mount("/demo/assets", StaticFiles(directory=WEB_DIRECTORY), name="demo-assets")
+
+
+@app.exception_handler(RequestValidationError)
+def request_validation_error(
+    _request: Request, _error: RequestValidationError
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=422,
+        content={"code": "invalid_request", "error": "Request body failed validation."},
+    )
 
 
 @app.get("/", include_in_schema=False)
@@ -27,6 +40,6 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Acoustic loading and overlap aggregation have complete boundary-focused unit coverage.",
-        "next_step": "Evaluate acoustic detection against labeled samples (A3.4).",
+        "current_focus": "Offline evaluation is available through local CLI and API boundaries.",
+        "next_step": "Add CLI and report integration tests (B8.3).",
     }
