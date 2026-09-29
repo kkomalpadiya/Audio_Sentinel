@@ -249,6 +249,12 @@ local recording path and bounded consent/evaluation metadata. It rejects externa
 clients, serializes model runs, redacts validation and unexpected-failure details,
 and returns the same privacy-minimized report/audit references as the CLI. The API
 accepts no upload, URL, recipient, transport setting, or notification authority.
+B8.3 adds [CLI and final-report integration tests](docs/cli-report-integration-tests.md).
+They run the real Phase 1-8 orchestration around deterministic model boundaries,
+reload report and audit artifacts through their public verifiers, inspect a report
+from a fresh Python process, preserve earlier immutable bundles across later runs,
+and reject report tampering, unexpected bundle files, and path traversal without
+exposing sensitive text or local paths.
 
 ## Local panel demonstration
 

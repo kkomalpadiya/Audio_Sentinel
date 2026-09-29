@@ -1802,3 +1802,38 @@ In plain language: an authorized local program can now request the same evaluati
 as the command line without uploading audio or opening a remote service. The API
 checks the request before model work, returns only safe local record references,
 and cannot send an alert.
+
+## B8.3 — Complete
+
+Added `tests/test_cli_report_integration.py` with eight integration tests spanning
+the B8.2 CLI, the shared A8.3 application service, and the real B8.1/A8.2 report and
+audit persistence boundaries. The tests run real preparation, acoustic processing,
+speech orchestration, language analysis, risk scoring, consensus, serialization,
+and reload logic around deterministic contract-compatible model doubles.
+
+The matrix verifies acoustic-only branch exclusion and no-alert handling; the
+speech-authorized pending-local-alert path; agreement between CLI IDs and publicly
+reloaded report/audit documents; preservation of an earlier immutable bundle when
+the same recording receives a later assessment; and final-report inspection from a
+fresh Python process. It also verifies portable identity-bound output paths,
+standard-output versus standard-error separation, compact JSON, and the permanent
+not-sent/not-authorized delivery state.
+
+Tampered final-report content, unexpected report-bundle files, and relative path
+traversal are rejected through stable safe CLI errors. Deliberately placed private
+content, the synthetic transcript, and absolute project paths do not appear in CLI
+output or the persisted Phase 8 report/audit/alert documents.
+
+Added `docs/cli-report-integration-tests.md` and updated the project overview. B8.3
+changes no production model, threshold, score, consensus, alert, or delivery rule.
+
+Current tracker: `outputs/b8_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 60 completed tasks out of 72 and A8.4 as the next task. Changes remain
+uncommitted for review.
+
+Next: A8.4 — Add end-to-end API and evaluator tests.
+
+In plain language: the command line is now tested as a complete workflow rather
+than as isolated functions. Its output IDs lead to verified local records, those
+records survive process restarts, and unsafe or modified report inputs fail without
+leaking sensitive content.
