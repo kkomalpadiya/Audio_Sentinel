@@ -1837,3 +1837,39 @@ In plain language: the command line is now tested as a complete workflow rather
 than as isolated functions. Its output IDs lead to verified local records, those
 records survive process restarts, and unsafe or modified report inputs fail without
 leaking sensitive content.
+
+## A8.4 — Complete
+
+Added `tests/test_api_evaluator_integration.py` with six end-to-end tests that send
+loopback HTTP requests through the A8.3 route and the real shared Phase 8 service.
+The tests keep preparation, acoustic inference and aggregation, speech
+orchestration, language analysis, risk scoring, evidence agreement, consensus,
+final-report persistence, and alert-audit creation active. Only the three large
+model runtimes are replaced by deterministic contract-compatible doubles.
+
+The matrix covers acoustic-only model gating and branch exclusion; a complete
+speech-authorized local-alert path; a no-detected-speech path that skips
+transcription; and propagation of the caller's acoustic threshold into real event
+aggregation. Every successful response is reconciled with independently reloaded
+final-report and audit records, including the pending, local-only, unsent, and
+unauthorized alert state.
+
+Missing recordings and an actual acoustic output-contract failure are exercised
+through the HTTP boundary. They return stable safe errors, expose no private paths,
+create no incomplete final-report or alert-audit bundle, and release the API lock.
+The stage-failure test then corrects the model and proves that the same clip can be
+retried successfully.
+
+Added `docs/api-evaluator-integration-tests.md`, updated the local API and project
+overview, and advanced `/project/status` to the Phase 9 evaluation work. A8.4 does
+not change model, score, consensus, alert, or delivery behavior.
+
+Current tracker: `outputs/a8_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 61 completed tasks out of 72 and B9.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: B9.1 — Build repeatable evaluation manifest and metric calculations.
+
+In plain language: the local API now has full-workflow evidence that it reaches the
+real offline evaluator, writes verified local records, contains real stage failures,
+and remains available for a safe retry.

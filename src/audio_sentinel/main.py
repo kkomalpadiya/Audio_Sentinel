@@ -40,6 +40,8 @@ def project_status() -> dict[str, object]:
     return {
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
-        "current_focus": "Offline evaluation is available through local CLI and API boundaries.",
-        "next_step": "Add CLI and report integration tests (B8.3).",
+        "current_focus": (
+            "Offline evaluation is verified end to end through local CLI and API boundaries."
+        ),
+        "next_step": "Build repeatable evaluation manifests and metrics (B9.1).",
     }

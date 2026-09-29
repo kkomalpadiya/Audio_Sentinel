@@ -255,6 +255,11 @@ reload report and audit artifacts through their public verifiers, inspect a repo
 from a fresh Python process, preserve earlier immutable bundles across later runs,
 and reject report tampering, unexpected bundle files, and path traversal without
 exposing sensitive text or local paths.
+A8.4 adds [API and evaluator integration tests](docs/api-evaluator-integration-tests.md).
+They send loopback HTTP requests through the real evaluator, report, and audit
+workflow; validate acoustic-only, speech-alert, no-speech, and threshold branches;
+and prove that missing recordings and stage failures return safe responses, release
+the evaluation lock, and allow a clean retry without incomplete final artifacts.
 
 ## Local panel demonstration
 

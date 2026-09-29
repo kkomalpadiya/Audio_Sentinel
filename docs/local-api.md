@@ -137,12 +137,21 @@ unexpected-error redaction, lock release, immutable request records, and OpenAPI
 scope/error documentation. The existing CLI and demo suites also verify that the
 shared service and global validation handler do not regress those boundaries.
 
+A8.4 adds a separate full-workflow suite:
+
+```powershell
+python -m pytest tests/test_api_evaluator_integration.py -q
+```
+
+These tests keep the HTTP route, shared application service, evaluator stages,
+final-report serialization, and alert audit active. Only the large model runtimes
+are replaced with deterministic contract-compatible doubles.
+
 ## Next task
 
-B8.3 will expand CLI and final-report integration testing.
+B9.1 will build a repeatable evaluation manifest and metric calculations.
 
 In plain language: the API is a small local front door, not a remote alert service.
 It accepts only enough information to evaluate an already authorized recording,
 then returns references to self-checking local records. It never receives or sends
 the sensitive media itself.
-
