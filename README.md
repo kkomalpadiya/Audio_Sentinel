@@ -260,6 +260,10 @@ They send loopback HTTP requests through the real evaluator, report, and audit
 workflow; validate acoustic-only, speech-alert, no-speech, and threshold branches;
 and prove that missing recordings and stage failures return safe responses, release
 the evaluation lock, and allow a clean retry without incomplete final artifacts.
+The detailed [Phase 8 completion report](docs/phase-8-offline-evaluator-and-alerts-report.md)
+explains the complete workflow, task-by-task implementation, algorithms and
+alternatives, technology choices, safety controls, tests, examples, and limitations
+in common terms.
 
 ## Local panel demonstration
 
