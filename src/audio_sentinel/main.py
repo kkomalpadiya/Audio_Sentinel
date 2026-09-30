@@ -41,7 +41,7 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Offline evaluation is verified end to end through local CLI and API boundaries."
+            "Held-out acoustic evaluation findings are measured and documented."
         ),
-        "next_step": "Build repeatable evaluation manifests and metrics (B9.1).",
+        "next_step": "Implement retention and deletion controls (B9.2).",
     }

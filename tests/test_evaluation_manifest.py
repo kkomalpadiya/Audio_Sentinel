@@ -85,9 +85,14 @@ def _write_manifest(tmp_path: Path, manifest: EvaluationManifestDocument) -> Pat
     return path
 
 
-def _response(index: int, outcome: ConsensusOutcome) -> EvaluationResponse:
-    report_id = f"report-{index}"
-    audit_id = f"audit-{index}"
+def _response(
+    index: int,
+    outcome: ConsensusOutcome,
+    *,
+    receipt_suffix: str = "",
+) -> EvaluationResponse:
+    report_id = f"report-{index}{receipt_suffix}"
+    audit_id = f"audit-{index}{receipt_suffix}"
     is_alert = outcome is ConsensusOutcome.ALERT
     return EvaluationResponse(
         clip_id=f"clip-{index}",
@@ -113,7 +118,7 @@ def _response(index: int, outcome: ConsensusOutcome) -> EvaluationResponse:
         audit_id=audit_id,
         audit_path=f"alert-audit/{audit_id}/audit.json",
         audit_reused=False,
-        alert_id=f"alert-{index}" if is_alert else None,
+        alert_id=f"alert-{index}{receipt_suffix}" if is_alert else None,
         alert_path=f"alert-audit/{audit_id}/alert.json" if is_alert else None,
     )
 
@@ -347,6 +352,50 @@ def test_run_identity_excludes_time_and_changes_with_results(tmp_path: Path) -> 
 
     changed = run_evaluation_manifest(settings, loaded, runner=changed_runner, now=NOW)
     assert changed.run_id != first.run_id
+
+
+def test_run_identity_and_reuse_exclude_local_artifact_receipts(
+    tmp_path: Path,
+) -> None:
+    path = _write_manifest(tmp_path, _manifest())
+    loaded = load_evaluation_manifest(path)
+    settings = AudioSentinelSettings.from_project_root(tmp_path)
+
+    def runner_with_suffix(suffix: str):
+        def runner(
+            _settings: AudioSentinelSettings,
+            request: EvaluationRequest,
+        ) -> EvaluationResponse:
+            index = int(str(request.clip_id).split("-")[-1])
+            outcome = (
+                ConsensusOutcome.ALERT
+                if index in {1, 3}
+                else ConsensusOutcome.NO_ACTION
+            )
+            return _response(index, outcome, receipt_suffix=suffix)
+
+        return runner
+
+    first = run_evaluation_manifest(
+        settings,
+        loaded,
+        runner=runner_with_suffix("-first"),
+        now=NOW,
+    )
+    repeated = run_evaluation_manifest(
+        settings,
+        loaded,
+        runner=runner_with_suffix("-second"),
+        now=datetime(2026, 9, 30, 12, tzinfo=UTC),
+    )
+    assert first.run_id == repeated.run_id
+    assert first.cases[0].report_id != repeated.cases[0].report_id
+
+    output = tmp_path / "evaluation" / "repeatable.json"
+    assert save_evaluation_run(first, output) is False
+    original = output.read_bytes()
+    assert save_evaluation_run(repeated, output) is True
+    assert output.read_bytes() == original
 
 
 def test_save_run_is_valid_json_and_reuses_only_same_semantic_run(tmp_path: Path) -> None:

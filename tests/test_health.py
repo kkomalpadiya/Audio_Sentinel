@@ -17,8 +17,8 @@ def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
     status = project_status()
     assert status["current_focus"] == (
-        "Offline evaluation is verified end to end through local CLI and API boundaries."
+        "Held-out acoustic evaluation findings are measured and documented."
     )
     assert status["next_step"] == (
-        "Build repeatable evaluation manifests and metrics (B9.1)."
+        "Implement retention and deletion controls (B9.2)."
     )

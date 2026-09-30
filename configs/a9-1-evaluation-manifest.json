@@ -1,0 +1,718 @@
+{
+  "cases": [
+    {
+      "case_id": "a9-1-esc50-cat-c691ae52c8ef",
+      "categories": [
+        "esc50",
+        "cat",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-214759-B-5.wav",
+        "clip_id": "a9-1-esc50-cat-c691ae52c8ef-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-clock_tick-9a2891ab1eba",
+      "categories": [
+        "esc50",
+        "clock_tick",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-201194-A-38.wav",
+        "clip_id": "a9-1-esc50-clock_tick-9a2891ab1eba-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-cow-c1a2d0a439a2",
+      "categories": [
+        "esc50",
+        "cow",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-194899-B-3.wav",
+        "clip_id": "a9-1-esc50-cow-c1a2d0a439a2-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-crow-51c039105d3f",
+      "categories": [
+        "esc50",
+        "crow",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-242711-A-9.wav",
+        "clip_id": "a9-1-esc50-crow-51c039105d3f-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-glass_breaking-25bbb18a8622",
+      "categories": [
+        "esc50",
+        "glass_breaking",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-221529-A-39.wav",
+        "clip_id": "a9-1-esc50-glass_breaking-25bbb18a8622-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-glass_breaking-85c77e1a44d4",
+      "categories": [
+        "esc50",
+        "glass_breaking",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-233605-A-39.wav",
+        "clip_id": "a9-1-esc50-glass_breaking-85c77e1a44d4-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-glass_breaking-728024882211",
+      "categories": [
+        "esc50",
+        "glass_breaking",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-233607-A-39.wav",
+        "clip_id": "a9-1-esc50-glass_breaking-728024882211-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-glass_breaking-8a8207337731",
+      "categories": [
+        "esc50",
+        "glass_breaking",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-260432-A-39.wav",
+        "clip_id": "a9-1-esc50-glass_breaking-8a8207337731-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-pouring_water-86860baf2f46",
+      "categories": [
+        "esc50",
+        "pouring_water",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-205589-B-17.wav",
+        "clip_id": "a9-1-esc50-pouring_water-86860baf2f46-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-rain-194cc7b3dac8",
+      "categories": [
+        "esc50",
+        "rain",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-181766-A-10.wav",
+        "clip_id": "a9-1-esc50-rain-194cc7b3dac8-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-siren-6dc7ded5aacb",
+      "categories": [
+        "esc50",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-117122-A-42.wav",
+        "clip_id": "a9-1-esc50-siren-6dc7ded5aacb-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-siren-6458b01e3635",
+      "categories": [
+        "esc50",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-150409-A-42.wav",
+        "clip_id": "a9-1-esc50-siren-6458b01e3635-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-siren-61f71abba79f",
+      "categories": [
+        "esc50",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-160551-A-42.wav",
+        "clip_id": "a9-1-esc50-siren-61f71abba79f-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-siren-c0edd7ffd27d",
+      "categories": [
+        "esc50",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-184323-A-42.wav",
+        "clip_id": "a9-1-esc50-siren-c0edd7ffd27d-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-train-e6701a39e91c",
+      "categories": [
+        "esc50",
+        "train",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-197121-A-45.wav",
+        "clip_id": "a9-1-esc50-train-e6701a39e91c-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-esc50-wind-e223b86ed2f5",
+      "categories": [
+        "esc50",
+        "wind",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "esc50/audio/5-179496-B-16.wav",
+        "clip_id": "a9-1-esc50-wind-e223b86ed2f5-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-air_conditioner-aac5f9c3a7b6",
+      "categories": [
+        "urbansound8k",
+        "air_conditioner",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold10/189985-0-0-0.wav",
+        "clip_id": "a9-1-urbansound8k-air_conditioner-aac5f9c3a7b6-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-car_horn-9857cc9ad2d9",
+      "categories": [
+        "urbansound8k",
+        "car_horn",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/26186-1-0-0.wav",
+        "clip_id": "a9-1-urbansound8k-car_horn-9857cc9ad2d9-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-children_playing-b8be3ae1d307",
+      "categories": [
+        "urbansound8k",
+        "children_playing",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/161005-2-0-27.wav",
+        "clip_id": "a9-1-urbansound8k-children_playing-b8be3ae1d307-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-dog_bark-bf756f022bce",
+      "categories": [
+        "urbansound8k",
+        "dog_bark",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/152588-3-1-0.wav",
+        "clip_id": "a9-1-urbansound8k-dog_bark-bf756f022bce-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-drilling-ba156482d4da",
+      "categories": [
+        "urbansound8k",
+        "drilling",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/180937-4-0-14.wav",
+        "clip_id": "a9-1-urbansound8k-drilling-ba156482d4da-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-engine_idling-6b882dd162ea",
+      "categories": [
+        "urbansound8k",
+        "engine_idling",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold10/15544-5-0-3.wav",
+        "clip_id": "a9-1-urbansound8k-engine_idling-6b882dd162ea-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-gun_shot-e85a316b68c7",
+      "categories": [
+        "urbansound8k",
+        "gun_shot",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold10/157207-6-0-0.wav",
+        "clip_id": "a9-1-urbansound8k-gun_shot-e85a316b68c7-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-gun_shot-cf5cedf5a7f2",
+      "categories": [
+        "urbansound8k",
+        "gun_shot",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/136399-6-4-0.wav",
+        "clip_id": "a9-1-urbansound8k-gun_shot-cf5cedf5a7f2-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-gun_shot-f8ad4921c7e8",
+      "categories": [
+        "urbansound8k",
+        "gun_shot",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/174287-6-1-0.wav",
+        "clip_id": "a9-1-urbansound8k-gun_shot-f8ad4921c7e8-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-gun_shot-2df59406205a",
+      "categories": [
+        "urbansound8k",
+        "gun_shot",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/174287-6-2-0.wav",
+        "clip_id": "a9-1-urbansound8k-gun_shot-2df59406205a-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-jackhammer-dbb520a8864e",
+      "categories": [
+        "urbansound8k",
+        "jackhammer",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold10/188813-7-5-0.wav",
+        "clip_id": "a9-1-urbansound8k-jackhammer-dbb520a8864e-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-siren-ccb1f3f0f174",
+      "categories": [
+        "urbansound8k",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold10/74364-8-1-19.wav",
+        "clip_id": "a9-1-urbansound8k-siren-ccb1f3f0f174-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-siren-8ead87babd1c",
+      "categories": [
+        "urbansound8k",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold10/88121-8-0-2.wav",
+        "clip_id": "a9-1-urbansound8k-siren-8ead87babd1c-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-siren-019977a237df",
+      "categories": [
+        "urbansound8k",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/159744-8-0-1.wav",
+        "clip_id": "a9-1-urbansound8k-siren-019977a237df-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-siren-1a1805e7acd1",
+      "categories": [
+        "urbansound8k",
+        "siren",
+        "split_holdout",
+        "target_positive"
+      ],
+      "expected_outcome": null,
+      "expected_positive": true,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/159748-8-2-5.wav",
+        "clip_id": "a9-1-urbansound8k-siren-1a1805e7acd1-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    },
+    {
+      "case_id": "a9-1-urbansound8k-street_music-a26981711097",
+      "categories": [
+        "urbansound8k",
+        "street_music",
+        "split_holdout",
+        "background_negative"
+      ],
+      "expected_outcome": null,
+      "expected_positive": false,
+      "request": {
+        "acoustic_threshold": 0.5,
+        "audio_path": "UrbanSound8K/audio/fold9/185374-9-0-35.wav",
+        "clip_id": "a9-1-urbansound8k-street_music-a26981711097-clip",
+        "consent_id": "a9-1-authorized-research-dataset",
+        "device_authorized": true,
+        "expires_at": null,
+        "granted_at": "2026-09-30T00:00:00Z",
+        "processing_scope": "acoustic_only",
+        "source_dataset": "a3-4-heldout-esc50-urbansound8k-v1"
+      }
+    }
+  ],
+  "created_at": "2026-09-30T00:00:00Z",
+  "document_type": "evaluation_manifest",
+  "manifest_id": "evaluation-manifest-b643e0f3913f8223415cf662",
+  "name": "A9.1 held-out end-to-end evaluation",
+  "positive_outcomes": [
+    "log",
+    "review",
+    "alert"
+  ],
+  "schema_version": "1.0"
+}

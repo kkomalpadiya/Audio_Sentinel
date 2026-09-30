@@ -324,9 +324,37 @@ def _manifest_id(manifest: EvaluationManifestDocument) -> str:
     return f"evaluation-manifest-{_sha256(_canonical_bytes(payload))[:24]}"
 
 
+def _run_semantic_payload(report: EvaluationRunDocument) -> dict[str, object]:
+    """Return metric meaning without per-execution local artifact receipts."""
+
+    case_results = []
+    for case in report.cases:
+        case_results.append(
+            case.model_dump(
+                mode="json",
+                exclude={"report_id", "audit_id", "alert_id"},
+            )
+        )
+    return {
+        "schema_version": report.schema_version,
+        "document_type": report.document_type,
+        "manifest_id": report.manifest_id,
+        "manifest_sha256": report.manifest_sha256,
+        "manifest_size_bytes": report.manifest_size_bytes,
+        "positive_outcomes": [item.value for item in report.positive_outcomes],
+        "decision_status": report.decision_status,
+        "metrics": report.metrics.model_dump(mode="json"),
+        "cases": case_results,
+        "notification_delivery": report.notification_delivery,
+        "alert_delivery_authorized": report.alert_delivery_authorized,
+    }
+
+
 def _run_id(report: EvaluationRunDocument) -> str:
-    payload = report.model_dump(mode="json", exclude={"run_id", "created_at"})
-    return f"evaluation-run-{_sha256(_canonical_bytes(payload))[:24]}"
+    return (
+        f"evaluation-run-"
+        f"{_sha256(_canonical_bytes(_run_semantic_payload(report)))[:24]}"
+    )
 
 
 def _clock(now: datetime | None) -> datetime:
@@ -568,23 +596,11 @@ def run_evaluation_manifest(
         "notification_delivery": "not_sent",
         "alert_delivery_authorized": False,
     }
-    serialized = {
-        key: (
-            value.model_dump(mode="json")
-            if isinstance(value, BaseModel)
-            else [
-                item.model_dump(mode="json") if isinstance(item, BaseModel) else item.value
-                if isinstance(item, ConsensusOutcome)
-                else item
-                for item in value
-            ]
-            if isinstance(value, tuple)
-            else value
-        )
-        for key, value in payload.items()
-        if key != "created_at"
-    }
-    payload["run_id"] = f"evaluation-run-{_sha256(_canonical_bytes(serialized))[:24]}"
+    provisional = EvaluationRunDocument.model_construct(
+        run_id="evaluation-run-provisional",
+        **payload,
+    )
+    payload["run_id"] = _run_id(provisional)
     return EvaluationRunDocument.model_validate(payload)
 
 
@@ -629,12 +645,8 @@ def save_evaluation_run(report: EvaluationRunDocument, destination: Path) -> boo
                 "output_conflict",
                 "The evaluation output exists but is not the same verified run.",
             ) from load_error
-        existing_semantic = existing.model_dump(
-            mode="json", exclude={"created_at"}
-        )
-        requested_semantic = report.model_dump(
-            mode="json", exclude={"created_at"}
-        )
+        existing_semantic = _run_semantic_payload(existing)
+        requested_semantic = _run_semantic_payload(report)
         if existing_semantic == requested_semantic:
             return True
         raise EvaluationManifestError(

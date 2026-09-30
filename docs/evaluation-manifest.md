@@ -77,10 +77,13 @@ false-positive rate  = FP / (FP + TN)
 false-negative rate  = FN / (FN + TP)
 ```
 
-The run ID is content-addressed from the manifest receipt, results, and metrics,
-excluding only the creation time. Repeating the same semantic run produces the
-same ID. Saving reuses an existing semantically identical report and never
-overwrites a conflicting file.
+The run ID is content-addressed from the manifest receipt, expected and observed
+labels, risk results, safe failure codes, and metrics. It excludes the run time and
+the report, audit, and alert receipt IDs issued by each local execution. Those
+receipt IDs remain in the saved report for traceability, but do not make identical
+predictions look like a different metric result. Repeating the same semantic run
+therefore produces the same ID. Saving reuses an existing semantically identical
+report and never overwrites a conflicting file.
 
 Run documents permanently state `notification_delivery=not_sent` and
 `alert_delivery_authorized=false`. Evaluation may create the same pending local

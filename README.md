@@ -270,6 +270,12 @@ an ordered labeled collection. The resulting privacy-minimized run report keeps
 operational failures visible, calculates confusion counts and standard binary plus
 exact-outcome metrics with explicit denominators, and cannot authorize or deliver a
 notification.
+A9.1 records the [held-out end-to-end evaluation findings](docs/evaluation-findings.md).
+The pinned 32-clip acoustic run completed every case with 13 true positives, 14 true
+negatives, 2 false positives, and 3 false negatives. Its 84.375% balanced accuracy
+is documented as limited regression evidence rather than a production claim, with
+case-level error analysis, deterministic selection, immutable provenance, and an
+exact-rerun check.
 
 ## Local panel demonstration
 

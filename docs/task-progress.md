@@ -1930,3 +1930,56 @@ once, run every clip through the same evaluator used by the CLI and API, and obt
 repeatable metrics that distinguish model mistakes from clips that failed to run.
 This task defines how to measure performance; it does not yet claim that the sample
 data is representative or that the configured thresholds are production-ready.
+
+## A9.1 — Complete
+
+Added a deterministic A9.1 manifest builder and its checked-in 32-case manifest.
+The builder pins the exact A3.4 source report and YAMNet artifact, includes every
+held-out target clip, and selects balanced background cases by a fixed seed and
+SHA-256 ranking without consulting model scores. The manifest contains 16 target
+and 16 background clips split evenly across ESC-50 and UrbanSound8K, uses a
+predeclared `0.5` acoustic threshold, and intentionally omits exact policy labels
+that the source datasets do not provide.
+
+Ran every case through the shared Phase 8 service. All 32 completed, producing 13
+true positives, 14 true negatives, 2 false positives, and 3 false negatives. The
+run measured 84.375% accuracy and balanced accuracy, 86.667% precision, 81.25%
+recall, 87.5% specificity, 83.871% F1, a 12.5% false-positive rate, and an 18.75%
+false-negative rate. The two apparent false positives were low-risk siren matches
+on ESC-50 cow and wind clips. Two ESC-50 glass-breaking clips and one
+UrbanSound8K siren clip were missed. Outcomes were 17 `no_action`, 9 `log`, 6
+`review`, and no alerts; acoustic-only consensus correctly remained unable to
+authorize notification delivery.
+
+Documented the case-level findings, provenance, selection method, metric
+denominators, outcome interpretation, recommended follow-up, rerun command, dataset
+license reminder, and limitations in `docs/evaluation-findings.md`. The report
+explicitly treats this small, balanced, acoustic-only, previously held-out sample as
+regression evidence rather than representative deployment accuracy or threshold
+approval.
+
+The exact rerun also exposed and corrected a B9.1 identity defect: fresh immutable
+Phase 8 receipt IDs incorrectly changed the run identity even when the measured
+result was identical. Evaluation reports still retain those receipts for
+traceability, but their semantic identity now excludes only the per-execution local
+receipt IDs. A regression test proves that stable predictions, risks, errors,
+metrics, and notification state reuse the same run. The pinned rerun now returns
+`evaluation-run-33c6a7a6fd06d11f4722ef03` with `reused=true`.
+
+Added four A9.1 tests covering deterministic manifest reproduction, pinned run
+validation, documented false-case parity, and strict finite JSON. Updated the
+project status to make B9.2 the next task. Python compilation and the full project
+suite pass: 1,830 tests, with the same two Pydantic deprecation warnings from the
+API OpenAPI test.
+
+Current tracker: `outputs/a9_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 63 completed tasks out of 72 and B9.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: B9.2 — Implement retention and deletion controls.
+
+In plain language: the project now has a repeatable full-pipeline measurement and a
+transparent record of exactly which examples were mistaken, why the result is
+limited, and what should be investigated next. It does not silently turn a failed
+run into a prediction, authorize alerts, or overstate the evidence as production
+accuracy.
