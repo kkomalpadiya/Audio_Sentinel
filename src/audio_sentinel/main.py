@@ -41,7 +41,7 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Held-out acoustic evaluation findings are measured and documented."
+            "Local report and audit retention is explicit, bounded, and audited."
         ),
-        "next_step": "Implement retention and deletion controls (B9.2).",
+        "next_step": "Document consent, authorized use, review, and model limits (A9.2).",
     }

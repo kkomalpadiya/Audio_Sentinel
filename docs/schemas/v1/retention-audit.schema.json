@@ -1,0 +1,212 @@
+{
+  "$defs": {
+    "RetentionSettings": {
+      "additionalProperties": false,
+      "description": "Explicit limits for deleting verified Phase 8 output bundles.",
+      "properties": {
+        "alert_audit_days": {
+          "anyOf": [
+            {
+              "maximum": 36500,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 365,
+          "title": "Alert Audit Days"
+        },
+        "allow_pending_alert_deletion": {
+          "default": false,
+          "title": "Allow Pending Alert Deletion",
+          "type": "boolean"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "final_report_days": {
+          "anyOf": [
+            {
+              "maximum": 36500,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 30,
+          "title": "Final Report Days"
+        },
+        "max_delete_count": {
+          "default": 1000,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Delete Count",
+          "type": "integer"
+        }
+      },
+      "title": "RetentionSettings",
+      "type": "object"
+    },
+    "RetentionTarget": {
+      "additionalProperties": false,
+      "description": "One verified bundle selected by opaque identity, never by caller path.",
+      "properties": {
+        "artifact_id": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "alert_audit",
+            "final_report"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "artifact_id",
+        "created_at"
+      ],
+      "title": "RetentionTarget",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/retention-audit.schema.json",
+  "additionalProperties": false,
+  "description": "Immutable local receipt for one successfully applied deletion plan.",
+  "properties": {
+    "audit_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Audit Id",
+      "type": "string"
+    },
+    "deleted_targets": {
+      "items": {
+        "$ref": "#/$defs/RetentionTarget"
+      },
+      "title": "Deleted Targets",
+      "type": "array"
+    },
+    "document_type": {
+      "const": "retention_deletion_audit",
+      "default": "retention_deletion_audit",
+      "enum": [
+        "retention_deletion_audit"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "executed_at": {
+      "format": "date-time",
+      "title": "Executed At",
+      "type": "string"
+    },
+    "external_deletion_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "External Deletion Authorized",
+      "type": "boolean"
+    },
+    "format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Format Version",
+      "type": "string"
+    },
+    "local_only": {
+      "const": true,
+      "default": true,
+      "enum": [
+        true
+      ],
+      "title": "Local Only",
+      "type": "boolean"
+    },
+    "notification_delivery": {
+      "const": "not_sent",
+      "default": "not_sent",
+      "enum": [
+        "not_sent"
+      ],
+      "title": "Notification Delivery",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/RetentionSettings"
+    },
+    "protected_pending_alert_count": {
+      "minimum": 0,
+      "title": "Protected Pending Alert Count",
+      "type": "integer"
+    },
+    "protected_report_count": {
+      "minimum": 0,
+      "title": "Protected Report Count",
+      "type": "integer"
+    },
+    "raw_audio_deleted": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Raw Audio Deleted",
+      "type": "boolean"
+    },
+    "scanned_audit_count": {
+      "minimum": 0,
+      "title": "Scanned Audit Count",
+      "type": "integer"
+    },
+    "scanned_report_count": {
+      "minimum": 0,
+      "title": "Scanned Report Count",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "audit_id",
+    "executed_at",
+    "policy",
+    "scanned_report_count",
+    "scanned_audit_count",
+    "protected_report_count",
+    "protected_pending_alert_count",
+    "deleted_targets"
+  ],
+  "title": "RetentionAuditRecord",
+  "type": "object"
+}

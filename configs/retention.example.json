@@ -1,0 +1,7 @@
+{
+  "alert_audit_days": 365,
+  "allow_pending_alert_deletion": false,
+  "enabled": false,
+  "final_report_days": 30,
+  "max_delete_count": 1000
+}

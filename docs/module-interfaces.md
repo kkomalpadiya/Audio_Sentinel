@@ -27,3 +27,9 @@ transport, recipient selection, or delivery authorization.
 B8.2 and A8.3 share `evaluation_service.run_evaluation` as their application
 boundary. The CLI and loopback-only HTTP route therefore use the same evaluator,
 report, and audit services; neither implements or invokes `AlertPublisher`.
+
+B9.2 adds `retention.plan_retention` and `retention.run_retention` as a separate
+maintenance boundary. It accepts fixed settings rather than caller-selected paths,
+verifies the existing report and audit contracts before planning, preserves
+report/audit dependency integrity, and cannot touch raw audio or authorize an
+external deletion.

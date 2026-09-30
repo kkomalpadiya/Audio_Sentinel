@@ -17,8 +17,8 @@ def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
     status = project_status()
     assert status["current_focus"] == (
-        "Held-out acoustic evaluation findings are measured and documented."
+        "Local report and audit retention is explicit, bounded, and audited."
     )
     assert status["next_step"] == (
-        "Implement retention and deletion controls (B9.2)."
+        "Document consent, authorized use, review, and model limits (A9.2)."
     )

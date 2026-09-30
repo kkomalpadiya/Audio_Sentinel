@@ -13,6 +13,7 @@ from audio_sentinel.feature_settings import LogMelSettings
 DEFAULT_SAMPLE_RATE_HZ = 16_000
 DEFAULT_WINDOW_SECONDS = (1.0, 5.0, 10.0)
 WindowSeconds = Annotated[float, Field(gt=0, le=600, allow_inf_nan=False)]
+RetentionDays = Annotated[int, Field(ge=1, le=36_500, strict=True)]
 
 
 class NoiseReductionSettings(BaseModel):
@@ -168,6 +169,18 @@ class PersistenceSettings(BaseModel):
     max_windows: int = Field(default=10_000, ge=0)
 
 
+class RetentionSettings(BaseModel):
+    """Explicit limits for deleting verified Phase 8 output bundles."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    enabled: bool = False
+    final_report_days: RetentionDays | None = 30
+    alert_audit_days: RetentionDays | None = 365
+    allow_pending_alert_deletion: bool = False
+    max_delete_count: int = Field(default=1_000, ge=1, le=10_000, strict=True)
+
+
 class AudioSentinelSettings(BaseModel):
     """Top-level settings object supplied to all future pipeline modules."""
 
@@ -176,6 +189,7 @@ class AudioSentinelSettings(BaseModel):
     paths: Paths
     audio: AudioSettings = Field(default_factory=AudioSettings)
     persistence: PersistenceSettings = Field(default_factory=PersistenceSettings)
+    retention: RetentionSettings = Field(default_factory=RetentionSettings)
     log_mel: LogMelSettings = Field(default_factory=LogMelSettings)
 
     @classmethod
@@ -202,6 +216,7 @@ def find_project_root(start: Path | None = None) -> Path:
 def load_settings(
     project_root: Path | None = None, *, audio_config_path: Path | None = None,
     log_mel_config_path: Path | None = None,
+    retention_config_path: Path | None = None,
 ) -> AudioSentinelSettings:
     """Build default settings for the supplied or automatically discovered root."""
 
@@ -218,4 +233,17 @@ def load_settings(
         if not config_path.is_absolute():
             config_path = root / config_path
         log_mel = LogMelSettings.model_validate_json(config_path.read_text(encoding="utf-8"))
-    return AudioSentinelSettings(paths=Paths.from_root(root), audio=audio, log_mel=log_mel)
+    retention = RetentionSettings()
+    if retention_config_path is not None:
+        config_path = Path(retention_config_path)
+        if not config_path.is_absolute():
+            config_path = root / config_path
+        retention = RetentionSettings.model_validate_json(
+            config_path.read_text(encoding="utf-8")
+        )
+    return AudioSentinelSettings(
+        paths=Paths.from_root(root),
+        audio=audio,
+        retention=retention,
+        log_mel=log_mel,
+    )

@@ -87,6 +87,7 @@ def test_help_lists_only_supported_commands():
     assert result.exit_code == 0
     assert "evaluate" in result.stdout
     assert "inspect-report" in result.stdout
+    assert "retention" in result.stdout
 
 
 def test_acoustic_only_evaluation_saves_report_and_audit_without_speech_models(

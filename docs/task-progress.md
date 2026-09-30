@@ -1983,3 +1983,56 @@ transparent record of exactly which examples were mistaken, why the result is
 limited, and what should be investigated next. It does not silently turn a failed
 run into a prediction, authorize alerts, or overstate the evidence as production
 accuracy.
+
+## B9.2 — Complete
+
+Added strict `RetentionSettings` with deletion disabled by default, independent
+minimum ages for final reports and alert/audit bundles, indefinite-retention support,
+pending-alert protection, and a hard per-run deletion ceiling. Added a disabled
+example configuration so an operator must create and review an explicit local
+policy rather than inheriting a hidden destructive default.
+
+Added `audio_sentinel.retention` with separate planning and application boundaries.
+The planner accepts no artifact paths, scans only the fixed final-report and
+alert-audit directories, rejects linked or noncanonical inventories, and reloads
+every bundle through its existing verifier. Alert/audit bundles are considered
+first; any retained audit protects its referenced final report. Pending alerts
+protect their audit and report unless the policy explicitly opts into their
+deletion. The entire plan is bounded before any change, and raw recordings are
+never targets.
+
+Applied deletion requires both `enabled=true` and an explicit caller action. The
+service moves the verified targets into a private same-filesystem staging area,
+writes and reloads a strict immutable deletion receipt, and only then removes the
+staged copies. If receipt creation fails, moved bundles are restored before the
+operation exits. Receipts contain the policy snapshot, counts, and opaque deleted
+identities, but no paths, audio, consent identifiers, transcript text, recipient,
+transport, notification authority, or external-deletion authority. Retention
+receipts are not deleted by the service they audit.
+
+Added the `audio-sentinel retention` command. Omission of `--apply` performs a
+non-writing dry run. Applying additionally requires a project-local retention file
+whose policy is enabled. Output reports target and protected counts plus relative
+receipt information without exposing absolute paths. Updated CLI and module docs,
+added the complete retention/deletion guide, and checked in the v1 retention-audit
+JSON Schema.
+
+Added focused coverage for strict settings, project-local configuration, dry-run
+behavior, explicit dual authorization, age selection, reference protection,
+pending-alert protection and opt-in, delete limits, tampered inventory, rollback,
+audit-only deletion, immutable receipt validation, privacy exclusions, size limits,
+schema parity, and CLI behavior. Updated project status to make A9.2 the next task.
+Python compilation and the full project suite pass: 1,843 tests, with the same two
+Pydantic deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/b9_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 64 completed tasks out of 72 and A9.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: A9.2 — Document consent, authorized use, human review, and model limitations.
+
+In plain language: cleanup can now be previewed safely and performed only after two
+explicit approvals. It preserves linked records, treats pending alerts cautiously,
+leaves raw audio alone, and creates a local receipt showing exactly which opaque
+bundles were deleted. It is not automatic scheduling, legal-policy selection,
+secure media erasure, backup deletion, or external-system deletion.

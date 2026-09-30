@@ -276,6 +276,12 @@ negatives, 2 false positives, and 3 false negatives. Its 84.375% balanced accura
 is documented as limited regression evidence rather than a production claim, with
 case-level error analysis, deterministic selection, immutable provenance, and an
 exact-rerun check.
+B9.2 adds [retention and deletion controls](docs/retention-and-deletion.md) for
+verified final-report and alert-audit bundles. Cleanup is disabled by default,
+plans without writing, requires an enabled project-local policy plus explicit
+application, protects referenced reports and pending alerts, fails closed on an
+invalid inventory, and records every applied plan in an immutable local receipt.
+Raw recordings are outside its deletion scope.
 
 ## Local panel demonstration
 

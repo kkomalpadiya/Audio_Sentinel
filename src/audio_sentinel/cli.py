@@ -11,6 +11,7 @@ from pydantic import ValidationError
 import typer
 
 from audio_sentinel import evaluation_service
+from audio_sentinel import retention as retention_service
 from audio_sentinel.config import AudioSentinelSettings, load_settings
 from audio_sentinel.evaluation_service import EvaluationRequest, EvaluationScope
 from audio_sentinel.final_report import FinalReportDocument, load_final_report
@@ -46,28 +47,57 @@ def _parse_timestamp(value: str, option_name: str) -> datetime:
     return parsed
 
 
-def _load_cli_settings(project_root: Path, audio_config: Path | None) -> AudioSentinelSettings:
+def _project_config(
+    root: Path,
+    config: Path | None,
+    *,
+    code: str,
+    label: str,
+) -> Path | None:
+    if config is None:
+        return None
+    try:
+        if config.is_absolute():
+            raise ValueError("absolute path")
+        resolved = (root / config).resolve(strict=True)
+        resolved.relative_to(root)
+        if not resolved.is_file():
+            raise ValueError("not a file")
+        return resolved
+    except (OSError, RuntimeError, ValueError) as error:
+        raise CliInputError(
+            code, f"{label} must be a file inside the project root."
+        ) from error
+
+
+def _load_cli_settings(
+    project_root: Path,
+    audio_config: Path | None,
+    retention_config: Path | None = None,
+) -> AudioSentinelSettings:
     root = project_root.expanduser().resolve()
     if not root.is_dir() or not (root / "pyproject.toml").is_file():
         raise CliInputError(
             "invalid_project_root",
             "Project root must be a directory containing pyproject.toml.",
         )
-    resolved_audio_config = None
-    if audio_config is not None:
-        try:
-            if audio_config.is_absolute():
-                raise ValueError("absolute path")
-            resolved_audio_config = (root / audio_config).resolve(strict=True)
-            resolved_audio_config.relative_to(root)
-            if not resolved_audio_config.is_file():
-                raise ValueError("not a file")
-        except (OSError, RuntimeError, ValueError) as error:
-            raise CliInputError(
-                "invalid_audio_config",
-                "Audio config must be a file inside the project root.",
-            ) from error
-    settings = load_settings(root, audio_config_path=resolved_audio_config)
+    resolved_audio_config = _project_config(
+        root,
+        audio_config,
+        code="invalid_audio_config",
+        label="Audio config",
+    )
+    resolved_retention_config = _project_config(
+        root,
+        retention_config,
+        code="invalid_retention_config",
+        label="Retention config",
+    )
+    settings = load_settings(
+        root,
+        audio_config_path=resolved_audio_config,
+        retention_config_path=resolved_retention_config,
+    )
     settings.ensure_directories()
     return settings
 
@@ -140,6 +170,42 @@ def _inspect_report_command(
             "Report must be a path relative to data/processed.",
         )
     return _report_summary(load_final_report(settings.paths, report))
+
+
+def _retention_command(
+    *,
+    project_root: Path,
+    retention_config: Path,
+    apply: bool,
+) -> dict[str, object]:
+    settings = _load_cli_settings(project_root, None, retention_config)
+    result = retention_service.run_retention(
+        settings.paths,
+        settings.retention,
+        apply=apply,
+    )
+    relative_audit = None
+    if result.audit_path is not None:
+        relative_audit = result.audit_path.relative_to(
+            settings.paths.processed_data
+        ).as_posix()
+    return {
+        "applied": result.applied,
+        "policy_enabled": result.plan.policy.enabled,
+        "scanned_report_count": result.plan.scanned_report_count,
+        "scanned_audit_count": result.plan.scanned_audit_count,
+        "protected_report_count": result.plan.protected_report_count,
+        "protected_pending_alert_count": (
+            result.plan.protected_pending_alert_count
+        ),
+        "target_count": len(result.plan.targets),
+        "targets": [item.model_dump(mode="json") for item in result.plan.targets],
+        "audit_id": None if result.audit is None else result.audit.audit_id,
+        "audit_path": relative_audit,
+        "audit_reused": result.audit_reused,
+        "raw_audio_deleted": False,
+        "notification_delivery": "not_sent",
+    }
 
 
 def _emit_json(document: dict[str, object], pretty: bool) -> None:
@@ -253,6 +319,35 @@ def inspect_report(
 
     _execute(
         lambda: _inspect_report_command(project_root=project_root, report=report),
+        pretty,
+    )
+
+
+@app.command("retention")
+def retention(
+    retention_config: Path = typer.Option(
+        ...,
+        "--retention-config",
+        help="Retention settings JSON, relative to the project root.",
+    ),
+    apply: bool = typer.Option(
+        False,
+        "--apply",
+        help="Apply the verified plan; omission performs a non-writing dry run.",
+    ),
+    project_root: Path = typer.Option(
+        Path("."), "--project-root", help="Project 1 repository root."
+    ),
+    pretty: bool = typer.Option(True, "--pretty/--compact", help="JSON formatting."),
+) -> None:
+    """Plan or apply bounded deletion of expired local report and audit bundles."""
+
+    _execute(
+        lambda: _retention_command(
+            project_root=project_root,
+            retention_config=retention_config,
+            apply=apply,
+        ),
         pretty,
     )
 

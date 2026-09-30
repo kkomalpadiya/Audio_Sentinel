@@ -1,6 +1,6 @@
 # Offline evaluation CLI
 
-## What B8.2 adds
+## Commands
 
 B8.2 provides two local commands around the existing Phase 8 services:
 
@@ -8,6 +8,10 @@ B8.2 provides two local commands around the existing Phase 8 services:
   B8.1 final report, and then saves the A8.2 audit and optional local alert.
 - `inspect-report` reloads a saved report through the B8.1 integrity checks and
   prints a privacy-minimized summary.
+
+B9.2 adds `retention`, which verifies and plans age-based cleanup of local
+final-report and alert-audit bundles. It changes nothing unless the settings enable
+deletion and the operator also supplies `--apply`.
 
 The CLI does not reimplement model inference, risk scoring, consensus, report
 validation, or alert rules. It also does not send notifications. Every result still
@@ -97,6 +101,23 @@ inventory are rechecked first. The JSON view includes source hashes, evidence
 receipts, risk/decision identities, and the derived summary, but excludes sensitive
 text and local paths.
 
+## Plan or apply retention
+
+Start with the disabled example policy and inspect the JSON plan:
+
+```powershell
+audio-sentinel retention `
+  --retention-config configs/retention.example.json
+```
+
+To apply, use an authorized project-local settings file with `enabled=true`, review
+the dry-run targets, and repeat with `--apply`. Final reports remain protected while
+a retained audit references them, and pending local alerts are protected unless the
+policy explicitly permits their deletion. Applied runs return a relative immutable
+retention-audit receipt. Raw audio is never a target of this command. See
+[retention and deletion controls](retention-and-deletion.md) for the complete safety
+and limitation notes.
+
 ## Errors and exit codes
 
 Command or pipeline failures return a small JSON object on standard error:
@@ -121,12 +142,11 @@ python -m pytest tests/test_cli.py -q
 The tests cover command discovery, both consent scopes, speech-model gating, report
 and audit persistence, local alert creation, report revalidation, privacy-minimized
 output, compact JSON, explicit device authorization, timezone validation, unsafe
-report and config paths, and unexpected-error redaction.
-
-## Next task
-
-A8.3 will expose the local evaluation boundary through a validated API endpoint.
+report and config paths, retention dry-run and explicit-apply behavior, and
+unexpected-error redaction.
 
 In plain language: B8.2 gives an operator a safe front door to the pipeline. The
 operator must state the consent facts and experimental threshold, while the existing
 services retain control of every model, scoring, verification, and persistence rule.
+The B9.2 addition gives the same operator a separate, explicit, locally audited
+cleanup boundary.
