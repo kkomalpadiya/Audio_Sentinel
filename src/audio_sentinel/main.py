@@ -41,7 +41,7 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Local report and audit retention is explicit, bounded, and audited."
+            "Consent, authorized use, human review, and model limits are documented."
         ),
-        "next_step": "Document consent, authorized use, review, and model limits (A9.2).",
+        "next_step": "Finalize the offline MVP demonstration script (A9.3).",
     }

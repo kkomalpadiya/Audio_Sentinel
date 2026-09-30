@@ -282,6 +282,13 @@ plans without writing, requires an enabled project-local policy plus explicit
 application, protects referenced reports and pending alerts, fails closed on an
 invalid inventory, and records every applied plan in an immutable local receipt.
 Raw recordings are outside its deletion scope.
+A9.2 consolidates the [consent, authorized-use, human-review, and model-limitations
+policy](docs/authorized-use-and-limitations.md). It defines the exact processing
+allowed by each consent scope, an operator preflight checklist, prohibited uses,
+outcome interpretation, a nine-step manual review procedure, component-level model
+limits, the bounded meaning of A9.1 metrics, and privacy and release gates. The
+guidance preserves the local-only boundary: an alert is a pending candidate, not a
+notification or confirmed incident.
 
 ## Local panel demonstration
 

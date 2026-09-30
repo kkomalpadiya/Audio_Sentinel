@@ -2036,3 +2036,53 @@ explicit approvals. It preserves linked records, treats pending alerts cautiousl
 leaves raw audio alone, and creates a local receipt showing exactly which opaque
 bundles were deleted. It is not automatic scheduling, legal-policy selection,
 secure media erasure, backup deletion, or external-system deletion.
+
+## A9.2 — Complete
+
+Added the operator-facing `docs/authorized-use-and-limitations.md` as the single
+responsible-use reference for the offline prototype. It defines the implemented
+consent states and processing scopes, including the rule that acoustic-only
+permission never authorizes VAD, transcription, or language analysis. It documents
+the pre-run authorization checks an operator must complete outside the application,
+separates technical validation from legal or organizational authority, and lists
+uses that remain prohibited or out of scope.
+
+Documented the meaning of every consensus outcome and a nine-step manual review
+procedure. Reviewers must verify authority and artifact integrity, inspect branch
+states and model evidence, preserve the consent boundary when listening, seek
+independent context, and record a disposition in an external approved workflow.
+The application still has no reviewer identity, disposition transition, recipient,
+transport, publisher, or emergency-service integration. An alert remains a pending
+local candidate with `notification_delivery=not_sent` and
+`alert_delivery_authorized=false`.
+
+Added a component-by-component limitations table for YAMNet, Silero VAD v6,
+Faster-Whisper `tiny.en`, the English language rules, risk scoring, and consensus.
+It distinguishes raw or derived model scores from calibrated probabilities,
+records English-only and finite-rule coverage, identifies acoustic lookalikes and
+coarse timing, and explains that deterministic provenance does not establish
+accuracy, fairness, intent, or incident truth.
+
+Carried the exact A9.1 results into the guidance with their denominators and limits:
+13 true positives, 2 false positives, 3 false negatives, and 14 true negatives
+across a small balanced acoustic-only run. The guide explicitly rejects production
+threshold, deployment-accuracy, safety, and notification claims. It also documents
+local API, integrity, intermediate transcript, retention, backup, and secure-erasure
+limits plus a release gate for any future demonstration or deployment expansion.
+
+Added four parity tests so every consent enum and scope, permanent no-delivery
+fields, human-review boundary, model caveat, and exact A9.1 metrics must remain in
+the guide. Updated the README and project-status endpoint to point to A9.3. Python
+compilation and the full project suite pass: 1,847 tests, with the same two Pydantic
+deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/a9_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 65 completed tasks out of 72 and A9.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: A9.3 — Finalize offline MVP demonstration script.
+
+In plain language: the prototype now has one clear rulebook for who may process
+which audio, what each result means, what a reviewer must verify, and what the
+models cannot establish. It does not convert a software score into authority to
+record, accuse, notify, or dispatch anyone.
