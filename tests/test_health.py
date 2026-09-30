@@ -17,8 +17,8 @@ def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
     status = project_status()
     assert status["current_focus"] == (
-        "Consent, authorized use, human review, and model limits are documented."
+        "The offline MVP has a repeatable, consent-gated demonstration workflow."
     )
     assert status["next_step"] == (
-        "Finalize the offline MVP demonstration script (A9.3)."
+        "Define authorized-device enrollment and streaming interfaces (A10.1)."
     )

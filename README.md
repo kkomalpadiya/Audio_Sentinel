@@ -289,6 +289,12 @@ outcome interpretation, a nine-step manual review procedure, component-level mod
 limits, the bounded meaning of A9.1 metrics, and privacy and release gates. The
 guidance preserves the local-only boundary: an alert is a pending candidate, not a
 notification or confirmed incident.
+A9.3 finalizes the [offline MVP demonstration](docs/offline-mvp-demo.md). Its
+operator script requires explicit consent and device confirmations, validates the
+local runtime without downloading models, evaluates through the public CLI,
+reloads the final report through its integrity checks, compares the verified
+result, and plans retention without deletion. The speaking and recovery guide
+keeps every outcome within its documented human-review and no-delivery boundary.
 
 ## Local panel demonstration
 

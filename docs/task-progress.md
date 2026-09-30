@@ -2086,3 +2086,51 @@ In plain language: the prototype now has one clear rulebook for who may process
 which audio, what each result means, what a reviewer must verify, and what the
 models cannot establish. It does not convert a software score into authority to
 record, accuse, notify, or dispatch anyone.
+
+## A9.3 — Complete
+
+Added `scripts/run_offline_mvp_demo.py` as the final offline MVP operator workflow.
+It requires separate confirmations that the external consent record was reviewed
+and the recording device is authorized, validates active offset-aware consent
+times, rejects escaping or absolute input paths, preserves the requested consent
+scope, and checks the local runtime and exact model directories without downloading
+or repairing anything.
+
+The demonstration delegates evaluation to the existing public CLI instead of
+duplicating model, scoring, consensus, report, or audit logic. After evaluation it
+reloads the saved final report through the integrity-checking inspection command
+and compares the report identity, outcome, score, severity, review state, and alert
+state with the original response. Any mismatch or delivery-authority claim stops
+the demonstration. The final summary remains privacy-minimized and permanently
+records that notification, delivery authority, and external action are absent.
+
+The third demonstration step calls retention without `--apply`. It verifies the
+managed inventory and reports the dry-run counts but rejects any response that
+claims deletion, raw-audio removal, or notification. An optional preflight-only
+mode checks all authorization inputs, runtime packages, and local models without
+processing audio or creating artifacts.
+
+Added `docs/offline-mvp-demo.md` with prerequisites, exact PowerShell commands,
+scope selection, a five-minute speaking guide, interpretation for all four
+outcomes, retry behavior, safe failure and recovery instructions, post-session
+steps, and the responsible-use boundary. It explicitly prohibits invented consent
+times, promised outcomes, production claims, notification claims, and treating the
+retention preview as applied cleanup.
+
+Added six model-free tests covering confirmation gates, local path containment,
+active timestamps, acoustic and speech scopes, exact CLI construction, report
+revalidation, retention dry-run enforcement, permanent no-delivery behavior, and
+help output without large runtimes. Updated the README and project status to make
+A10.1 the next task. Python compilation and the full project suite pass: 1,853
+tests, with the same two Pydantic deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/a9_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 66 completed tasks out of 72 and A10.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: A10.1 — Define authorized-device enrollment and streaming interface.
+
+In plain language: the completed offline MVP now has one safe presentation command.
+It proves the recording was processed through the real local application boundary,
+checks the saved result a second time, and previews cleanup without contacting
+anyone or deleting anything.

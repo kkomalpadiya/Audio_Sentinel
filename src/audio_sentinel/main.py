@@ -41,7 +41,7 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Consent, authorized use, human review, and model limits are documented."
+            "The offline MVP has a repeatable, consent-gated demonstration workflow."
         ),
-        "next_step": "Finalize the offline MVP demonstration script (A9.3).",
+        "next_step": "Define authorized-device enrollment and streaming interfaces (A10.1).",
     }
