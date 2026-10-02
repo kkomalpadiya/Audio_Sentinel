@@ -295,6 +295,10 @@ local runtime without downloading models, evaluates through the public CLI,
 reloads the final report through its integrity checks, compares the verified
 result, and plans retention without deletion. The speaking and recovery guide
 keeps every outcome within its documented human-review and no-delivery boundary.
+The detailed [Phase 9 completion report](docs/phase-9-evaluation-retention-and-offline-mvp-report.md)
+explains the complete task sequence, algorithms and alternatives, technology
+choices, measured findings, retention transaction, responsible-use boundary,
+demonstration workflow, and post-demo transcription fixes in common terms.
 
 ## Local panel demonstration
 
