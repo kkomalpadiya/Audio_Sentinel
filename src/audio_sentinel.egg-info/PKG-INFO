@@ -284,6 +284,52 @@ local recording path and bounded consent/evaluation metadata. It rejects externa
 clients, serializes model runs, redacts validation and unexpected-failure details,
 and returns the same privacy-minimized report/audit references as the CLI. The API
 accepts no upload, URL, recipient, transport setting, or notification authority.
+B8.3 adds [CLI and final-report integration tests](docs/cli-report-integration-tests.md).
+They run the real Phase 1-8 orchestration around deterministic model boundaries,
+reload report and audit artifacts through their public verifiers, inspect a report
+from a fresh Python process, preserve earlier immutable bundles across later runs,
+and reject report tampering, unexpected bundle files, and path traversal without
+exposing sensitive text or local paths.
+A8.4 adds [API and evaluator integration tests](docs/api-evaluator-integration-tests.md).
+They send loopback HTTP requests through the real evaluator, report, and audit
+workflow; validate acoustic-only, speech-alert, no-speech, and threshold branches;
+and prove that missing recordings and stage failures return safe responses, release
+the evaluation lock, and allow a clean retry without incomplete final artifacts.
+The detailed [Phase 8 completion report](docs/phase-8-offline-evaluator-and-alerts-report.md)
+explains the complete workflow, task-by-task implementation, algorithms and
+alternatives, technology choices, safety controls, tests, examples, and limitations
+in common terms.
+B9.1 adds [repeatable evaluation manifests and metric calculations](docs/evaluation-manifest.md).
+Each strict, content-addressed manifest reuses the shared Phase 8 request service for
+an ordered labeled collection. The resulting privacy-minimized run report keeps
+operational failures visible, calculates confusion counts and standard binary plus
+exact-outcome metrics with explicit denominators, and cannot authorize or deliver a
+notification.
+A9.1 records the [held-out end-to-end evaluation findings](docs/evaluation-findings.md).
+The pinned 32-clip acoustic run completed every case with 13 true positives, 14 true
+negatives, 2 false positives, and 3 false negatives. Its 84.375% balanced accuracy
+is documented as limited regression evidence rather than a production claim, with
+case-level error analysis, deterministic selection, immutable provenance, and an
+exact-rerun check.
+B9.2 adds [retention and deletion controls](docs/retention-and-deletion.md) for
+verified final-report and alert-audit bundles. Cleanup is disabled by default,
+plans without writing, requires an enabled project-local policy plus explicit
+application, protects referenced reports and pending alerts, fails closed on an
+invalid inventory, and records every applied plan in an immutable local receipt.
+Raw recordings are outside its deletion scope.
+A9.2 consolidates the [consent, authorized-use, human-review, and model-limitations
+policy](docs/authorized-use-and-limitations.md). It defines the exact processing
+allowed by each consent scope, an operator preflight checklist, prohibited uses,
+outcome interpretation, a nine-step manual review procedure, component-level model
+limits, the bounded meaning of A9.1 metrics, and privacy and release gates. The
+guidance preserves the local-only boundary: an alert is a pending candidate, not a
+notification or confirmed incident.
+A9.3 finalizes the [offline MVP demonstration](docs/offline-mvp-demo.md). Its
+operator script requires explicit consent and device confirmations, validates the
+local runtime without downloading models, evaluates through the public CLI,
+reloads the final report through its integrity checks, compares the verified
+result, and plans retention without deletion. The speaking and recovery guide
+keeps every outcome within its documented human-review and no-delivery boundary.
 
 ## Local panel demonstration
 

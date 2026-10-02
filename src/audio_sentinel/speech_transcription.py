@@ -35,6 +35,7 @@ from audio_sentinel.speech_segments import (
 )
 from audio_sentinel.transcription import (
     LoadedTranscriptionModel,
+    MODEL_TIMESTAMP_TAIL_SAMPLES,
     TranscriptionError,
     TranscriptionResult,
     TranscriptionSettings,
@@ -569,6 +570,15 @@ def orchestrate_speech_transcription(
                 or not math.isclose(
                     transcription.input_duration_seconds,
                     len(waveform) / 16_000,
+                    rel_tol=0,
+                    abs_tol=1e-9,
+                )
+                or transcription.tail_padding_samples != MODEL_TIMESTAMP_TAIL_SAMPLES
+                or transcription.model_input_num_samples
+                != len(waveform) + transcription.tail_padding_samples
+                or not math.isclose(
+                    transcription.model_input_duration_seconds,
+                    transcription.model_input_num_samples / 16_000,
                     rel_tol=0,
                     abs_tol=1e-9,
                 )

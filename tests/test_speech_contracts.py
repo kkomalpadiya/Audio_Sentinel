@@ -42,6 +42,7 @@ def test_example_validates_and_round_trips(speech_data: dict[str, object]) -> No
 
     assert SpeechEvidenceDocument.model_validate_json(document.model_dump_json()) == document
     assert document.source.processing_scope == "acoustic_and_speech"
+    assert document.reliability_policy.policy_version == "1.1"
     assert document.segment_count == 2
     assert document.transcribed_segment_count == 2
     assert document.segments[0].assessment.downstream_text_allowed is True
@@ -57,9 +58,9 @@ def test_example_validates_and_round_trips(speech_data: dict[str, object]) -> No
          SpeechReliabilityReason.BELOW_REVIEW_THRESHOLD, False, False),
         (0.5, TranscriptReliability.REVIEW_REQUIRED,
          SpeechReliabilityReason.BELOW_ACCEPTANCE_THRESHOLD, False, True),
-        (0.799999, TranscriptReliability.REVIEW_REQUIRED,
+        (0.599999, TranscriptReliability.REVIEW_REQUIRED,
          SpeechReliabilityReason.BELOW_ACCEPTANCE_THRESHOLD, False, True),
-        (0.8, TranscriptReliability.ACCEPTED,
+        (0.6, TranscriptReliability.ACCEPTED,
          SpeechReliabilityReason.MEETS_ACCEPTANCE_THRESHOLD, True, False),
         (1.0, TranscriptReliability.ACCEPTED,
          SpeechReliabilityReason.MEETS_ACCEPTANCE_THRESHOLD, True, False),
@@ -89,11 +90,21 @@ def test_missing_transcript_is_not_silently_treated_as_safe() -> None:
     assert assessment.human_review_required is False
 
 
+def test_recorded_legacy_policy_remains_loadable_with_its_explicit_thresholds() -> None:
+    legacy = SpeechReliabilityPolicy(
+        policy_version="1.0",
+        transcript_review_threshold=0.50,
+        transcript_acceptance_threshold=0.80,
+    )
+
+    assert legacy.assess(transcript(0.70)).reliability is TranscriptReliability.REVIEW_REQUIRED
+
+
 @pytest.mark.parametrize(
     "overrides",
     [
-        {"transcript_review_threshold": 0.8, "transcript_acceptance_threshold": 0.8},
-        {"transcript_review_threshold": 0.9, "transcript_acceptance_threshold": 0.8},
+        {"transcript_review_threshold": 0.6, "transcript_acceptance_threshold": 0.6},
+        {"transcript_review_threshold": 0.7, "transcript_acceptance_threshold": 0.6},
         {"vad_speech_threshold": -0.1},
         {"vad_speech_threshold": 1.1},
         {"transcript_review_threshold": float("nan")},

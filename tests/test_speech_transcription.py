@@ -189,7 +189,7 @@ def run(prepared, responses=(("accepted", 0.9),), *, score_sets=({0: 0.8}, {}, {
 
 def test_orchestrates_all_policy_outcomes_and_only_hands_off_accepted_text(prepared):
     scores = ({0: 0.8, 2: 0.8, 4: 0.8, 6: 0.8}, {}, {})
-    responses = (("rejected", 0.49), ("review", 0.5), ("accepted", 0.8), None)
+    responses = (("rejected", 0.49), ("review", 0.5), ("accepted", 0.6), None)
 
     result, _, model = run(prepared, responses, score_sets=scores)
 
@@ -212,9 +212,15 @@ def test_reconstructs_exact_segment_samples_from_prepared_window(prepared):
     paths, _ = prepared
     window = segmentation.windows[0].window
     stored, _ = sf.read(paths.interim_data / window.audio_path, dtype="float32")
+    expected = stored[segment.start_sample:segment.end_sample]
+    model_input = model.calls[0][0]
+    transcription_result = result.transcriptions[0].transcription
 
-    assert np.array_equal(model.calls[0][0], stored[segment.start_sample:segment.end_sample])
-    assert model.calls[0][0].shape == (512,)
+    assert np.array_equal(model_input[:len(expected)], expected)
+    assert not np.any(model_input[len(expected):])
+    assert model_input.shape == (len(expected) + 16_000,)
+    assert transcription_result.input_num_samples == len(expected) == 512
+    assert transcription_result.tail_padding_samples == 16_000
     assert result.evidence.segments[0].start_sample == segment.start_sample
 
 
@@ -225,9 +231,12 @@ def test_segment_crossing_overlapping_windows_is_reconstructed_once(prepared):
     assert len(segmentation.segments) == 1
     assert len(segmentation.segments[0].source_window_ids) == 2
     assert len(model.calls) == 1
-    assert model.calls[0][0].shape == (
-        segmentation.segments[0].end_sample - segmentation.segments[0].start_sample,
+    source_samples = (
+        segmentation.segments[0].end_sample - segmentation.segments[0].start_sample
     )
+    assert model.calls[0][0].shape == (source_samples + 16_000,)
+    assert not np.any(model.calls[0][0][source_samples:])
+    assert result.transcriptions[0].transcription.input_num_samples == source_samples
     assert result.accepted_segment_ids == ("speech-0000",)
 
 
@@ -236,8 +245,8 @@ def test_segment_crossing_overlapping_windows_is_reconstructed_once(prepared):
     [
         (0.499, TranscriptReliability.REJECTED_LOW_CONFIDENCE),
         (0.5, TranscriptReliability.REVIEW_REQUIRED),
-        (0.799, TranscriptReliability.REVIEW_REQUIRED),
-        (0.8, TranscriptReliability.ACCEPTED),
+        (0.599, TranscriptReliability.REVIEW_REQUIRED),
+        (0.6, TranscriptReliability.ACCEPTED),
     ],
 )
 def test_reliability_threshold_boundaries_are_applied(prepared, score, expected):

@@ -108,14 +108,14 @@ The contract deliberately does not contain a language-intent category, incident
 decision, severity, or risk score. Those belong to later phases. Keeping them out
 prevents a low-level speech model from quietly making a high-level safety decision.
 
-The default version 1.0 reliability policy established three boundaries:
+The current version 1.1 reliability policy uses three boundaries:
 
 | Evidence | Boundary | Result |
 | --- | ---: | --- |
 | VAD speech score | At least 0.60 | The frame may support a speech interval. |
 | Transcript score | Below 0.50 | Reject the text as too uncertain. |
-| Transcript score | 0.50 to below 0.80 | Keep it for review, but block automation. |
-| Transcript score | At least 0.80 | Accept it for downstream language analysis. |
+| Transcript score | 0.50 to below 0.60 | Keep it for review, but block automation. |
+| Transcript score | At least 0.60 | Accept it for downstream language analysis. |
 | No text | No score | Mark it `not_transcribed`; never assume it was harmless. |
 
 These numbers are recorded policy values, not universal truths. The code supports a
@@ -445,8 +445,8 @@ The policy acts like a four-lane checkpoint:
 | --- | --- | --- |
 | No result | The model produced no usable words. | Records `not_transcribed` and sends nothing forward. |
 | Reject | The text score is below 0.50. | Keeps the proposal for audit but blocks it. |
-| Review | The score is at least 0.50 but below 0.80. | Marks it for a future human-review process and blocks automation. |
-| Accept | The score is at least 0.80. | Keeps the evidence and copies the text into the downstream list. |
+| Review | The score is at least 0.50 but below 0.60. | Marks it for a future human-review process and blocks automation. |
+| Accept | The score is at least 0.60. | Keeps the evidence and copies the text into the downstream list. |
 
 The evidence record and downstream list serve different purposes. The evidence
 record answers, "What did the model produce?" The downstream list answers, "What
@@ -603,7 +603,7 @@ The following limitations remain:
 - Faster-Whisper `tiny.en` is English-only. Other languages are outside this phase.
 - A derived transcript score is not a calibrated probability that the words are
   correct.
-- The default 0.50 and 0.80 transcript boundaries are policy baselines, not
+- The default 0.50 and 0.60 transcript boundaries are policy baselines, not
   deployment-approved operating points.
 - `review_required` records a need for review, but a human-review product workflow
   has not yet been implemented.

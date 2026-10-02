@@ -60,6 +60,22 @@ recorded A4.1 review and acceptance thresholds.
 `language="en"` and `language_confidence=1.0` record the model's fixed English-only
 capability. They are not a measured language-detection probability.
 
+## Bounded timestamp tail
+
+Faster-Whisper may return a final segment timestamp in a later internally padded
+feature window, even when all decoded text began inside the verified VAD fragment.
+This occurs for both sub-second and longer fragments. The wrapper therefore copies
+every segment into an owned model buffer and appends exactly one second of zeros.
+It records the verified sample count, model-input sample count, and exact
+tail-padding count separately.
+
+Model timestamps must remain inside the source-plus-one-second model input and must
+start inside real audio. The public chunk end is clipped to the exact verified
+source duration, so padding never expands evidence timing. A timestamp entirely in
+padding, beyond the bounded model input, reversed, non-finite, or otherwise invalid
+still fails the complete segment. The configured model-input sample limit includes
+the tail, preserving the resource boundary.
+
 ## Setup and checks
 
 On a fresh machine:
@@ -85,10 +101,10 @@ silence twice. Both runs must yield the same empty candidate. Positive transcrip
 normalization, confidence, lazy-generator, failure, and limit behavior are covered
 with isolated unit tests so the normal test suite remains model-download-free.
 
-B4.3 completes the 94-case transcription matrix documented in
-[`speech-wrapper-tests.md`](speech-wrapper-tests.md). It adds full artifact,
-runtime, metadata, malformed-output, exact-limit, input-ownership, and safe-failure
-coverage around this wrapper.
+B4.3 established the transcription matrix documented in
+[`speech-wrapper-tests.md`](speech-wrapper-tests.md). The current matrix includes
+full artifact, runtime, metadata, malformed-output, exact-limit, input-ownership,
+safe-failure, and bounded timestamp-tail coverage around this wrapper.
 
 The Faster-Whisper runtime and original OpenAI Whisper model are MIT licensed; the
 notices are retained under `src/audio_sentinel/resources/`.

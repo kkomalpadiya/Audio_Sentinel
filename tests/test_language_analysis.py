@@ -260,6 +260,26 @@ def test_no_match_is_explicit_and_does_not_mean_safe():
 
 
 @pytest.mark.parametrize(
+    ("text", "expected_category"),
+    [
+        ("I have a gun", LanguageCategory.WEAPON_REFERENCE),
+        ("I am going to shoot you", LanguageCategory.THREAT),
+        ("I don't have a gun", LanguageCategory.CONTEXT_SUPPRESSED),
+        ("A character could say stab you during rehearsal", LanguageCategory.CONTEXT_SUPPRESSED),
+    ],
+)
+def test_new_acceptance_boundary_preserves_language_context_safeguards(
+    text, expected_category
+):
+    result = analysis.analyze_accepted_transcripts(
+        speech_result((text,), scores=(0.60,)),
+        now=NOW,
+    )
+
+    assert result.evidence.analyses[0].findings[0].category is expected_category
+
+
+@pytest.mark.parametrize(
     ("text", "active_rule", "negation_rule"),
     [
         ("do not shoot", "threat-keyword-shoot", "negation-do-not"),
@@ -340,7 +360,7 @@ def test_multiple_categories_and_suppression_can_coexist():
 
 def test_only_phase_four_accepted_handoff_is_analyzed():
     result = analysis.analyze_accepted_transcripts(
-        speech_result(("help", "gun", "kill"), scores=(0.9, 0.7, 0.49)), now=NOW
+        speech_result(("help", "gun", "kill"), scores=(0.9, 0.55, 0.49)), now=NOW
     )
 
     assert result.evidence.input_transcript_count == 1
@@ -349,7 +369,7 @@ def test_only_phase_four_accepted_handoff_is_analyzed():
 
 def test_empty_accepted_inventory_is_valid_but_has_no_no_match_finding():
     result = analysis.analyze_accepted_transcripts(
-        speech_result(("help",), scores=(0.7,)), now=NOW
+        speech_result(("help",), scores=(0.55,)), now=NOW
     )
 
     assert result.evidence.input_transcript_count == 0

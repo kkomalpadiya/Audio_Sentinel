@@ -15,7 +15,7 @@ from audio_sentinel.preparation import Identifier, validate_relative_audio_path
 
 
 SPEECH_EVIDENCE_SCHEMA_VERSION = "1.0"
-SPEECH_RELIABILITY_POLICY_VERSION = "1.0"
+SPEECH_RELIABILITY_POLICY_VERSION = "1.1"
 
 
 class TranscriptConfidenceKind(str, Enum):
@@ -146,10 +146,10 @@ class SpeechReliabilityAssessment(SpeechContractRecord):
 class SpeechReliabilityPolicy(SpeechContractRecord):
     """Versioned gates; scores are evidence signals, not claims that text is correct."""
 
-    policy_version: Literal["1.0"] = SPEECH_RELIABILITY_POLICY_VERSION
+    policy_version: Literal["1.0", "1.1"] = SPEECH_RELIABILITY_POLICY_VERSION
     vad_speech_threshold: float = Field(default=0.60, ge=0, le=1)
     transcript_review_threshold: float = Field(default=0.50, ge=0, le=1)
-    transcript_acceptance_threshold: float = Field(default=0.80, ge=0, le=1)
+    transcript_acceptance_threshold: float = Field(default=0.60, ge=0, le=1)
 
     @model_validator(mode="after")
     def validate_threshold_order(self) -> "SpeechReliabilityPolicy":

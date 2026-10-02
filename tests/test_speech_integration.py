@@ -235,9 +235,13 @@ def test_complete_branch_preserves_exact_overlapping_window_handoffs(prepared_ca
     assert len(branch.vad_session.calls) == 3
     assert len(segment.source_window_ids) == 2
     assert len(branch.transcriber.calls) == 1
-    assert np.array_equal(
-        branch.transcriber.calls[0][0], stored[segment.start_sample:segment.end_sample]
-    )
+    expected = stored[segment.start_sample:segment.end_sample]
+    model_input = branch.transcriber.calls[0][0]
+    transcription_result = branch.result.transcriptions[0].transcription
+    assert np.array_equal(model_input[:len(expected)], expected)
+    assert not np.any(model_input[len(expected):])
+    assert transcription_result.input_num_samples == len(expected)
+    assert transcription_result.tail_padding_samples == 16_000
     assert branch.result.accepted_segment_ids == ("speech-0000",)
     assert branch.result.downstream_transcripts[0].text == "accepted words"
     assert branch.result.evidence.source.clip_id == prepared_case.input_audio.clip_id
@@ -286,7 +290,7 @@ def test_all_transcript_outcomes_remain_ordered_and_only_acceptance_flows(prepar
     branch = run_branch(
         prepared_case,
         ({0: 0.9, 2: 0.9, 4: 0.9, 6: 0.9}, {}, {}),
-        (("rejected", 0.49), ("review", 0.5), ("accepted", 0.8), None),
+        (("rejected", 0.49), ("review", 0.5), ("accepted", 0.6), None),
     )
 
     assert [item.segment_id for item in branch.segmentation.segments] == [
@@ -328,8 +332,14 @@ def test_tail_padding_is_removed_before_vad_and_transcription(
     assert case.bundle.manifest.windows[-1].padding_samples == 6_400
     assert len(branch.vad_session.calls[-1]["input"]) == 19
     assert segment.end_sample == case.bundle.manifest.num_frames == 17_600
-    assert branch.transcriber.calls[0][0].shape == (384,)
-    assert np.array_equal(branch.transcriber.calls[0][0], stored[17_216:17_600])
+    model_input = branch.transcriber.calls[0][0]
+    expected = stored[17_216:17_600]
+    transcription_result = branch.result.transcriptions[0].transcription
+    assert model_input.shape == (16_384,)
+    assert np.array_equal(model_input[:384], expected)
+    assert not np.any(model_input[384:])
+    assert transcription_result.input_num_samples == 384
+    assert transcription_result.tail_padding_samples == 16_000
 
 
 def test_custom_policy_is_preserved_and_applied_across_both_stages(prepared_case):

@@ -2134,3 +2134,43 @@ In plain language: the completed offline MVP now has one safe presentation comma
 It proves the recording was processed through the real local application boundary,
 checks the saved result a second time, and previews cleanup without contacting
 anyone or deleting anything.
+
+## Post-A9.3 — Speech timestamp and reliability policy fix
+
+Generalized the Faster-Whisper timestamp protection to every verified VAD segment,
+not only fragments shorter than one second. The wrapper copies the exact source
+samples into an owned model input, appends exactly one bounded second of zeros, and
+records the source length, model-input length, and padding length independently.
+Model timestamps are validated against the complete buffer, but public ends are
+clipped to the verified source span. A timestamp beginning entirely in padding or
+extending beyond the bounded model input still fails closed, and the complete
+source-plus-tail allocation remains subject to the configured sample limit.
+
+Updated the speech reliability contract to policy v1.1. New evidence keeps the
+0.50 review threshold and uses 0.60 for automatic transcript acceptance instead of
+0.80. Previously recorded v1.0 policies remain loadable with their explicit stored
+thresholds. The lower boundary admits the clear local phrases observed around
+0.60–0.70, but it is an explicit sensitivity tradeoff rather than a calibrated
+accuracy result: more recognition errors may reach language matching and increase
+false positives. Negation, quotation, hypothetical, and ambiguity safeguards stay
+active, and the separate alert-consensus policy is unchanged.
+
+Added timestamp regressions for source/model-end pairs of 0.980/1.000,
+0.448/0.840, 1.340/1.520, and 1.628/2.000 seconds, plus rejection and model-input
+limit cases. Added exact 0.50/0.60 reliability boundaries, schema/example parity,
+legacy policy loading, and active-versus-negated/context-suppressed language tests
+at the new boundary. Python compilation and the full project suite pass: 1,865
+tests, with the same two Pydantic deprecation warnings from the API OpenAPI test.
+The real pinned model also accepts all four observed segment sizes with the explicit
+one-second tail.
+
+Ran the complete offline `acoustic_and_speech` demonstration on
+`demo/test_audio3_converted.wav` under the user's fresh run authorization. The
+verified report records five speech segments, three accepted transcripts, two
+review-required transcripts, one weapon-reference finding, two threat findings,
+and a high risk score of 62. The consensus outcome is `review`, not `alert`;
+`alert_candidate=false`, notification remains `not_sent`, and neither delivery nor
+external action is authorized. Report and audit integrity checks pass, and retention
+was a non-writing dry run. The existing `demo-consent.txt.txt` was not changed; it
+still describes a separate `acoustic_only` authorization and must not be reused as
+the speech run's authority.

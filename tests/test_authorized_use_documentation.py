@@ -59,6 +59,8 @@ def test_document_records_model_confidence_and_policy_limitations(
     assert "not a calibrated word-correctness probability" in document
     assert "A score is not a probability" in document
     assert "Acoustic-only cases cannot become alerts" in document
+    assert "Policy v1.1 sends candidates at or above 0.60" in document
+    assert "can increase false-positive language matches" in document
 
 
 def test_document_reports_a9_1_results_and_limits_without_overclaiming(

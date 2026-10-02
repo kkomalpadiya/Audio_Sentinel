@@ -20,6 +20,7 @@ src/audio_sentinel/consensus_service.py
 src/audio_sentinel/consensus_validation.py
 src/audio_sentinel/contracts.py
 src/audio_sentinel/demo.py
+src/audio_sentinel/evaluation_manifest.py
 src/audio_sentinel/evaluation_service.py
 src/audio_sentinel/evaluator.py
 src/audio_sentinel/feature_persistence.py
@@ -39,6 +40,7 @@ src/audio_sentinel/noise_reduction.py
 src/audio_sentinel/persistence.py
 src/audio_sentinel/pipeline.py
 src/audio_sentinel/preparation.py
+src/audio_sentinel/retention.py
 src/audio_sentinel/risk_contracts.py
 src/audio_sentinel/risk_integration.py
 src/audio_sentinel/risk_model.py
@@ -80,9 +82,12 @@ tests/test_acoustic_loader.py
 tests/test_acoustic_model.py
 tests/test_alert_audit.py
 tests/test_api.py
+tests/test_api_evaluator_integration.py
 tests/test_audio_loader.py
 tests/test_audio_transforms.py
+tests/test_authorized_use_documentation.py
 tests/test_cli.py
+tests/test_cli_report_integration.py
 tests/test_config.py
 tests/test_consensus_contracts.py
 tests/test_consensus_rules.py
@@ -91,6 +96,8 @@ tests/test_consensus_service.py
 tests/test_consensus_validation.py
 tests/test_contracts.py
 tests/test_demo.py
+tests/test_evaluation_findings.py
+tests/test_evaluation_manifest.py
 tests/test_evaluator.py
 tests/test_feature_persistence.py
 tests/test_feature_pipeline.py
@@ -105,10 +112,12 @@ tests/test_language_fixtures.py
 tests/test_language_rules.py
 tests/test_log_mel.py
 tests/test_noise_reduction.py
+tests/test_offline_mvp_demo.py
 tests/test_persistence.py
 tests/test_pipeline.py
 tests/test_preparation.py
 tests/test_preparation_integration.py
+tests/test_retention.py
 tests/test_risk_contracts.py
 tests/test_risk_integration.py
 tests/test_risk_model.py

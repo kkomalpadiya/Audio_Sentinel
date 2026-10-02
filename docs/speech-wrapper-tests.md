@@ -8,8 +8,9 @@ ONNX sessions, and fake Faster-Whisper outputs. The ordinary suite therefore sta
 fast, offline, deterministic, and independent of the optional speech runtimes and
 downloaded model files.
 
-The focused suite contains 184 cases: 90 for `test_vad.py` and 94 for
-`test_transcription.py`.
+The focused suite includes the original B4.3 boundary matrix plus the later
+bounded timestamp-tail regressions. Its exact collected count is intentionally
+left to pytest so this guide does not become stale as focused cases are added.
 
 ## VAD coverage
 
@@ -39,6 +40,15 @@ identity, exact runtime versions, CPU-only English model capability, local-only
 loading, the complete fixed decoding option set, owned contiguous model input,
 text normalization, token-weighted confidence calculation, and empty-output
 handling.
+
+They also verify the bounded timestamp-tail rule. Every verified waveform is copied
+exactly into an owned model buffer followed by one second of zero-only padding. The
+result separately records the verified source length, model-input length, and
+padding length. Regressions cover source/timestamp pairs of 0.980/1.000,
+0.448/0.840, 1.340/1.520, and 1.628/2.000 seconds; every public end is clipped to
+the verified source boundary. A timestamp starting entirely in the padding, or
+ending beyond the padded model buffer, is rejected instead of being hidden by
+clipping.
 
 Failure and boundary coverage includes:
 

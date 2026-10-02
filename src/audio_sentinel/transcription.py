@@ -29,6 +29,12 @@ from audio_sentinel.speech_contracts import (
 MODEL_RELATIVE_PATH = PurePosixPath("faster-whisper-tiny.en/1")
 INSTALL_MARKER = ".complete.json"
 MAX_MARKER_BYTES = 32_768
+# Faster-Whisper may place a VAD fragment's final timestamp in a later internally
+# padded feature window. Give every independent segment one explicit, bounded
+# second of zero tail so that output can be validated against the actual model
+# input, then clip it back to the verified source span.
+MODEL_TIMESTAMP_TAIL_SAMPLES = 16_000
+TIMESTAMP_EPSILON_SECONDS = 1e-6
 
 
 @dataclass(frozen=True)
@@ -174,6 +180,9 @@ class TranscriptionResult:
     model: TranscriptionModelMetadata
     input_num_samples: int
     input_duration_seconds: float
+    model_input_num_samples: int
+    model_input_duration_seconds: float
+    tail_padding_samples: int
     candidate: TranscriptCandidate | None
     chunks: tuple[TranscriptionChunk, ...]
 
@@ -182,6 +191,9 @@ class TranscriptionResult:
             "model": self.model.as_dict(),
             "input_num_samples": self.input_num_samples,
             "input_duration_seconds": self.input_duration_seconds,
+            "model_input_num_samples": self.model_input_num_samples,
+            "model_input_duration_seconds": self.model_input_duration_seconds,
+            "tail_padding_samples": self.tail_padding_samples,
             "candidate": None if self.candidate is None else self.candidate.model_dump(mode="json"),
             "chunks": [asdict(chunk) for chunk in self.chunks],
         }
@@ -470,7 +482,11 @@ def _tokens(value: object) -> tuple[int, ...]:
 
 
 def _read_chunks(
-    segments: Iterable[object], *, duration: float, settings: TranscriptionSettings
+    segments: Iterable[object],
+    *,
+    verified_duration: float,
+    model_input_duration: float,
+    settings: TranscriptionSettings,
 ) -> tuple[TranscriptionChunk, ...]:
     chunks: list[TranscriptionChunk] = []
     total_tokens = 0
@@ -496,7 +512,8 @@ def _read_chunks(
             if (
                 start < 0
                 or end < start
-                or end > duration + 1e-6
+                or end > model_input_duration + TIMESTAMP_EPSILON_SECONDS
+                or start >= verified_duration
                 or start < previous_start
                 or average_log_probability > 0
                 or not 0 <= no_speech_probability <= 1
@@ -505,6 +522,9 @@ def _read_chunks(
                     "invalid_output", "Transcription segment timing or scores are outside valid bounds."
                 )
             previous_start = start
+            # Only the tail after verified_duration is synthetic. A segment must
+            # overlap real samples, and its public timing never includes padding.
+            bounded_end = min(end, verified_duration)
             total_tokens += len(tokens)
             total_bytes += len(text.encode("utf-8"))
             if total_tokens > settings.max_tokens:
@@ -515,7 +535,7 @@ def _read_chunks(
                 chunks.append(TranscriptionChunk(
                     segment_id=segment_id,
                     start_seconds=start,
-                    end_seconds=end,
+                    end_seconds=bounded_end,
                     text=text,
                     token_count=len(tokens),
                     average_log_probability=average_log_probability,
@@ -571,8 +591,22 @@ def transcribe_segment(
         raise TranscriptionError(
             "invalid_samples", "Transcription samples must be finite and within [-1, 1]."
         )
-    duration = len(waveform) / WHISPER_TINY_EN.sample_rate_hz
-    model_input = np.array(waveform, dtype=np.float32, copy=True, order="C")
+    input_num_samples = len(waveform)
+    duration = input_num_samples / WHISPER_TINY_EN.sample_rate_hz
+    model_input_num_samples = input_num_samples + MODEL_TIMESTAMP_TAIL_SAMPLES
+    if model_input_num_samples > settings.max_input_samples:
+        raise TranscriptionError(
+            "input_too_large", "Transcription waveform plus bounded model padding exceeds max_input_samples."
+        )
+    tail_padding_samples = model_input_num_samples - input_num_samples
+    try:
+        model_input = np.zeros(model_input_num_samples, dtype=np.float32)
+        model_input[:input_num_samples] = waveform
+    except MemoryError as error:
+        raise TranscriptionError(
+            "insufficient_memory", "Not enough memory to prepare transcription input."
+        ) from error
+    model_input_duration = model_input_num_samples / WHISPER_TINY_EN.sample_rate_hz
     try:
         segments, info = loaded.model.transcribe(
             model_input,
@@ -592,7 +626,12 @@ def transcribe_segment(
             log_prob_threshold=-1.0,
             no_speech_threshold=0.6,
         )
-        chunks = _read_chunks(segments, duration=duration, settings=settings)
+        chunks = _read_chunks(
+            segments,
+            verified_duration=duration,
+            model_input_duration=model_input_duration,
+            settings=settings,
+        )
         language = str(getattr(info, "language", ""))
         language_probability = _number(
             getattr(info, "language_probability", None), "language probability"
@@ -609,15 +648,23 @@ def transcribe_segment(
     if (
         language != WHISPER_TINY_EN.language
         or language_probability != 1.0
-        or not math.isclose(reported_duration, duration, rel_tol=0, abs_tol=1e-6)
+        or not math.isclose(
+            reported_duration,
+            model_input_duration,
+            rel_tol=0,
+            abs_tol=TIMESTAMP_EPSILON_SECONDS,
+        )
     ):
         raise TranscriptionError(
             "invalid_output", "English-only transcription metadata differs from the input."
         )
     return TranscriptionResult(
         model=loaded.metadata,
-        input_num_samples=len(waveform),
+        input_num_samples=input_num_samples,
         input_duration_seconds=duration,
+        model_input_num_samples=model_input_num_samples,
+        model_input_duration_seconds=model_input_duration,
+        tail_padding_samples=tail_padding_samples,
         candidate=_candidate(chunks),
         chunks=chunks,
     )

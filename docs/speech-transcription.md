@@ -60,8 +60,8 @@ The default A4.1 boundaries behave as follows:
 | --- | --- | ---: |
 | No text candidate | `not_transcribed` | No |
 | Derived score below 0.50 | `rejected_low_confidence` | No |
-| Derived score from 0.50 to below 0.80 | `review_required` | No |
-| Derived score at or above 0.80 | `accepted` | Yes |
+| Derived score from 0.50 to below 0.60 | `review_required` | No |
+| Derived score at or above 0.60 | `accepted` | Yes |
 
 The complete evidence retains nonempty candidates at every confidence level so an
 auditor can see what the model proposed and why it was blocked. The separate
@@ -69,6 +69,12 @@ auditor can see what the model proposed and why it was blocked. The separate
 the typed confidence signal. It is the only automatic language-analysis handoff.
 Missing text is not interpreted as benign speech, and review-required text remains
 blocked until an approved human-review workflow exists.
+
+The policy v1.1 acceptance reduction from 0.80 to 0.60 is a sensitivity choice,
+not a calibration result. It admits the observed clear local threat and weapon
+phrases, but can also admit more transcription mistakes. The language branch's
+negation, quotation, hypothetical, and ambiguity safeguards remain active, and no
+transcript can independently satisfy the separate alert-consensus policy.
 
 ## Evidence and identity
 

@@ -14,10 +14,10 @@
     "num_samples": 32000
   },
   "reliability_policy": {
-    "policy_version": "1.0",
+    "policy_version": "1.1",
     "vad_speech_threshold": 0.6,
     "transcript_review_threshold": 0.5,
-    "transcript_acceptance_threshold": 0.8
+    "transcript_acceptance_threshold": 0.6
   },
   "vad_model": {
     "model_id": "example-vad",
@@ -87,7 +87,7 @@
       "vad_score": 0.84,
       "transcript": {
         "text": "The door may be open.",
-        "confidence_score": 0.67,
+        "confidence_score": 0.57,
         "confidence_kind": "model_score",
         "language": "en",
         "language_confidence": 0.88

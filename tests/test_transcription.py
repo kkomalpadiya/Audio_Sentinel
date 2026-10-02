@@ -35,7 +35,7 @@ class FakeLoadModel:
 class FakeInferenceModel:
     def __init__(self, segments=(), info=None, error=None):
         self.segments = segments
-        self.info = info or SimpleNamespace(language="en", language_probability=1.0, duration=1.0)
+        self.info = info
         self.error = error
         self.calls = []
 
@@ -43,7 +43,12 @@ class FakeInferenceModel:
         self.calls.append((samples, kwargs))
         if self.error:
             raise self.error
-        return iter(self.segments), self.info
+        info = self.info or SimpleNamespace(
+            language="en",
+            language_probability=1.0,
+            duration=len(samples) / 16_000,
+        )
+        return iter(self.segments), info
 
 
 def segment(**changes):
@@ -454,6 +459,67 @@ def test_confidence_is_token_weighted_exponential_mean_log_probability():
     assert [chunk.token_count for chunk in result.chunks] == [1, 3]
 
 
+@pytest.mark.parametrize(
+    ("num_samples", "reported_end", "expected_duration"),
+    [
+        (15_680, 1.0, 0.98),
+        (7_168, 0.84, 0.448),
+        (21_440, 1.52, 1.34),
+        (26_048, 2.0, 1.628),
+    ],
+)
+def test_bounded_tail_clips_model_timestamp_to_verified_duration(
+    num_samples,
+    reported_end,
+    expected_duration,
+):
+    source = np.linspace(-0.25, 0.25, num_samples, dtype=np.float32)
+    fake = FakeInferenceModel(
+        [segment(end=reported_end)],
+        info=SimpleNamespace(
+            language="en",
+            language_probability=1.0,
+            duration=expected_duration + 1.0,
+        ),
+    )
+
+    result = transcription.transcribe_segment(loaded(fake), source)
+
+    model_input = fake.calls[0][0]
+    assert model_input.shape == (num_samples + 16_000,)
+    assert np.array_equal(model_input[:num_samples], source)
+    assert not np.any(model_input[num_samples:])
+    assert result.input_num_samples == num_samples
+    assert result.input_duration_seconds == expected_duration
+    assert result.model_input_num_samples == num_samples + 16_000
+    assert result.model_input_duration_seconds == expected_duration + 1.0
+    assert result.tail_padding_samples == 16_000
+    assert result.chunks[0].start_seconds == 0.0
+    assert result.chunks[0].end_seconds == expected_duration
+
+
+@pytest.mark.parametrize(
+    "bad_segment",
+    [
+        segment(end=1.448_002),
+        segment(start=0.5, end=0.84),
+    ],
+)
+def test_short_segment_padding_rejects_materially_invalid_timestamps(bad_segment):
+    fake = FakeInferenceModel(
+        [bad_segment],
+        info=SimpleNamespace(language="en", language_probability=1.0, duration=1.448),
+    )
+
+    with pytest.raises(transcription.TranscriptionError) as error:
+        transcription.transcribe_segment(
+            loaded(fake),
+            np.zeros(7_168, dtype=np.float32),
+        )
+
+    assert error.value.code == "invalid_output"
+
+
 def test_empty_or_whitespace_model_output_has_no_candidate():
     result = transcription.transcribe_segment(
         loaded(FakeInferenceModel([segment(text=" \t ", tokens=())])),
@@ -503,13 +569,26 @@ def test_rejects_input_limit_before_model_call():
     assert error.value.code == "input_too_large" and not fake.calls
 
 
+def test_model_input_limit_includes_bounded_timestamp_tail():
+    fake = FakeInferenceModel()
+
+    with pytest.raises(transcription.TranscriptionError) as error:
+        transcription.transcribe_segment(
+            loaded(fake),
+            np.zeros(16_000, dtype=np.float32),
+            settings=transcription.TranscriptionSettings(max_input_samples=31_999),
+        )
+
+    assert error.value.code == "input_too_large" and not fake.calls
+
+
 def test_input_and_output_limits_are_inclusive_at_exact_boundaries():
     fake = FakeInferenceModel([segment(text="hello", tokens=(1, 2))])
     result = transcription.transcribe_segment(
         loaded(fake),
         np.zeros(16_000, dtype=np.float32),
         settings=transcription.TranscriptionSettings(
-            max_input_samples=16_000,
+            max_input_samples=32_000,
             max_segments=1,
             max_tokens=2,
             max_output_bytes=5,
@@ -524,7 +603,7 @@ def test_input_and_output_limits_are_inclusive_at_exact_boundaries():
     [
         segment(id=True),
         segment(start=-0.1),
-        segment(end=1.1),
+        segment(end=2.1),
         segment(avg_logprob=0.1),
         segment(no_speech_prob=1.1),
         segment(tokens=(True,)),
@@ -636,10 +715,10 @@ def test_wraps_lazy_segment_iteration_failure_in_safe_error():
 @pytest.mark.parametrize(
     "info",
     [
-        SimpleNamespace(language="fr", language_probability=1.0, duration=1.0),
-        SimpleNamespace(language="en", language_probability=0.9, duration=1.0),
-        SimpleNamespace(language="en", language_probability=1.0, duration=2.0),
-        SimpleNamespace(language="en", language_probability=True, duration=1.0),
+        SimpleNamespace(language="fr", language_probability=1.0, duration=2.0),
+        SimpleNamespace(language="en", language_probability=0.9, duration=2.0),
+        SimpleNamespace(language="en", language_probability=1.0, duration=3.0),
+        SimpleNamespace(language="en", language_probability=True, duration=2.0),
         SimpleNamespace(language="en", language_probability=1.0, duration=float("nan")),
     ],
 )
@@ -715,6 +794,8 @@ def test_results_are_immutable_and_json_ready():
     json.dumps(result.to_summary())
     with pytest.raises(FrozenInstanceError):
         result.input_num_samples = 1
+    with pytest.raises(FrozenInstanceError):
+        result.tail_padding_samples = 1
     with pytest.raises(FrozenInstanceError):
         result.chunks[0].text = "changed"
     with pytest.raises(FrozenInstanceError):

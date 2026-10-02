@@ -32,7 +32,7 @@ The document stores text and provenance, but no raw audio, speaker name, speaker
 embedding, language-intent category, incident outcome, severity, or risk score.
 Speech evidence is therefore not an alert and cannot make a risk decision by itself.
 
-## Reliability policy v1.0
+## Reliability policy v1.1
 
 The default policy has three explicit settings:
 
@@ -40,12 +40,18 @@ The default policy has three explicit settings:
 | --- | ---: | --- |
 | VAD speech threshold | 0.60 | A recorded speech segment must have `vad_score >= 0.60`. |
 | Transcript review threshold | 0.50 | Scores below 0.50 are rejected as low-confidence. |
-| Transcript acceptance threshold | 0.80 | Scores from 0.50 to below 0.80 require review; scores at or above 0.80 are accepted. |
+| Transcript acceptance threshold | 0.60 | Scores from 0.50 to below 0.60 require review; scores at or above 0.60 are accepted. |
 
 These values are versioned starting points, not measured production calibration.
-The VAD and transcription evaluation tasks must test them with labeled data before
-deployment. A score is only a normalized evidence signal unless its
-`confidence_kind` says it is a calibrated probability.
+Policy v1.1 lowers automatic transcript handoff from 0.80 to 0.60 because clear
+phrases in an authorized local recording scored approximately 0.60 to 0.70 with
+the pinned `tiny.en` model. This improves sensitivity, but it also allows more
+recognition errors into deterministic language matching and can increase false
+positives. Negation and context rules still apply, the alert policy is unchanged,
+and human review remains required. A score is only a normalized evidence signal
+unless its `confidence_kind` says it is a calibrated probability.
+Previously recorded v1.0 policies remain loadable with their explicit stored
+thresholds; new evidence defaults to v1.1 and never silently rewrites an old run.
 
 The assessment states both the reliability label and the permitted action:
 
