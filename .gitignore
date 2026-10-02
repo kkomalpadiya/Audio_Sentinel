@@ -11,10 +11,24 @@ data/interim/*
 data/processed/*
 !data/processed/.gitkeep
 
+# Recordings are local inputs, even if one is accidentally placed outside data/raw.
+*.wav
+*.flac
+*.mp3
+*.m4a
+*.aac
+*.ogg
+*.opus
+*.wma
+
+# External/local consent notes can contain sensitive authorization details.
+demo-consent*.txt
+consent.local.*
+*.consent.local.*
+
 models/*
 !models/.gitkeep
 
 artifacts/
 logs/
 *.log
-
