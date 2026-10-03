@@ -2395,3 +2395,59 @@ to wait or stop, or requires an explicit recorded discard before reconnecting.
 The project still has no microphone/network transport, durable audio retry,
 background capture service, live performance report, alert delivery, or external
 action.
+
+## A10.3 — Complete
+
+Added `src/audio_sentinel/live_performance.py` with a versioned, self-validating,
+audio-free performance report for the authorized live path. Monotonic observations
+measure authenticated connection open, buffer enqueue, client-observed capture to
+verified acceptance, capture to rolling-window handoff, capture to deterministic
+decision probe, and capture to local-alert timing probe. Each distribution records
+its exact sample count, minimum, median, mean, linearly interpolated p95, and
+maximum. Canonical report identity, bounded loading, and atomic explicit-replace
+writes protect the saved result.
+
+Reliability counters reconcile every delivery attempt, enqueued-chunk disposition,
+window-processing outcome, and alert-probe outcome before rates are calculated.
+Rejected backpressure attempts stay outside the enqueue denominator; deferred
+delivery remains visible in the attempt denominator; discarded and unresolved
+chunks cannot disappear inside a success rate. Duplicate acceptances and sequence
+gaps remain explicit counters.
+
+Added `scripts/measure_live_performance.py` and recorded one accelerated in-process
+benchmark through the real A10.1-B10.2 implementation. It performed fresh HMAC
+authentication, delivered 12 of 12 enqueued chunks after one forced deferred
+attempt, observed one bounded-buffer rejection, processed five of five rolling
+windows, completed one deterministic alert timing probe, and recorded zero
+discards, unresolved chunks, duplicates, sequence gaps, notification delivery, or
+raw-audio persistence. Its observed p95 durations were 4.394300 ms for connection
+open, 0.049610 ms for enqueue, 6.343420 ms for capture to acceptance, 5.920120 ms
+for capture to window, 5.952780 ms for capture to decision probe, and 6.221300 ms
+for the single local-alert timing probe.
+
+Added the portable JSON schema, `docs/live-performance-measurement.md`, and 22
+focused tests covering percentile math, explicit denominators, zero denominators,
+counter reconciliation, observation identity, canonical report integrity,
+tamper rejection, bounded save/load and replacement, the complete real local
+benchmark, schema parity, script output, privacy exclusions, and network/model-free
+import. Updated the README and project status to make A10.4 the next task.
+
+Python compilation, 112 affected tests, and the full project suite pass: 1,975
+tests, with the same two Pydantic deprecation warnings from the API OpenAPI test.
+
+Current measurement:
+`outputs/a10_3_measurement/live-performance-report.json`.
+
+Current tracker: `outputs/a10_3_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 71 completed tasks out of 72 and A10.4 as the next task. Changes remain
+uncommitted for review.
+
+Next: A10.4 — Conduct final privacy, security, and deployment review.
+
+In plain language: the local live pipeline now produces an integrity-checked
+performance receipt with every denominator visible. The recorded run demonstrates
+the expected retry, backpressure, ordering, window, and timing behavior on this
+machine. It is an accelerated synthetic regression, not evidence about microphone
+capture, network conditions, production model latency, real incident detection,
+notification reliability, or deployment readiness. Those limitations remain
+inputs to A10.4.

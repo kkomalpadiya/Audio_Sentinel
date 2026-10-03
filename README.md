@@ -330,6 +330,14 @@ when downstream handoff is deferred. Reconnect always opens fresh authorization
 at sample zero; old-session PCM must be delivered or explicitly zeroed and
 discarded before that boundary. The queue remains memory-only and exposes no
 network transport.
+A10.3 adds an [audio-free live performance measurement](docs/live-performance-measurement.md)
+that exercises authentication, bounded buffering, an exact deferred retry,
+backpressure rejection, rolling windows, decision timing, and one deterministic
+local-alert timing probe. The checked-in accelerated in-process run delivered all
+12 enqueued chunks, processed all five emitted windows, recorded no loss, gaps, or
+duplicates, and kept notification delivery disabled. These regression measurements
+do not cover real hardware, network transport, model inference, alert effectiveness,
+or deployment readiness.
 
 ## Local panel demonstration
 

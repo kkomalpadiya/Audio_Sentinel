@@ -41,8 +41,8 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Live PCM now uses bounded FIFO buffering, explicit backpressure, "
-            "verified retry, and clean reauthentication boundaries."
+            "The authorized live path now has audio-free latency, reliability, "
+            "retry, backpressure, rolling-window, and local-alert timing measurements."
         ),
-        "next_step": "Measure live latency, reliability, and alert timing (A10.3).",
+        "next_step": "Conduct the final privacy, security, and deployment review (A10.4).",
     }

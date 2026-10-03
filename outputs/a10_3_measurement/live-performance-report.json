@@ -1,0 +1,497 @@
+{
+  "schema_version": "1.0",
+  "document_type": "live_performance_report",
+  "format_version": "1.0",
+  "report_id": "live-performance-c0aeffd335044e8d54adf963da52040fc9a59efb3102cb046d6206edd8b5abda",
+  "created_at": "2026-10-03T18:12:14.688514Z",
+  "measurement_status": "completed",
+  "benchmark": {
+    "benchmark_id": "a10.3-in-process-live-path-v1",
+    "measurement_scope": "accelerated_in_process_synthetic_pcm",
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "sample_width_bytes": 2,
+    "chunk_samples": 160,
+    "chunk_count": 12,
+    "window_seconds": [
+      0.04
+    ],
+    "window_overlap_ratio": 0.5,
+    "max_buffered_chunks": 4,
+    "backpressure_mode": "reject",
+    "forced_deferred_deliveries": 1,
+    "deterministic_alert_probe_count": 1
+  },
+  "runtime": {
+    "python_implementation": "CPython",
+    "python_version": "3.13.5",
+    "operating_system": "Windows",
+    "machine": "AMD64"
+  },
+  "run_duration_ms": 41.7179,
+  "coverage": [
+    "authenticated_stream_open",
+    "bounded_buffering",
+    "deferred_delivery_retry",
+    "backpressure_rejection",
+    "rolling_windows",
+    "deterministic_local_alert_probe"
+  ],
+  "observations": [
+    {
+      "observation_id": "connection:000001",
+      "kind": "connection_open",
+      "elapsed_ms": 4.3943,
+      "sequence_number": null,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000000",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0748,
+      "sequence_number": 0,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000001",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0224,
+      "sequence_number": 1,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000002",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0156,
+      "sequence_number": 2,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000003",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0123,
+      "sequence_number": 3,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "window:000000",
+      "kind": "capture_to_window",
+      "elapsed_ms": 6.1729,
+      "sequence_number": 3,
+      "window_id": "window-000000",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "decision:000000",
+      "kind": "capture_to_decision",
+      "elapsed_ms": 6.2082,
+      "sequence_number": 3,
+      "window_id": "window-000000",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "alert:000000",
+      "kind": "capture_to_local_alert_probe",
+      "elapsed_ms": 6.2213,
+      "sequence_number": 3,
+      "window_id": "window-000000",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000000",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 6.3894,
+      "sequence_number": 0,
+      "window_id": null,
+      "attempt_number": 2,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000001",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 6.3058,
+      "sequence_number": 1,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000002",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 6.2781,
+      "sequence_number": 2,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000003",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 6.2579,
+      "sequence_number": 3,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000004",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.029,
+      "sequence_number": 4,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000005",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0136,
+      "sequence_number": 5,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000006",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0112,
+      "sequence_number": 6,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000007",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0124,
+      "sequence_number": 7,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "window:000001",
+      "kind": "capture_to_window",
+      "elapsed_ms": 2.5384,
+      "sequence_number": 5,
+      "window_id": "window-000001",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "decision:000001",
+      "kind": "capture_to_decision",
+      "elapsed_ms": 2.5642,
+      "sequence_number": 5,
+      "window_id": "window-000001",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "window:000002",
+      "kind": "capture_to_window",
+      "elapsed_ms": 4.8869,
+      "sequence_number": 7,
+      "window_id": "window-000002",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "decision:000002",
+      "kind": "capture_to_decision",
+      "elapsed_ms": 4.9055,
+      "sequence_number": 7,
+      "window_id": "window-000002",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000004",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 5.0094,
+      "sequence_number": 4,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000005",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 4.9751,
+      "sequence_number": 5,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000006",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 4.9571,
+      "sequence_number": 6,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000007",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 4.9395,
+      "sequence_number": 7,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000008",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0283,
+      "sequence_number": 8,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000009",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0135,
+      "sequence_number": 9,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000010",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0121,
+      "sequence_number": 10,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "enqueue:000011",
+      "kind": "buffer_enqueue",
+      "elapsed_ms": 0.0113,
+      "sequence_number": 11,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "window:000003",
+      "kind": "capture_to_window",
+      "elapsed_ms": 2.3472,
+      "sequence_number": 9,
+      "window_id": "window-000003",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "decision:000003",
+      "kind": "capture_to_decision",
+      "elapsed_ms": 2.3658,
+      "sequence_number": 9,
+      "window_id": "window-000003",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "window:000004",
+      "kind": "capture_to_window",
+      "elapsed_ms": 4.909,
+      "sequence_number": 11,
+      "window_id": "window-000004",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "decision:000004",
+      "kind": "capture_to_decision",
+      "elapsed_ms": 4.9311,
+      "sequence_number": 11,
+      "window_id": "window-000004",
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000008",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 5.0334,
+      "sequence_number": 8,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000009",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 4.9998,
+      "sequence_number": 9,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000010",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 4.9823,
+      "sequence_number": 10,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    },
+    {
+      "observation_id": "acceptance:000011",
+      "kind": "capture_to_acceptance",
+      "elapsed_ms": 4.9662,
+      "sequence_number": 11,
+      "window_id": null,
+      "attempt_number": 1,
+      "clock": "time.perf_counter_ns",
+      "raw_audio_persisted": false
+    }
+  ],
+  "latency": [
+    {
+      "kind": "connection_open",
+      "sample_count": 1,
+      "minimum_ms": 4.3943,
+      "median_ms": 4.3943,
+      "mean_ms": 4.3943,
+      "p95_ms": 4.3943,
+      "maximum_ms": 4.3943,
+      "percentile_method": "linear_interpolation"
+    },
+    {
+      "kind": "buffer_enqueue",
+      "sample_count": 12,
+      "minimum_ms": 0.0112,
+      "median_ms": 0.01355,
+      "mean_ms": 0.021375,
+      "p95_ms": 0.04961,
+      "maximum_ms": 0.0748,
+      "percentile_method": "linear_interpolation"
+    },
+    {
+      "kind": "capture_to_acceptance",
+      "sample_count": 12,
+      "minimum_ms": 4.9395,
+      "median_ms": 5.0046,
+      "mean_ms": 5.4245,
+      "p95_ms": 6.34342,
+      "maximum_ms": 6.3894,
+      "percentile_method": "linear_interpolation"
+    },
+    {
+      "kind": "capture_to_window",
+      "sample_count": 5,
+      "minimum_ms": 2.3472,
+      "median_ms": 4.8869,
+      "mean_ms": 4.17088,
+      "p95_ms": 5.92012,
+      "maximum_ms": 6.1729,
+      "percentile_method": "linear_interpolation"
+    },
+    {
+      "kind": "capture_to_decision",
+      "sample_count": 5,
+      "minimum_ms": 2.3658,
+      "median_ms": 4.9055,
+      "mean_ms": 4.19496,
+      "p95_ms": 5.95278,
+      "maximum_ms": 6.2082,
+      "percentile_method": "linear_interpolation"
+    },
+    {
+      "kind": "capture_to_local_alert_probe",
+      "sample_count": 1,
+      "minimum_ms": 6.2213,
+      "median_ms": 6.2213,
+      "mean_ms": 6.2213,
+      "p95_ms": 6.2213,
+      "maximum_ms": 6.2213,
+      "percentile_method": "linear_interpolation"
+    }
+  ],
+  "reliability": {
+    "counters": {
+      "chunks_enqueued": 12,
+      "delivery_attempts": 13,
+      "chunks_accepted": 12,
+      "deferred_deliveries": 1,
+      "failed_deliveries": 0,
+      "backpressure_rejections": 1,
+      "chunks_discarded": 0,
+      "chunks_queued_at_end": 0,
+      "duplicate_acceptances": 0,
+      "sequence_gaps": 0,
+      "windows_emitted": 5,
+      "windows_processed": 5,
+      "window_processing_failures": 0,
+      "alert_candidates": 1,
+      "local_alert_probe_completions": 1
+    },
+    "chunk_delivery_rate": 1.0,
+    "delivery_attempt_success_rate": 0.923077,
+    "window_processing_rate": 1.0,
+    "alert_probe_completion_rate": 1.0,
+    "loss_rate": 0.0
+  },
+  "interpretation": "regression_measurement_not_deployment_approval",
+  "hardware_capture_measured": false,
+  "network_transport_measured": false,
+  "model_inference_measured": false,
+  "alert_effectiveness_measured": false,
+  "notification_delivery": "not_sent",
+  "alert_delivery_authorized": false,
+  "external_action_authorized": false,
+  "raw_audio_persisted": false
+}

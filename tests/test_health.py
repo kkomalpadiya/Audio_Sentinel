@@ -17,9 +17,9 @@ def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
     status = project_status()
     assert status["current_focus"] == (
-        "Live PCM now uses bounded FIFO buffering, explicit backpressure, "
-        "verified retry, and clean reauthentication boundaries."
+        "The authorized live path now has audio-free latency, reliability, "
+        "retry, backpressure, rolling-window, and local-alert timing measurements."
     )
     assert status["next_step"] == (
-        "Measure live latency, reliability, and alert timing (A10.3)."
+        "Conduct the final privacy, security, and deployment review (A10.4)."
     )

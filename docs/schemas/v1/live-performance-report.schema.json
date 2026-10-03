@@ -1,0 +1,716 @@
+{
+  "$defs": {
+    "LiveBenchmarkDefinition": {
+      "additionalProperties": false,
+      "description": "Public, identity-free description of the accelerated benchmark.",
+      "properties": {
+        "backpressure_mode": {
+          "const": "reject",
+          "default": "reject",
+          "enum": [
+            "reject"
+          ],
+          "title": "Backpressure Mode",
+          "type": "string"
+        },
+        "benchmark_id": {
+          "const": "a10.3-in-process-live-path-v1",
+          "default": "a10.3-in-process-live-path-v1",
+          "enum": [
+            "a10.3-in-process-live-path-v1"
+          ],
+          "title": "Benchmark Id",
+          "type": "string"
+        },
+        "channels": {
+          "const": 1,
+          "default": 1,
+          "enum": [
+            1
+          ],
+          "title": "Channels",
+          "type": "integer"
+        },
+        "chunk_count": {
+          "default": 12,
+          "exclusiveMinimum": 0,
+          "title": "Chunk Count",
+          "type": "integer"
+        },
+        "chunk_samples": {
+          "default": 160,
+          "exclusiveMinimum": 0,
+          "title": "Chunk Samples",
+          "type": "integer"
+        },
+        "deterministic_alert_probe_count": {
+          "const": 1,
+          "default": 1,
+          "enum": [
+            1
+          ],
+          "title": "Deterministic Alert Probe Count",
+          "type": "integer"
+        },
+        "forced_deferred_deliveries": {
+          "const": 1,
+          "default": 1,
+          "enum": [
+            1
+          ],
+          "title": "Forced Deferred Deliveries",
+          "type": "integer"
+        },
+        "max_buffered_chunks": {
+          "default": 4,
+          "exclusiveMinimum": 0,
+          "title": "Max Buffered Chunks",
+          "type": "integer"
+        },
+        "measurement_scope": {
+          "const": "accelerated_in_process_synthetic_pcm",
+          "default": "accelerated_in_process_synthetic_pcm",
+          "enum": [
+            "accelerated_in_process_synthetic_pcm"
+          ],
+          "title": "Measurement Scope",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "default": 16000,
+          "exclusiveMinimum": 0,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "sample_width_bytes": {
+          "const": 2,
+          "default": 2,
+          "enum": [
+            2
+          ],
+          "title": "Sample Width Bytes",
+          "type": "integer"
+        },
+        "window_overlap_ratio": {
+          "default": 0.5,
+          "exclusiveMaximum": 1.0,
+          "minimum": 0.0,
+          "title": "Window Overlap Ratio",
+          "type": "number"
+        },
+        "window_seconds": {
+          "default": [
+            0.04
+          ],
+          "items": {
+            "type": "number"
+          },
+          "title": "Window Seconds",
+          "type": "array"
+        }
+      },
+      "title": "LiveBenchmarkDefinition",
+      "type": "object"
+    },
+    "LiveLatencyDistribution": {
+      "additionalProperties": false,
+      "description": "A duration distribution with explicit count and percentile method.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/LiveLatencyKind"
+        },
+        "maximum_ms": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum Ms"
+        },
+        "mean_ms": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mean Ms"
+        },
+        "median_ms": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Median Ms"
+        },
+        "minimum_ms": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum Ms"
+        },
+        "p95_ms": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P95 Ms"
+        },
+        "percentile_method": {
+          "const": "linear_interpolation",
+          "default": "linear_interpolation",
+          "enum": [
+            "linear_interpolation"
+          ],
+          "title": "Percentile Method",
+          "type": "string"
+        },
+        "sample_count": {
+          "minimum": 0,
+          "title": "Sample Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "sample_count"
+      ],
+      "title": "LiveLatencyDistribution",
+      "type": "object"
+    },
+    "LiveLatencyKind": {
+      "enum": [
+        "connection_open",
+        "buffer_enqueue",
+        "capture_to_acceptance",
+        "capture_to_window",
+        "capture_to_decision",
+        "capture_to_local_alert_probe"
+      ],
+      "title": "LiveLatencyKind",
+      "type": "string"
+    },
+    "LiveLatencyObservation": {
+      "additionalProperties": false,
+      "description": "One audio-free duration measured with a monotonic clock.",
+      "properties": {
+        "attempt_number": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Attempt Number",
+          "type": "integer"
+        },
+        "clock": {
+          "const": "time.perf_counter_ns",
+          "default": "time.perf_counter_ns",
+          "enum": [
+            "time.perf_counter_ns"
+          ],
+          "title": "Clock",
+          "type": "string"
+        },
+        "elapsed_ms": {
+          "maximum": 600000.0,
+          "minimum": 0.0,
+          "title": "Elapsed Ms",
+          "type": "number"
+        },
+        "kind": {
+          "$ref": "#/$defs/LiveLatencyKind"
+        },
+        "observation_id": {
+          "maxLength": 160,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "raw_audio_persisted": {
+          "const": false,
+          "default": false,
+          "enum": [
+            false
+          ],
+          "title": "Raw Audio Persisted",
+          "type": "boolean"
+        },
+        "sequence_number": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence Number"
+        },
+        "window_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 3,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Window Id"
+        }
+      },
+      "required": [
+        "observation_id",
+        "kind",
+        "elapsed_ms"
+      ],
+      "title": "LiveLatencyObservation",
+      "type": "object"
+    },
+    "LivePerformanceCoverage": {
+      "enum": [
+        "authenticated_stream_open",
+        "bounded_buffering",
+        "deferred_delivery_retry",
+        "backpressure_rejection",
+        "rolling_windows",
+        "deterministic_local_alert_probe"
+      ],
+      "title": "LivePerformanceCoverage",
+      "type": "string"
+    },
+    "LiveReliabilityCounters": {
+      "additionalProperties": false,
+      "description": "Exact event counts; rejected chunks are outside the enqueue denominator.",
+      "properties": {
+        "alert_candidates": {
+          "minimum": 0,
+          "title": "Alert Candidates",
+          "type": "integer"
+        },
+        "backpressure_rejections": {
+          "minimum": 0,
+          "title": "Backpressure Rejections",
+          "type": "integer"
+        },
+        "chunks_accepted": {
+          "minimum": 0,
+          "title": "Chunks Accepted",
+          "type": "integer"
+        },
+        "chunks_discarded": {
+          "minimum": 0,
+          "title": "Chunks Discarded",
+          "type": "integer"
+        },
+        "chunks_enqueued": {
+          "minimum": 0,
+          "title": "Chunks Enqueued",
+          "type": "integer"
+        },
+        "chunks_queued_at_end": {
+          "minimum": 0,
+          "title": "Chunks Queued At End",
+          "type": "integer"
+        },
+        "deferred_deliveries": {
+          "minimum": 0,
+          "title": "Deferred Deliveries",
+          "type": "integer"
+        },
+        "delivery_attempts": {
+          "minimum": 0,
+          "title": "Delivery Attempts",
+          "type": "integer"
+        },
+        "duplicate_acceptances": {
+          "minimum": 0,
+          "title": "Duplicate Acceptances",
+          "type": "integer"
+        },
+        "failed_deliveries": {
+          "minimum": 0,
+          "title": "Failed Deliveries",
+          "type": "integer"
+        },
+        "local_alert_probe_completions": {
+          "minimum": 0,
+          "title": "Local Alert Probe Completions",
+          "type": "integer"
+        },
+        "sequence_gaps": {
+          "minimum": 0,
+          "title": "Sequence Gaps",
+          "type": "integer"
+        },
+        "window_processing_failures": {
+          "minimum": 0,
+          "title": "Window Processing Failures",
+          "type": "integer"
+        },
+        "windows_emitted": {
+          "minimum": 0,
+          "title": "Windows Emitted",
+          "type": "integer"
+        },
+        "windows_processed": {
+          "minimum": 0,
+          "title": "Windows Processed",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "chunks_enqueued",
+        "delivery_attempts",
+        "chunks_accepted",
+        "deferred_deliveries",
+        "failed_deliveries",
+        "backpressure_rejections",
+        "chunks_discarded",
+        "chunks_queued_at_end",
+        "duplicate_acceptances",
+        "sequence_gaps",
+        "windows_emitted",
+        "windows_processed",
+        "window_processing_failures",
+        "alert_candidates",
+        "local_alert_probe_completions"
+      ],
+      "title": "LiveReliabilityCounters",
+      "type": "object"
+    },
+    "LiveReliabilitySummary": {
+      "additionalProperties": false,
+      "properties": {
+        "alert_probe_completion_rate": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alert Probe Completion Rate"
+        },
+        "chunk_delivery_rate": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chunk Delivery Rate"
+        },
+        "counters": {
+          "$ref": "#/$defs/LiveReliabilityCounters"
+        },
+        "delivery_attempt_success_rate": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Delivery Attempt Success Rate"
+        },
+        "loss_rate": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Loss Rate"
+        },
+        "window_processing_rate": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Window Processing Rate"
+        }
+      },
+      "required": [
+        "counters"
+      ],
+      "title": "LiveReliabilitySummary",
+      "type": "object"
+    },
+    "LiveRuntimeDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "machine": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Machine",
+          "type": "string"
+        },
+        "operating_system": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Operating System",
+          "type": "string"
+        },
+        "python_implementation": {
+          "maxLength": 32,
+          "minLength": 1,
+          "title": "Python Implementation",
+          "type": "string"
+        },
+        "python_version": {
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "title": "Python Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "python_implementation",
+        "python_version",
+        "operating_system",
+        "machine"
+      ],
+      "title": "LiveRuntimeDescriptor",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/live-performance-report.schema.json",
+  "additionalProperties": false,
+  "description": "Audio-free result for one A10.3 in-process measurement run.",
+  "properties": {
+    "alert_delivery_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Alert Delivery Authorized",
+      "type": "boolean"
+    },
+    "alert_effectiveness_measured": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Alert Effectiveness Measured",
+      "type": "boolean"
+    },
+    "benchmark": {
+      "$ref": "#/$defs/LiveBenchmarkDefinition"
+    },
+    "coverage": {
+      "items": {
+        "$ref": "#/$defs/LivePerformanceCoverage"
+      },
+      "title": "Coverage",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "document_type": {
+      "const": "live_performance_report",
+      "default": "live_performance_report",
+      "enum": [
+        "live_performance_report"
+      ],
+      "title": "Document Type",
+      "type": "string"
+    },
+    "external_action_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "External Action Authorized",
+      "type": "boolean"
+    },
+    "format_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Format Version",
+      "type": "string"
+    },
+    "hardware_capture_measured": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Hardware Capture Measured",
+      "type": "boolean"
+    },
+    "interpretation": {
+      "const": "regression_measurement_not_deployment_approval",
+      "default": "regression_measurement_not_deployment_approval",
+      "enum": [
+        "regression_measurement_not_deployment_approval"
+      ],
+      "title": "Interpretation",
+      "type": "string"
+    },
+    "latency": {
+      "items": {
+        "$ref": "#/$defs/LiveLatencyDistribution"
+      },
+      "title": "Latency",
+      "type": "array"
+    },
+    "measurement_status": {
+      "const": "completed",
+      "default": "completed",
+      "enum": [
+        "completed"
+      ],
+      "title": "Measurement Status",
+      "type": "string"
+    },
+    "model_inference_measured": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Model Inference Measured",
+      "type": "boolean"
+    },
+    "network_transport_measured": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Network Transport Measured",
+      "type": "boolean"
+    },
+    "notification_delivery": {
+      "const": "not_sent",
+      "default": "not_sent",
+      "enum": [
+        "not_sent"
+      ],
+      "title": "Notification Delivery",
+      "type": "string"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/LiveLatencyObservation"
+      },
+      "maxItems": 100000,
+      "title": "Observations",
+      "type": "array"
+    },
+    "raw_audio_persisted": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Raw Audio Persisted",
+      "type": "boolean"
+    },
+    "reliability": {
+      "$ref": "#/$defs/LiveReliabilitySummary"
+    },
+    "report_id": {
+      "pattern": "^live-performance-[a-f0-9]{64}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "run_duration_ms": {
+      "maximum": 600000.0,
+      "minimum": 0.0,
+      "title": "Run Duration Ms",
+      "type": "number"
+    },
+    "runtime": {
+      "$ref": "#/$defs/LiveRuntimeDescriptor"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "report_id",
+    "created_at",
+    "benchmark",
+    "runtime",
+    "run_duration_ms",
+    "coverage",
+    "observations",
+    "latency",
+    "reliability"
+  ],
+  "title": "LivePerformanceReport",
+  "type": "object"
+}
