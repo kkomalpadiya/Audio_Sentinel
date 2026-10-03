@@ -322,6 +322,14 @@ applies the configured pad/drop rule at verified close. Window samples remain
 in memory and read-only; close accounting is audio-free. Retry checkpoints avoid
 replaying windows already accepted by the consumer. Queueing, reconnect, and
 backpressure policy remain B10.2.
+B10.2 adds [bounded buffering, reconnect, and
+backpressure](docs/stream-resilience.md) around the authenticated local client.
+The FIFO removes PCM only after a matching receipt, supports explicit reject or
+bounded-block producer behavior, and retains the oldest chunk for exact retry
+when downstream handoff is deferred. Reconnect always opens fresh authorization
+at sample zero; old-session PCM must be delivered or explicitly zeroed and
+discarded before that boundary. The queue remains memory-only and exposes no
+network transport.
 
 ## Local panel demonstration
 

@@ -2343,3 +2343,55 @@ remain in memory, and downstream retry does not duplicate already accepted
 windows. The project still has no reconnect protocol, asynchronous queue,
 backpressure or overload policy, live model runner, alert delivery, or external
 action.
+
+## B10.2 — Complete
+
+Added `src/audio_sentinel/stream_resilience.py` with a bounded capture-side PCM
+FIFO around the authenticated B10.1 client. `StreamBufferSettings` limits queued
+chunks and bytes and selects immediate rejection or bounded blocking when the
+queue is full. Enqueue validates PCM geometry and current authorization, preserves
+nondecreasing capture time, owns an erasable in-memory copy, and returns only an
+audio-free ticket.
+
+`BufferedStreamingClient.flush` serializes delivery, sends the oldest entry first,
+and removes it only after a receipt matches session, sample count, and payload
+hash. A downstream `sink_failed` result becomes `delivery_deferred`; the exact
+queue head remains available for retry at the same B10.1 position. Concurrent
+flushes are rejected, blocked producers wake when delivery or explicit discard
+frees capacity, and a session that expires while waiting cannot accept new PCM.
+
+Implemented explicit reconnect boundaries. A clean reconnect closes the previous
+session, performs fresh challenge authentication through a client factory, and
+starts a new session at sequence/sample zero. PCM captured under the old
+authorization cannot cross that boundary. If a session disappears with queued
+audio, the controller retains it and requires either restored delivery or an
+explicit reasoned discard before reconnect. Discard overwrites mutable queue
+copies and returns audio-free accounting. Close similarly requires an empty queue
+and remains retryable when downstream closure is backpressured.
+
+Added `docs/stream-resilience.md` covering queue limits, backpressure modes,
+receipt verification, retry, disconnect, explicit discard, reconnect, close,
+status, privacy, integration, and failure codes. Added 23 focused tests covering
+FIFO delivery, partial flushes, reject/block/timeout behavior, exact deferred
+retry, disconnect retention, clean and refreshed-consent reconnects, payload and
+timestamp validation, authorization expiry, receipt ambiguity, explicit close,
+concurrent flush exclusion, invalid factories, the real B10.1/A10.2 pipeline,
+absence of audio files, and network/model-free import. Updated the README and
+project status to make A10.3 the next task.
+
+Python compilation, 90 affected tests, and the full project suite pass: 1,953
+tests, with the same two Pydantic deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/b10_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 70 completed tasks out of 72 and A10.3 as the next task. Changes remain
+uncommitted for review.
+
+Next: A10.3 — Measure latency, reliability, and alert timing.
+
+In plain language: captured PCM can now wait in a strictly bounded memory queue
+when the local analysis path is busy. The system never silently drops or carries
+old audio into new authorization. It either delivers in order, tells the producer
+to wait or stop, or requires an explicit recorded discard before reconnecting.
+The project still has no microphone/network transport, durable audio retry,
+background capture service, live performance report, alert delivery, or external
+action.

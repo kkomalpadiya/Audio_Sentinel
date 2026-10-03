@@ -41,8 +41,8 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Authorized PCM now becomes deterministic rolling live windows with "
-            "bounded memory, retry checkpoints, and audio-free close accounting."
+            "Live PCM now uses bounded FIFO buffering, explicit backpressure, "
+            "verified retry, and clean reauthentication boundaries."
         ),
-        "next_step": "Implement buffering, reconnect, and backpressure behavior (B10.2).",
+        "next_step": "Measure live latency, reliability, and alert timing (A10.3).",
     }
