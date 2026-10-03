@@ -315,6 +315,13 @@ ordered chunk acceptance, rechecks enrollment on every chunk, and hands verified
 PCM synchronously to a required sink without retaining audio. It exposes no
 network endpoint and does not yet create rolling windows, reconnect, buffer,
 apply backpressure, evaluate audio, or authorize notification.
+A10.2 adds the [rolling live-window adapter](docs/live-rolling-windows.md). It
+decodes accepted PCM to float32 mono, reproduces the offline length/overlap grid
+across arbitrary chunk boundaries, emits complete windows synchronously, and
+applies the configured pad/drop rule at verified close. Window samples remain
+in memory and read-only; close accounting is audio-free. Retry checkpoints avoid
+replaying windows already accepted by the consumer. Queueing, reconnect, and
+backpressure policy remain B10.2.
 
 ## Local panel demonstration
 

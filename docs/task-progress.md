@@ -2292,3 +2292,54 @@ to trusted application code. The service stores enrollment history but not audio
 It still does not capture from hardware, expose a network connection, create model
 windows, retry a broken connection, buffer around slow consumers, send an alert,
 or take external action.
+
+## A10.2 — Complete
+
+Added `src/audio_sentinel/live_windows.py` with a synchronous rolling-window sink
+for the B10.1 ingestion service. `RollingWindowSettings` uses the same rounded
+window-length and hop calculations as offline `AudioSettings`, supports ordered
+multi-duration grids, applies a configured `pad` or `drop` tail rule at close,
+and bounds retained PCM bytes, active sessions, and the number of windows one
+handoff may emit.
+
+`RollingLiveWindowSink` verifies every session/chunk/receipt relationship, requires
+the stream sample rate to match the analysis grid, decodes signed 16-bit
+little-endian PCM to float32, and deterministically downmixes authorized
+multichannel input to mono. It emits complete windows in earliest-readiness order
+across arbitrary chunk boundaries and releases samples once no configured duration
+can need them. Each consumer receives an owned, contiguous, read-only float32
+array plus audio-free provenance with a deterministic window ID, absolute sample
+span, padding count, source sequence, and sample hash.
+
+Added retry checkpoints for synchronous downstream failures. Successfully
+accepted windows advance their own duration cursor immediately. If a later window
+or final close callback fails, retrying the exact B10.1 handoff resumes at the
+first undelivered item without replaying earlier windows. A different chunk or
+close cannot replace pending work. The sink produces a final audio-free summary
+with per-duration window, padding, and uncovered-tail counts, and an empty stream
+does not create synthetic silence.
+
+Added `docs/live-rolling-windows.md` with the sample-grid, chunk, close, retry,
+integration, error, and privacy boundaries. Added 20 focused tests covering
+offline-grid parity, irregular chunks, padding and dropped tails, multi-duration
+ordering, stereo downmix, immutable sample ownership, sample-rate and receipt
+failures, resumable chunk and close callbacks, empty streams, capacity and memory
+limits, close positions, protocol conformance, complete B10.1 service/client
+integration, and network/model-free import.
+Updated the README and project status to make B10.2 the next task.
+Python compilation, 67 affected tests, and the full project suite pass: 1,930
+tests, with the same two Pydantic deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/a10_2_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 69 completed tasks out of 72 and B10.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: B10.2 — Implement buffering, reconnect, and backpressure behavior.
+
+In plain language: accepted live PCM can now cross arbitrary device chunk
+boundaries and still produce the exact overlapping sample windows expected by
+local analysis. Incomplete audio is handled only at verified close, raw samples
+remain in memory, and downstream retry does not duplicate already accepted
+windows. The project still has no reconnect protocol, asynchronous queue,
+backpressure or overload policy, live model runner, alert delivery, or external
+action.

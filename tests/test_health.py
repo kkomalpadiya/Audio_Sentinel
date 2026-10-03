@@ -17,9 +17,9 @@ def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
     status = project_status()
     assert status["current_focus"] == (
-        "Local streaming ingestion now enforces persisted enrollment, one-time "
-        "device authentication, ordered PCM handoff, and explicit closure."
+        "Authorized PCM now becomes deterministic rolling live windows with "
+        "bounded memory, retry checkpoints, and audio-free close accounting."
     )
     assert status["next_step"] == (
-        "Adapt the pipeline to deterministic rolling live windows (A10.2)."
+        "Implement buffering, reconnect, and backpressure behavior (B10.2)."
     )
