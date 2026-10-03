@@ -41,7 +41,8 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "The offline MVP has a repeatable, consent-gated demonstration workflow."
+            "Live-device enrollment and streaming contracts are defined with consent, "
+            "authentication, sequencing, and no-delivery boundaries."
         ),
-        "next_step": "Define authorized-device enrollment and streaming interfaces (A10.1).",
+        "next_step": "Implement the streaming audio-ingestion client/service (B10.1).",
     }

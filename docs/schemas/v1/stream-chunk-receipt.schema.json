@@ -1,0 +1,79 @@
+{
+  "$id": "https://audio-sentinel.local/schemas/v1/stream-chunk-receipt.schema.json",
+  "additionalProperties": false,
+  "description": "Audio-free acceptance metadata returned by the ingestion boundary.",
+  "properties": {
+    "accepted_at": {
+      "format": "date-time",
+      "title": "Accepted At",
+      "type": "string"
+    },
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "end_sample": {
+      "exclusiveMinimum": 0,
+      "title": "End Sample",
+      "type": "integer"
+    },
+    "interface_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Interface Version",
+      "type": "string"
+    },
+    "payload_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Sha256",
+      "type": "string"
+    },
+    "raw_audio_persisted": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Raw Audio Persisted",
+      "type": "boolean"
+    },
+    "sample_count": {
+      "exclusiveMinimum": 0,
+      "title": "Sample Count",
+      "type": "integer"
+    },
+    "sequence_number": {
+      "minimum": 0,
+      "title": "Sequence Number",
+      "type": "integer"
+    },
+    "session_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "start_sample": {
+      "minimum": 0,
+      "title": "Start Sample",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "session_id",
+    "sequence_number",
+    "start_sample",
+    "end_sample",
+    "sample_count",
+    "payload_sha256",
+    "captured_at",
+    "accepted_at"
+  ],
+  "title": "StreamChunkReceipt",
+  "type": "object"
+}

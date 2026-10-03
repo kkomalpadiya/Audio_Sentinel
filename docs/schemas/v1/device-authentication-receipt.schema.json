@@ -1,0 +1,76 @@
+{
+  "$id": "https://audio-sentinel.local/schemas/v1/device-authentication-receipt.schema.json",
+  "additionalProperties": false,
+  "description": "Short-lived receipt from a future trusted device authenticator.",
+  "properties": {
+    "authenticated_at": {
+      "format": "date-time",
+      "title": "Authenticated At",
+      "type": "string"
+    },
+    "authentication_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Authentication Id",
+      "type": "string"
+    },
+    "credential_fingerprint_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Credential Fingerprint Sha256",
+      "type": "string"
+    },
+    "device_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "enrollment_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Enrollment Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "session_challenge_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Session Challenge Sha256",
+      "type": "string"
+    },
+    "verifier_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Verifier Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "authentication_id",
+    "verifier_id",
+    "enrollment_id",
+    "device_id",
+    "credential_fingerprint_sha256",
+    "session_challenge_sha256",
+    "authenticated_at",
+    "expires_at"
+  ],
+  "title": "DeviceAuthenticationReceipt",
+  "type": "object"
+}

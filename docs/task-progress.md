@@ -2174,3 +2174,60 @@ external action is authorized. Report and audit integrity checks pass, and reten
 was a non-writing dry run. The existing `demo-consent.txt.txt` was not changed; it
 still describes a separate `acoustic_only` authorization and must not be reused as
 the speech run's authority.
+
+## A10.1 — Complete
+
+Added `src/audio_sentinel/live_streaming.py` with strict immutable v1 contracts
+for privacy-minimized device enrollment, short-lived device-authentication
+receipts, live-session requests, authorized sessions, in-memory PCM chunks,
+audio-free chunk receipts, and explicit stream closure. Enrollment records are
+bounded, expiring, revocable, canonically ordered, and content-hashed. They retain
+only opaque external authorization references and credential fingerprints, never
+credentials or proofs.
+
+Added the deterministic session-authorization boundary. It requires the request
+and short-lived authentication receipt to match the active enrollment, binds the
+receipt to a session challenge, enforces exact enrollment-approved audio format
+and scope, rechecks current consent, permits only scope reduction, and expires the
+session at the earliest enrollment, authentication, or consent limit. Every
+session remains local-only and permanently records that notification was not sent
+and neither alert delivery nor external action is authorized.
+
+Defined signed 16-bit little-endian PCM geometry with bounded sample rate,
+channels, integral chunk duration, and a 1 MiB payload ceiling. Chunk validation
+checks session identity, zero-based sequence, exact contiguous sample position,
+capture time, authorization expiry, duration, and byte geometry. Successful
+validation returns only the sample span and payload SHA-256; it does not copy
+audio into the receipt and records that raw audio was not persisted. Stream close
+requests similarly bind to the accepted sequence/sample position and cannot be
+mistaken for an evaluation or alert.
+
+Added runtime-checkable registry, authenticator, and ingestion protocols for the
+next implementation task, eight checked-in JSON Schemas, and
+`docs/live-device-streaming-interface.md` with the authorization algorithm,
+security/privacy limits, portable contracts, and ownership boundaries for the
+remaining live phase. The task intentionally does not discover devices, open a
+microphone, choose a transport or key scheme, store enrollment, verify real
+credentials, persist raw audio, create rolling windows, run models, or deliver an
+alert.
+
+Added 25 focused tests covering audio geometry, canonical enrollments, complete
+revocation, consent scope, challenge and identity binding, authorization expiry,
+open-time consent revalidation, safe failure codes, exact chunk sequencing and
+byte counts, audio-free receipts, close positions, protocols, strict immutability,
+checked-in schema parity, and dependency-free/network-free import. Updated the
+README and project-status endpoint to make B10.1 the next task. Python compilation
+and the full project suite pass: 1,890 tests, with the same two Pydantic
+deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/a10_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 67 completed tasks out of 72 and B10.1 as the next task. Changes remain
+uncommitted for review.
+
+Next: B10.1 — Implement streaming audio-ingestion client/service.
+
+In plain language: the project now has an exact rulebook for which enrolled device
+may start a live session, under which current consent and processing scope, in
+which audio format, and how every chunk must line up. No live capture or network
+service exists yet; this task makes the next implementation testable without
+turning device access into alert or notification authority.

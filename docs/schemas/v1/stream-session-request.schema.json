@@ -1,0 +1,201 @@
+{
+  "$defs": {
+    "ConsentRecord": {
+      "$id": "https://audio-sentinel.local/schemas/v1/consent-record.schema.json",
+      "additionalProperties": false,
+      "description": "Permission evidence for a clip, without storing personal information.",
+      "properties": {
+        "consent_id": {
+          "description": "Opaque reference to the consent record held outside this manifest.",
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Consent Id",
+          "type": "string"
+        },
+        "device_authorized": {
+          "title": "Device Authorized",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "granted_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Granted At"
+        },
+        "processing_scope": {
+          "$ref": "#/$defs/ProcessingScope"
+        },
+        "raw_audio_retention_allowed": {
+          "default": false,
+          "title": "Raw Audio Retention Allowed",
+          "type": "boolean"
+        },
+        "status": {
+          "$ref": "#/$defs/ConsentStatus"
+        }
+      },
+      "required": [
+        "consent_id",
+        "status",
+        "processing_scope",
+        "device_authorized"
+      ],
+      "title": "ConsentRecord",
+      "type": "object"
+    },
+    "ConsentStatus": {
+      "enum": [
+        "granted",
+        "denied",
+        "withdrawn"
+      ],
+      "title": "ConsentStatus",
+      "type": "string"
+    },
+    "ProcessingScope": {
+      "enum": [
+        "none",
+        "acoustic_only",
+        "acoustic_and_speech"
+      ],
+      "title": "ProcessingScope",
+      "type": "string"
+    },
+    "StreamAudioFormat": {
+      "additionalProperties": false,
+      "description": "Bounded in-memory PCM format accepted by the future ingestion service.",
+      "properties": {
+        "channels": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "chunk_duration_ms": {
+          "maximum": 1000,
+          "minimum": 10,
+          "title": "Chunk Duration Ms",
+          "type": "integer"
+        },
+        "encoding": {
+          "const": "pcm_s16le",
+          "default": "pcm_s16le",
+          "enum": [
+            "pcm_s16le"
+          ],
+          "title": "Encoding",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "sample_width_bytes": {
+          "const": 2,
+          "default": 2,
+          "enum": [
+            2
+          ],
+          "title": "Sample Width Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sample_rate_hz",
+        "channels",
+        "chunk_duration_ms"
+      ],
+      "title": "StreamAudioFormat",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/stream-session-request.schema.json",
+  "additionalProperties": false,
+  "description": "One explicit request to start an authorized live-audio session.",
+  "properties": {
+    "audio_format": {
+      "$ref": "#/$defs/StreamAudioFormat"
+    },
+    "consent": {
+      "$ref": "#/$defs/ConsentRecord"
+    },
+    "device_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "enrollment_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Enrollment Id",
+      "type": "string"
+    },
+    "interface_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Interface Version",
+      "type": "string"
+    },
+    "requested_at": {
+      "format": "date-time",
+      "title": "Requested At",
+      "type": "string"
+    },
+    "requested_scope": {
+      "$ref": "#/$defs/ProcessingScope"
+    },
+    "session_challenge_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Session Challenge Sha256",
+      "type": "string"
+    },
+    "session_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Session Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "enrollment_id",
+    "device_id",
+    "session_challenge_sha256",
+    "requested_scope",
+    "audio_format",
+    "consent",
+    "requested_at"
+  ],
+  "title": "StreamSessionRequest",
+  "type": "object"
+}

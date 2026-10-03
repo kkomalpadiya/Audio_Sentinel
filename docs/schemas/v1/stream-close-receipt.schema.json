@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "StreamCloseReason": {
+      "enum": [
+        "client_request",
+        "device_disconnected",
+        "consent_ended",
+        "authorization_expired",
+        "protocol_error",
+        "service_shutdown"
+      ],
+      "title": "StreamCloseReason",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/stream-close-receipt.schema.json",
+  "additionalProperties": false,
+  "properties": {
+    "alert_delivery_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "Alert Delivery Authorized",
+      "type": "boolean"
+    },
+    "closed_at": {
+      "format": "date-time",
+      "title": "Closed At",
+      "type": "string"
+    },
+    "external_action_authorized": {
+      "const": false,
+      "default": false,
+      "enum": [
+        false
+      ],
+      "title": "External Action Authorized",
+      "type": "boolean"
+    },
+    "interface_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Interface Version",
+      "type": "string"
+    },
+    "next_sequence_number": {
+      "minimum": 0,
+      "title": "Next Sequence Number",
+      "type": "integer"
+    },
+    "next_start_sample": {
+      "minimum": 0,
+      "title": "Next Start Sample",
+      "type": "integer"
+    },
+    "notification_delivery": {
+      "const": "not_sent",
+      "default": "not_sent",
+      "enum": [
+        "not_sent"
+      ],
+      "title": "Notification Delivery",
+      "type": "string"
+    },
+    "reason": {
+      "$ref": "#/$defs/StreamCloseReason"
+    },
+    "session_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Session Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "reason",
+    "next_sequence_number",
+    "next_start_sample",
+    "closed_at"
+  ],
+  "title": "StreamCloseReceipt",
+  "type": "object"
+}

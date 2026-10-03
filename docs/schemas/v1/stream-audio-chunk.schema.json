@@ -1,0 +1,60 @@
+{
+  "$id": "https://audio-sentinel.local/schemas/v1/stream-audio-chunk.schema.json",
+  "additionalProperties": false,
+  "description": "One ordered, in-memory PCM chunk supplied to the ingestion boundary.",
+  "properties": {
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "interface_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Interface Version",
+      "type": "string"
+    },
+    "payload": {
+      "format": "base64url",
+      "maxLength": 1048576,
+      "minLength": 1,
+      "title": "Payload",
+      "type": "string"
+    },
+    "sample_count": {
+      "exclusiveMinimum": 0,
+      "title": "Sample Count",
+      "type": "integer"
+    },
+    "sequence_number": {
+      "minimum": 0,
+      "title": "Sequence Number",
+      "type": "integer"
+    },
+    "session_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Session Id",
+      "type": "string"
+    },
+    "start_sample": {
+      "minimum": 0,
+      "title": "Start Sample",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "session_id",
+    "sequence_number",
+    "start_sample",
+    "sample_count",
+    "captured_at",
+    "payload"
+  ],
+  "title": "StreamAudioChunk",
+  "type": "object"
+}

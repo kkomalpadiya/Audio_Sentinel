@@ -1,0 +1,183 @@
+{
+  "$defs": {
+    "EnrollmentStatus": {
+      "enum": [
+        "active",
+        "revoked"
+      ],
+      "title": "EnrollmentStatus",
+      "type": "string"
+    },
+    "ProcessingScope": {
+      "enum": [
+        "none",
+        "acoustic_only",
+        "acoustic_and_speech"
+      ],
+      "title": "ProcessingScope",
+      "type": "string"
+    },
+    "StreamAudioFormat": {
+      "additionalProperties": false,
+      "description": "Bounded in-memory PCM format accepted by the future ingestion service.",
+      "properties": {
+        "channels": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Channels",
+          "type": "integer"
+        },
+        "chunk_duration_ms": {
+          "maximum": 1000,
+          "minimum": 10,
+          "title": "Chunk Duration Ms",
+          "type": "integer"
+        },
+        "encoding": {
+          "const": "pcm_s16le",
+          "default": "pcm_s16le",
+          "enum": [
+            "pcm_s16le"
+          ],
+          "title": "Encoding",
+          "type": "string"
+        },
+        "sample_rate_hz": {
+          "maximum": 192000,
+          "minimum": 8000,
+          "title": "Sample Rate Hz",
+          "type": "integer"
+        },
+        "sample_width_bytes": {
+          "const": 2,
+          "default": 2,
+          "enum": [
+            2
+          ],
+          "title": "Sample Width Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sample_rate_hz",
+        "channels",
+        "chunk_duration_ms"
+      ],
+      "title": "StreamAudioFormat",
+      "type": "object"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/device-enrollment.schema.json",
+  "additionalProperties": false,
+  "description": "Privacy-minimized authorization record for one physical capture device.",
+  "properties": {
+    "audio_formats": {
+      "items": {
+        "$ref": "#/$defs/StreamAudioFormat"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "title": "Audio Formats",
+      "type": "array"
+    },
+    "authorization_reference": {
+      "description": "Opaque reference to device approval held outside this record.",
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Authorization Reference",
+      "type": "string"
+    },
+    "authorized_scopes": {
+      "items": {
+        "$ref": "#/$defs/ProcessingScope"
+      },
+      "maxItems": 2,
+      "minItems": 1,
+      "title": "Authorized Scopes",
+      "type": "array"
+    },
+    "credential_fingerprint_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Credential Fingerprint Sha256",
+      "type": "string"
+    },
+    "device_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "enrolled_at": {
+      "format": "date-time",
+      "title": "Enrolled At",
+      "type": "string"
+    },
+    "enrollment_id": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "title": "Enrollment Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "revocation_reference": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revocation Reference"
+    },
+    "revoked_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revoked At"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "enum": [
+        "1.0"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/EnrollmentStatus"
+    }
+  },
+  "required": [
+    "enrollment_id",
+    "device_id",
+    "status",
+    "authorization_reference",
+    "credential_fingerprint_sha256",
+    "authorized_scopes",
+    "audio_formats",
+    "enrolled_at",
+    "expires_at"
+  ],
+  "title": "DeviceEnrollment",
+  "type": "object"
+}

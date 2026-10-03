@@ -299,6 +299,14 @@ The detailed [Phase 9 completion report](docs/phase-9-evaluation-retention-and-o
 explains the complete task sequence, algorithms and alternatives, technology
 choices, measured findings, retention transaction, responsible-use boundary,
 demonstration workflow, and post-demo transcription fixes in common terms.
+A10.1 defines the [authorized-device enrollment and streaming
+interface](docs/live-device-streaming-interface.md). It requires an expiring or
+revocable device enrollment, challenge-bound authentication receipt, current
+recording consent, an enrollment-approved scope and exact PCM format, contiguous
+chunk sequence/sample positions, and bounded audio payloads. Successful
+authorization and chunk acceptance remain local processing receipts with no
+notification or external-action authority. This task defines and validates the
+boundary only; B10.1 will implement the first streaming ingestion service.
 
 ## Local panel demonstration
 
