@@ -41,8 +41,8 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "Live-device enrollment and streaming contracts are defined with consent, "
-            "authentication, sequencing, and no-delivery boundaries."
+            "Local streaming ingestion now enforces persisted enrollment, one-time "
+            "device authentication, ordered PCM handoff, and explicit closure."
         ),
-        "next_step": "Implement the streaming audio-ingestion client/service (B10.1).",
+        "next_step": "Adapt the pipeline to deterministic rolling live windows (A10.2).",
     }

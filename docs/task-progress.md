@@ -2231,3 +2231,64 @@ may start a live session, under which current consent and processing scope, in
 which audio format, and how every chunk must line up. No live capture or network
 service exists yet; this task makes the next implementation testable without
 turning device access into alert or notification authority.
+
+## B10.1 — Complete
+
+Added `src/audio_sentinel/streaming_ingestion.py` with the first concrete local
+implementations of the A10.1 enrollment, authentication, and ingestion protocols.
+`FileDeviceEnrollmentRegistry` stores active enrollment once under managed
+processed data and appends a separate revocation document without rewriting the
+original approval. It uses validated opaque IDs, rejects links and noncanonical or
+unexpected inventories, bounds document reads, writes through a private staged
+directory, reloads every document through the strict contract, and preserves
+idempotency only for an exact semantic match.
+
+Added one-time HMAC-SHA256 device authentication. The service generates bounded
+unpredictable challenges, consumes each on its first attempt, obtains the shared
+credential through an external resolver, verifies its fingerprint against the
+enrollment, compares the challenge response in constant time, and issues a
+short-lived receipt. The exact receipt must then be claimed once before a stream
+opens, preventing forged, changed, expired, or replayed authentication records.
+Credential providers remain external integration points; secrets, challenges,
+proofs, and receipts are not written to the registry or logs.
+
+Implemented `LocalStreamingIngestionService` with bounded active-session state and
+synchronous non-retaining audio handoff. It reloads enrollment before opening and
+before every chunk, reuses A10.1 consent/scope/format/timestamp validation, rejects
+midstream revocation or enrollment drift, serializes state changes, and advances
+sequence/sample positions only after the required sink accepts the chunk. Sink
+failure leaves the same position retryable. Concurrent duplicate chunks produce
+one acceptance and one deterministic rejection. Verified closure reaches the sink
+before session state is removed.
+
+Implemented `LocalStreamingClient` to request a challenge, calculate the HMAC,
+construct a valid session request, derive sample counts from PCM byte geometry,
+advance only after acceptance, and close from the final accepted position. The
+client permits one active session and rejects missing sessions, empty or unaligned
+PCM, and duplicate opens. It accepts already captured bytes; it does not open a
+microphone or device transport.
+
+Added `docs/streaming-ingestion.md` with storage layout, authentication and service
+algorithms, sink/client contracts, integration sketch, stable failure groups,
+verification commands, and security/privacy/availability limits. Added 20 focused
+tests covering immutable registry reuse, append-only revocation, path and inventory
+tampering, one-time challenge and receipt behavior, bad HMAC handling, forged
+receipts, capacity limits, full client/service intake and close, duplicate and
+concurrent chunks, sink retry, midstream revocation, authorization expiry,
+protocol conformance, absence of audio files, and dependency-free/network-free
+import. Updated the README and project status to make A10.2 the next task. Python
+compilation, 47 affected tests, and the full project suite pass: 1,910 tests,
+with the same two Pydantic deprecation warnings from the API OpenAPI test.
+
+Current tracker: `outputs/b10_1_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records 68 completed tasks out of 72 and A10.2 as the next task. Changes remain
+uncommitted for review.
+
+Next: A10.2 — Adapt pipeline to rolling live windows.
+
+In plain language: an approved local device can now prove possession of its
+credential, open one consent-bounded stream, and hand correctly ordered PCM chunks
+to trusted application code. The service stores enrollment history but not audio.
+It still does not capture from hardware, expose a network connection, create model
+windows, retry a broken connection, buffer around slow consumers, send an alert,
+or take external action.

@@ -307,6 +307,14 @@ chunk sequence/sample positions, and bounded audio payloads. Successful
 authorization and chunk acceptance remain local processing receipts with no
 notification or external-action authority. This task defines and validates the
 boundary only; B10.1 will implement the first streaming ingestion service.
+B10.1 implements the [local streaming audio-ingestion
+client/service](docs/streaming-ingestion.md). It stores active enrollment and
+append-only revocation records under managed processed data, verifies devices with
+one-time HMAC-SHA256 challenges and single-use authentication receipts, serializes
+ordered chunk acceptance, rechecks enrollment on every chunk, and hands verified
+PCM synchronously to a required sink without retaining audio. It exposes no
+network endpoint and does not yet create rolling windows, reconnect, buffer,
+apply backpressure, evaluate audio, or authorize notification.
 
 ## Local panel demonstration
 

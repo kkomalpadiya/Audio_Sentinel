@@ -17,9 +17,9 @@ def test_api_health_and_project_status_are_available() -> None:
     assert health()["status"] == "ok"
     status = project_status()
     assert status["current_focus"] == (
-        "Live-device enrollment and streaming contracts are defined with consent, "
-        "authentication, sequencing, and no-delivery boundaries."
+        "Local streaming ingestion now enforces persisted enrollment, one-time "
+        "device authentication, ordered PCM handoff, and explicit closure."
     )
     assert status["next_step"] == (
-        "Implement the streaming audio-ingestion client/service (B10.1)."
+        "Adapt the pipeline to deterministic rolling live windows (A10.2)."
     )
