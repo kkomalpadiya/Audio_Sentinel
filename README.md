@@ -346,6 +346,10 @@ blockers. The final decision is `not_approved_for_production`; permitted use rem
 controlled local research and offline evaluation. Passing tests and the A10.3
 synthetic benchmark do not override the unresolved privacy, credential, host,
 validation, live-integration, reviewer, notification, or operational blockers.
+The detailed [Phase 10 completion report](docs/phase-10-live-device-integration-and-final-review-report.md)
+explains the complete live flow, every task, algorithms and alternatives,
+technology choices, hardening fixes, measurements, tests, and production blockers
+in common terms.
 
 ## Local panel demonstration
 
