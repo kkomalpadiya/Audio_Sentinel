@@ -119,8 +119,9 @@ The exact timings and report identity will change between machines and runs. The
 scenario, metric definitions, safety flags, and reliability accounting remain the
 same.
 
-## Next task
+## Final review outcome
 
-A10.4 will conduct the final privacy, security, and deployment review. It must use
-the limits above rather than presenting this accelerated benchmark as real-world
-readiness evidence.
+A10.4 used these limits in the
+[final privacy, security, and deployment review](final-privacy-security-deployment-review.md).
+The accelerated benchmark remains conditional regression evidence and does not
+support production approval. The final decision is `not_approved_for_production`.

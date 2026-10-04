@@ -2451,3 +2451,58 @@ machine. It is an accelerated synthetic regression, not evidence about microphon
 capture, network conditions, production model latency, real incident detection,
 notification reliability, or deployment readiness. Those limitations remain
 inputs to A10.4.
+
+## A10.4 — Complete
+
+Added `src/audio_sentinel/deployment_review.py` with a fixed-scope, versioned final
+review contract rather than a caller-selected checklist. The builder resolves 16
+evidence files beneath the repository root, bounds and hashes their exact content,
+and binds every conclusion to declared evidence. Findings are separated into
+privacy, security, and deployment domains, with explicit disposition, severity,
+conclusion, and a required action for every release blocker. Counts and the
+canonical review identity are recomputed during validation, and bounded atomic
+persistence requires explicit replacement.
+
+The completed review records 17 findings: five verified controls, two conditional
+controls, and ten release blockers. Verified controls include consent/scope gates,
+memory-only bounded live PCM, privacy-minimized final outputs, loopback-only API
+exposure, and authenticated revocable device sessions. Conditional evidence covers
+hash/atomic-write integrity and the accelerated A10.3 regression measurement.
+
+The decision is `not_approved_for_production`. The blockers cover incomplete data
+lifecycle controls and organizational privacy approval; production credential and
+host-security management; independent security and supply-chain assurance; the
+missing hardware/transport/service/model path; nonrepresentative performance and
+detection evidence; absent reviewer/notification operations; and absent production
+monitoring, incident response, recovery, release, rollback, ownership, and support
+procedures. The artifact permanently records that production, notification
+delivery, and external action are not authorized.
+
+Added `scripts/run_final_deployment_review.py`, the portable JSON schema,
+`docs/final-privacy-security-deployment-review.md`, and the checked-in result at
+`outputs/a10_4_review/final-deployment-review.json`. Added 14 focused tests for the
+decision and safety flags, domain and count reconciliation, mandatory blocker
+actions, evidence hashing and drift detection, portable privacy exclusions,
+canonical tamper rejection, invalid paths and timestamps, bounded atomic save/load,
+schema parity, CLI output, and network/model-free import. Updated the README,
+A10.3 measurement documentation, and project-status endpoint to show the planned
+task register complete without implying deployment approval.
+
+Python compilation, 104 affected tests, the complete test suite, and the generated
+preparation smoke test pass. The complete suite reports 1,989 passed with the same
+two existing Pydantic deprecation warnings from the API OpenAPI test.
+
+Current review:
+`outputs/a10_4_review/final-deployment-review.json`.
+
+Current tracker: `outputs/a10_4_tracker_update/Audio_Sentinel_Master_Task_List.xlsx`.
+It records all 72 tasks complete, with none in progress or not started.
+
+Next: no additional planned task. Keep use local and controlled, and resolve every
+recorded release blocker before reconsidering a production deployment.
+
+In plain language: the implementation plan is complete, but the product is not
+production-ready. The final review makes that difference explicit and testable:
+the repository now has useful local research controls, while the work that needs
+legal, security, hardware, operational, and independently reviewed evidence cannot
+be replaced by passing software tests.

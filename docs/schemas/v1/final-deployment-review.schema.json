@@ -1,0 +1,94 @@
+{
+  "$defs": {
+    "DeploymentReviewCounts": {
+      "additionalProperties": false,
+      "properties": {
+        "total_findings": {"minimum": 1, "title": "Total Findings", "type": "integer"},
+        "verified_controls": {"minimum": 0, "title": "Verified Controls", "type": "integer"},
+        "conditional_controls": {"minimum": 0, "title": "Conditional Controls", "type": "integer"},
+        "release_blockers": {"minimum": 1, "title": "Release Blockers", "type": "integer"},
+        "privacy_findings": {"minimum": 1, "title": "Privacy Findings", "type": "integer"},
+        "security_findings": {"minimum": 1, "title": "Security Findings", "type": "integer"},
+        "deployment_findings": {"minimum": 1, "title": "Deployment Findings", "type": "integer"}
+      },
+      "required": ["total_findings", "verified_controls", "conditional_controls", "release_blockers", "privacy_findings", "security_findings", "deployment_findings"],
+      "title": "DeploymentReviewCounts",
+      "type": "object"
+    },
+    "DeploymentReviewFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "finding_id": {"pattern": "^(PRIV|SEC|DEP)-[0-9]{2}$", "title": "Finding Id", "type": "string"},
+        "domain": {"$ref": "#/$defs/ReviewDomain"},
+        "disposition": {"$ref": "#/$defs/FindingDisposition"},
+        "severity": {"$ref": "#/$defs/RiskSeverity"},
+        "title": {"maxLength": 120, "minLength": 8, "title": "Title", "type": "string"},
+        "conclusion": {"maxLength": 900, "minLength": 24, "title": "Conclusion", "type": "string"},
+        "evidence_ids": {"items": {"type": "string"}, "maxItems": 12, "minItems": 1, "title": "Evidence Ids", "type": "array"},
+        "required_action": {
+          "anyOf": [
+            {"maxLength": 900, "minLength": 24, "type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "title": "Required Action"
+        }
+      },
+      "required": ["finding_id", "domain", "disposition", "severity", "title", "conclusion", "evidence_ids"],
+      "title": "DeploymentReviewFinding",
+      "type": "object"
+    },
+    "FindingDisposition": {
+      "enum": ["verified_control", "conditional_control", "release_blocker"],
+      "title": "FindingDisposition",
+      "type": "string"
+    },
+    "ReviewDomain": {
+      "enum": ["privacy", "security", "deployment"],
+      "title": "ReviewDomain",
+      "type": "string"
+    },
+    "ReviewEvidenceArtifact": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {"pattern": "^EV-[0-9]{2}$", "title": "Evidence Id", "type": "string"},
+        "path": {"maxLength": 240, "minLength": 3, "title": "Path", "type": "string"},
+        "sha256": {"pattern": "^[a-f0-9]{64}$", "title": "Sha256", "type": "string"},
+        "size_bytes": {"exclusiveMinimum": 0, "maximum": 16777216, "title": "Size Bytes", "type": "integer"},
+        "purpose": {"maxLength": 240, "minLength": 12, "title": "Purpose", "type": "string"}
+      },
+      "required": ["evidence_id", "path", "sha256", "size_bytes", "purpose"],
+      "title": "ReviewEvidenceArtifact",
+      "type": "object"
+    },
+    "RiskSeverity": {
+      "enum": ["informational", "medium", "high", "critical"],
+      "title": "RiskSeverity",
+      "type": "string"
+    }
+  },
+  "$id": "https://audio-sentinel.local/schemas/v1/final-deployment-review.schema.json",
+  "additionalProperties": false,
+  "description": "Portable final review. It is evidence, not a production approval.",
+  "properties": {
+    "schema_version": {"const": "1.0", "default": "1.0", "enum": ["1.0"], "title": "Schema Version", "type": "string"},
+    "document_type": {"const": "final_deployment_review", "default": "final_deployment_review", "enum": ["final_deployment_review"], "title": "Document Type", "type": "string"},
+    "format_version": {"const": "1.0", "default": "1.0", "enum": ["1.0"], "title": "Format Version", "type": "string"},
+    "review_id": {"pattern": "^deployment-review-[a-f0-9]{64}$", "title": "Review Id", "type": "string"},
+    "reviewed_at": {"format": "date-time", "title": "Reviewed At", "type": "string"},
+    "review_status": {"const": "completed", "default": "completed", "enum": ["completed"], "title": "Review Status", "type": "string"},
+    "release_decision": {"const": "not_approved_for_production", "default": "not_approved_for_production", "enum": ["not_approved_for_production"], "title": "Release Decision", "type": "string"},
+    "allowed_use": {"const": "controlled_local_research_and_offline_evaluation_only", "default": "controlled_local_research_and_offline_evaluation_only", "enum": ["controlled_local_research_and_offline_evaluation_only"], "title": "Allowed Use", "type": "string"},
+    "evidence": {"items": {"$ref": "#/$defs/ReviewEvidenceArtifact"}, "maxItems": 64, "minItems": 1, "title": "Evidence", "type": "array"},
+    "findings": {"items": {"$ref": "#/$defs/DeploymentReviewFinding"}, "maxItems": 64, "minItems": 1, "title": "Findings", "type": "array"},
+    "counts": {"$ref": "#/$defs/DeploymentReviewCounts"},
+    "production_approved": {"const": false, "default": false, "enum": [false], "title": "Production Approved", "type": "boolean"},
+    "independent_security_review_completed": {"const": false, "default": false, "enum": [false], "title": "Independent Security Review Completed", "type": "boolean"},
+    "representative_field_validation_completed": {"const": false, "default": false, "enum": [false], "title": "Representative Field Validation Completed", "type": "boolean"},
+    "notification_delivery_authorized": {"const": false, "default": false, "enum": [false], "title": "Notification Delivery Authorized", "type": "boolean"},
+    "external_action_authorized": {"const": false, "default": false, "enum": [false], "title": "External Action Authorized", "type": "boolean"}
+  },
+  "required": ["review_id", "reviewed_at", "evidence", "findings", "counts"],
+  "title": "FinalDeploymentReview",
+  "type": "object"
+}

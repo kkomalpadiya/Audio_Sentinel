@@ -41,8 +41,11 @@ def project_status() -> dict[str, object]:
         "project_root": str(settings.paths.root),
         "datasets_dir": str(settings.paths.raw_data),
         "current_focus": (
-            "The authorized live path now has audio-free latency, reliability, "
-            "retry, backpressure, rolling-window, and local-alert timing measurements."
+            "All 72 planned tasks are complete, including the final privacy, "
+            "security, and deployment review."
         ),
-        "next_step": "Conduct the final privacy, security, and deployment review (A10.4).",
+        "next_step": (
+            "Keep use local and controlled; resolve all recorded release blockers "
+            "before reconsidering production deployment."
+        ),
     }

@@ -338,6 +338,14 @@ local-alert timing probe. The checked-in accelerated in-process run delivered al
 duplicates, and kept notification delivery disabled. These regression measurements
 do not cover real hardware, network transport, model inference, alert effectiveness,
 or deployment readiness.
+A10.4 completes the planned task register with the
+[final privacy, security, and deployment review](docs/final-privacy-security-deployment-review.md).
+Its integrity-checked JSON result hashes 16 repository evidence artifacts and records
+17 findings: five verified controls, two conditional controls, and ten release
+blockers. The final decision is `not_approved_for_production`; permitted use remains
+controlled local research and offline evaluation. Passing tests and the A10.3
+synthetic benchmark do not override the unresolved privacy, credential, host,
+validation, live-integration, reviewer, notification, or operational blockers.
 
 ## Local panel demonstration
 

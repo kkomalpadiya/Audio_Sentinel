@@ -1,0 +1,376 @@
+{
+  "schema_version": "1.0",
+  "document_type": "final_deployment_review",
+  "format_version": "1.0",
+  "review_id": "deployment-review-1fae93ffbc8e98c3f3b5c55e7f0e9764e80f16c950a93f52ab46ba257c7f94d8",
+  "reviewed_at": "2026-10-04T15:57:48.571594Z",
+  "review_status": "completed",
+  "release_decision": "not_approved_for_production",
+  "allowed_use": "controlled_local_research_and_offline_evaluation_only",
+  "evidence": [
+    {
+      "evidence_id": "EV-01",
+      "path": "docs/authorized-use-and-limitations.md",
+      "sha256": "6767127de7ac8bbc8955cc10fd6b80219308d0b45f3a4cd7d5a2862a6037244b",
+      "size_bytes": 15784,
+      "purpose": "Consent, human-review, prohibited-use, and release boundary."
+    },
+    {
+      "evidence_id": "EV-02",
+      "path": "docs/retention-and-deletion.md",
+      "sha256": "df02f6dcb9f39671e9944e89b7e0fdacaf0063d3bc0feb5811377fcf2b7854c4",
+      "size_bytes": 6214,
+      "purpose": "Implemented retention scope and documented deletion limitations."
+    },
+    {
+      "evidence_id": "EV-03",
+      "path": "docs/local-api.md",
+      "sha256": "534ad2bf1581360fa6d50baeafc8235acad6b4b42b45be2e5587d160808c7fa3",
+      "size_bytes": 5821,
+      "purpose": "Loopback API inputs, exclusions, and trust boundary."
+    },
+    {
+      "evidence_id": "EV-04",
+      "path": "docs/live-device-streaming-interface.md",
+      "sha256": "61d1223494fb1869f115acf7457effb400e6c90937ab1da12efb87287ba0f767",
+      "size_bytes": 8610,
+      "purpose": "Authorized-device, consent, format, and session contract."
+    },
+    {
+      "evidence_id": "EV-05",
+      "path": "docs/streaming-ingestion.md",
+      "sha256": "be38c828e6f98f1e04700da7a085148e2e4ae553471ce71d6f91e6c7661e04aa",
+      "size_bytes": 10972,
+      "purpose": "Enrollment, HMAC authentication, revocation, and ingestion behavior."
+    },
+    {
+      "evidence_id": "EV-06",
+      "path": "docs/live-rolling-windows.md",
+      "sha256": "80818470c78351c3e268a8ee7a8ab4007a78e0966c9a70e97f211b263d18c310",
+      "size_bytes": 6653,
+      "purpose": "Memory-only rolling-window and retry boundary."
+    },
+    {
+      "evidence_id": "EV-07",
+      "path": "docs/stream-resilience.md",
+      "sha256": "c0eb903aee9b6d61eea3dfc194e52ed9ebcae0e97e72ed3937548be465a1a37a",
+      "size_bytes": 7735,
+      "purpose": "Bounded buffering, backpressure, discard, and reconnect behavior."
+    },
+    {
+      "evidence_id": "EV-08",
+      "path": "docs/live-performance-measurement.md",
+      "sha256": "e38680343ba4f97527326541ed964cd1a22471ffc622ce7245ba0cc7aede4a17",
+      "size_bytes": 6241,
+      "purpose": "Measured live-path evidence and explicit measurement exclusions."
+    },
+    {
+      "evidence_id": "EV-09",
+      "path": "docs/evaluation-findings.md",
+      "sha256": "23dee915c5f33351b95eb4be51cabc50cf193a3686d62c7161beab392610495d",
+      "size_bytes": 8503,
+      "purpose": "Held-out acoustic results and limits on empirical claims."
+    },
+    {
+      "evidence_id": "EV-10",
+      "path": "src/audio_sentinel/api.py",
+      "sha256": "2b017d480e9e9cd94e5a9a6317f1a221ccddad2b2c1c7c7ff6ef7ceb19b174ea",
+      "size_bytes": 3031,
+      "purpose": "Executable loopback-only API boundary."
+    },
+    {
+      "evidence_id": "EV-11",
+      "path": "src/audio_sentinel/streaming_ingestion.py",
+      "sha256": "4631e0e5326d80a74bcbf511ab801df7db6c4c70efe27c881ac3846c35d86f6a",
+      "size_bytes": 40304,
+      "purpose": "Executable local authentication, revocation, and stream intake."
+    },
+    {
+      "evidence_id": "EV-12",
+      "path": "src/audio_sentinel/stream_resilience.py",
+      "sha256": "5dfa3d696c7753e72233a322505ad9aac7a6a682b16149ea0eb6ceaddcac37e4",
+      "size_bytes": 33165,
+      "purpose": "Executable bounded queue, explicit discard, and reconnect policy."
+    },
+    {
+      "evidence_id": "EV-13",
+      "path": "src/audio_sentinel/final_report.py",
+      "sha256": "4f95ed34a641b3e37ef64b3b02514c68232144e1646389b6dfa6ac0a578a010b",
+      "size_bytes": 32770,
+      "purpose": "Privacy-minimized integrity-checked final report contract."
+    },
+    {
+      "evidence_id": "EV-14",
+      "path": "outputs/a10_3_measurement/live-performance-report.json",
+      "sha256": "e7f4d13e9a51b7c60d689f450bb0bcef9e4a3c59cff19f5454d57a24dcd243b9",
+      "size_bytes": 13809,
+      "purpose": "Checked-in A10.3 latency and reliability measurement receipt."
+    },
+    {
+      "evidence_id": "EV-15",
+      "path": "tests/test_api.py",
+      "sha256": "1470abb8d9774f7619b5f3db022ba03fe766003e709d6feea7f8d640deeacbb3",
+      "size_bytes": 7020,
+      "purpose": "Automated checks for local API access and input exclusions."
+    },
+    {
+      "evidence_id": "EV-16",
+      "path": "tests/test_streaming_ingestion.py",
+      "sha256": "cfb414040cbba1a14edb9e87ae6bc1a65d1cb3d36a89d6d70c2d3cc9f274c757",
+      "size_bytes": 21953,
+      "purpose": "Automated authentication, replay, revocation, and audio-retention checks."
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "DEP-01",
+      "domain": "deployment",
+      "disposition": "conditional_control",
+      "severity": "medium",
+      "title": "Measured local live-path regression",
+      "conclusion": "The checked-in A10.3 run reconciles delivery, retry, backpressure, windows, and one local-alert timing probe, but it is an accelerated in-process regression only.",
+      "evidence_ids": [
+        "EV-08",
+        "EV-14"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "DEP-02",
+      "domain": "deployment",
+      "disposition": "release_blocker",
+      "severity": "critical",
+      "title": "No production live-device path",
+      "conclusion": "The repository has no microphone or driver capture adapter, production network transport, background service supervision, or approved live model orchestration.",
+      "evidence_ids": [
+        "EV-04",
+        "EV-05",
+        "EV-06",
+        "EV-07",
+        "EV-08"
+      ],
+      "required_action": "Implement and independently test the intended hardware capture, transport, service lifecycle, and approved model path in the target environment."
+    },
+    {
+      "finding_id": "DEP-03",
+      "domain": "deployment",
+      "disposition": "release_blocker",
+      "severity": "high",
+      "title": "Performance evidence is not field representative",
+      "conclusion": "The latency report excludes real hardware, network conditions, production inference, soak behavior, and statistically stable tail latency.",
+      "evidence_ids": [
+        "EV-08",
+        "EV-14"
+      ],
+      "required_action": "Run representative hardware, concurrency, failure-recovery, soak, and end-to-end latency tests with predeclared acceptance thresholds."
+    },
+    {
+      "finding_id": "DEP-04",
+      "domain": "deployment",
+      "disposition": "release_blocker",
+      "severity": "critical",
+      "title": "No notification or reviewer operations",
+      "conclusion": "Alerts remain local candidates; reviewer identity, assignment, disposition, delivery, escalation, and external action are deliberately not implemented or authorized.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-08"
+      ],
+      "required_action": "Design, approve, and test a separately controlled human-review and notification workflow with authentication, audit, escalation, and fail-safe behavior."
+    },
+    {
+      "finding_id": "DEP-05",
+      "domain": "deployment",
+      "disposition": "release_blocker",
+      "severity": "high",
+      "title": "No production operations package",
+      "conclusion": "The prototype does not provide production observability, service-level objectives, incident response, disaster recovery, signed releases, or a supported deployment runbook.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-08"
+      ],
+      "required_action": "Create and approve operational monitoring, incident response, recovery, release-signing, rollback, ownership, and support procedures."
+    },
+    {
+      "finding_id": "DEP-06",
+      "domain": "deployment",
+      "disposition": "release_blocker",
+      "severity": "critical",
+      "title": "Detection evidence is insufficient for deployment",
+      "conclusion": "The small balanced acoustic evaluation is not representative of deployment prevalence, environments, speech, fairness, real incidents, or alert effectiveness.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-09"
+      ],
+      "required_action": "Complete independent representative validation, calibration, subgroup analysis, failure analysis, and human-factors testing before setting production thresholds."
+    },
+    {
+      "finding_id": "PRIV-01",
+      "domain": "privacy",
+      "disposition": "verified_control",
+      "severity": "informational",
+      "title": "Consent and least-scope gates are explicit",
+      "conclusion": "The contracts distinguish denied, withdrawn, acoustic-only, and speech-authorized processing and require current consent at processing boundaries.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-04",
+        "EV-05"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "PRIV-02",
+      "domain": "privacy",
+      "disposition": "verified_control",
+      "severity": "informational",
+      "title": "Live PCM is bounded and memory-only",
+      "conclusion": "The live ingestion, rolling-window, and resilience layers bound audio in memory and require explicit delivery or zeroing and discard; they do not persist PCM.",
+      "evidence_ids": [
+        "EV-05",
+        "EV-06",
+        "EV-07",
+        "EV-16"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "PRIV-03",
+      "domain": "privacy",
+      "disposition": "verified_control",
+      "severity": "informational",
+      "title": "Final outputs are privacy minimized",
+      "conclusion": "Final reports omit raw audio, transcript text, recipients, credentials, proofs, and absolute local paths while retaining reviewable evidence and integrity metadata.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-13",
+        "EV-14"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "PRIV-04",
+      "domain": "privacy",
+      "disposition": "release_blocker",
+      "severity": "high",
+      "title": "Data lifecycle coverage is incomplete",
+      "conclusion": "Retention cleanup is manual and limited to verified final bundles; it is not secure erasure and does not cover raw recordings, intermediate speech text, backups, exports, or external copies.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-02"
+      ],
+      "required_action": "Implement policy-owned inventory, retention, legal hold, deletion verification, backup handling, and secure disposal across every data class and copy."
+    },
+    {
+      "finding_id": "PRIV-05",
+      "domain": "privacy",
+      "disposition": "release_blocker",
+      "severity": "critical",
+      "title": "Organizational privacy approval is absent",
+      "conclusion": "Software validation cannot establish lawful recording authority, authentic consent, notice, purpose limitation, data-subject rights, or jurisdiction-specific compliance.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-04"
+      ],
+      "required_action": "Obtain documented legal, privacy, ethics, and organizational approval for the exact people, places, devices, purposes, retention, and operator workflow."
+    },
+    {
+      "finding_id": "SEC-01",
+      "domain": "security",
+      "disposition": "verified_control",
+      "severity": "informational",
+      "title": "External API exposure is constrained",
+      "conclusion": "The evaluation endpoint rejects non-loopback clients and accepts a local recording reference rather than uploads, URLs, recipients, transports, or notification authority.",
+      "evidence_ids": [
+        "EV-03",
+        "EV-10",
+        "EV-15"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "SEC-02",
+      "domain": "security",
+      "disposition": "verified_control",
+      "severity": "informational",
+      "title": "Device sessions are authenticated and revocable",
+      "conclusion": "Live intake binds expiring enrollment, one-time HMAC challenges, single-use receipts, consent, exact PCM geometry, and ordered chunks while rechecking revocation.",
+      "evidence_ids": [
+        "EV-04",
+        "EV-05",
+        "EV-11",
+        "EV-16"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "SEC-03",
+      "domain": "security",
+      "disposition": "conditional_control",
+      "severity": "medium",
+      "title": "Integrity and atomic persistence are implemented",
+      "conclusion": "Canonical hashes, strict schemas, bounded reads, and atomic writes detect accidental or unauthorized content changes, but hashes do not prove authorship or provide a signed chain of custody.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-02",
+        "EV-13",
+        "EV-14"
+      ],
+      "required_action": null
+    },
+    {
+      "finding_id": "SEC-04",
+      "domain": "security",
+      "disposition": "release_blocker",
+      "severity": "critical",
+      "title": "Credential lifecycle is not production managed",
+      "conclusion": "HMAC possession is verified, but the credential resolver is an external integration point and the project does not provide hardware-backed storage, provisioning, rotation, recovery, or compromise response.",
+      "evidence_ids": [
+        "EV-04",
+        "EV-05",
+        "EV-11"
+      ],
+      "required_action": "Integrate an approved secret manager or hardware-backed keystore with authenticated provisioning, rotation, revocation, recovery, and compromise procedures."
+    },
+    {
+      "finding_id": "SEC-05",
+      "domain": "security",
+      "disposition": "release_blocker",
+      "severity": "critical",
+      "title": "Host security remains outside the application",
+      "conclusion": "Loopback is not authentication against another local user or compromised process, and the project does not enforce operating-system identities, filesystem ACLs, encryption, process isolation, or endpoint hardening.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-03",
+        "EV-10"
+      ],
+      "required_action": "Define and independently verify the production trust boundary, authenticated operator access, least-privilege service identity, encryption, ACLs, isolation, and host hardening."
+    },
+    {
+      "finding_id": "SEC-06",
+      "domain": "security",
+      "disposition": "release_blocker",
+      "severity": "high",
+      "title": "Independent security assurance is absent",
+      "conclusion": "Repository tests cover important misuse and tampering cases, but there is no independent threat model, penetration test, dependency vulnerability gate, software bill of materials, or signed release evidence.",
+      "evidence_ids": [
+        "EV-01",
+        "EV-15",
+        "EV-16"
+      ],
+      "required_action": "Complete an independent threat model and security assessment, add dependency and supply-chain gates, publish an SBOM, and sign approved release artifacts."
+    }
+  ],
+  "counts": {
+    "total_findings": 17,
+    "verified_controls": 5,
+    "conditional_controls": 2,
+    "release_blockers": 10,
+    "privacy_findings": 5,
+    "security_findings": 6,
+    "deployment_findings": 6
+  },
+  "production_approved": false,
+  "independent_security_review_completed": false,
+  "representative_field_validation_completed": false,
+  "notification_delivery_authorized": false,
+  "external_action_authorized": false
+}
