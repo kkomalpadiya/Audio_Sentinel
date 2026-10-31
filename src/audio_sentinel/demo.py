@@ -132,6 +132,56 @@ def build_demo(sample: str) -> dict[str, object]:
     return result
 
 
+EVALUATION_RUN_RELATIVE_PATH = Path("outputs") / "a9_1_evaluation" / "evaluation-run.json"
+
+
+def load_stored_evaluation_run() -> dict[str, object]:
+    """Return the checked-in A9.1 held-out run after verifying its content id.
+
+    Read-only: nothing is recomputed. The document is already privacy-minimized
+    (no paths, audio, or transcript text); only display fields are returned.
+    """
+    from audio_sentinel.config import load_settings
+    from audio_sentinel.evaluation_manifest import EvaluationRunDocument, _run_id
+
+    path = load_settings().paths.root / EVALUATION_RUN_RELATIVE_PATH
+    document = EvaluationRunDocument.model_validate_json(path.read_bytes())
+    if document.run_id != _run_id(document):
+        raise ValueError("Stored evaluation run failed its content-identity check")
+    return {
+        "run_id": document.run_id,
+        "created_at": document.created_at.isoformat(),
+        "manifest_id": document.manifest_id,
+        "decision_status": document.decision_status,
+        "positive_outcomes": [item.value for item in document.positive_outcomes],
+        "metrics": document.metrics.model_dump(mode="json"),
+        "cases": [
+            case.model_dump(
+                mode="json",
+                include={
+                    "case_id", "categories", "expected_positive", "status",
+                    "observed_positive", "observed_outcome", "risk_score",
+                    "risk_severity", "error_code",
+                },
+            )
+            for case in document.cases
+        ],
+        "source_file": EVALUATION_RUN_RELATIVE_PATH.as_posix(),
+        "notification_delivery": document.notification_delivery,
+    }
+
+
+@router.get("/api/evaluation-run")
+def stored_evaluation_run() -> dict[str, object]:
+    try:
+        return load_stored_evaluation_run()
+    except FileNotFoundError as error:
+        raise HTTPException(404, "The stored evaluation run is not present in this checkout.") from error
+    except Exception as error:
+        _logger.exception("Stored evaluation run could not be verified")
+        raise HTTPException(500, "The stored evaluation run could not be verified.") from error
+
+
 @router.post("/api/run")
 def run_demo(request: DemoRequest) -> dict[str, object]:
     if not _run_lock.acquire(blocking=False):
