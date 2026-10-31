@@ -10,6 +10,8 @@ POST /api/v1/evaluations
 
 The endpoint accepts metadata and a path relative to `data/raw`; it does not accept
 audio uploads, microphone streams, URLs, recipient data, or notification settings.
+(Browser uploads are handled by the separate loopback-only upload endpoints in
+[audio-upload-analysis.md](audio-upload-analysis.md), which reuse this service.)
 It delegates to the same shared application service as the B8.2 CLI, so consent,
 model loading, evaluation, final-report persistence, and local audit behavior cannot
 drift between the two operator boundaries.

@@ -360,3 +360,26 @@ playback, window selection, padding boundaries, feature-value inspection, and PN
 export. See [the demo commands and speaking guide](docs/panel-frontend-demo.md).
 No additional dependencies or model downloads are needed. Acoustic inference
 is implemented in the backend but is not connected to this temporary frontend.
+
+## Audio upload risk analyzer
+
+The upload feature adds a browser workflow on top of the existing offline pipeline.
+Start the server as above and open `http://127.0.0.1:8000/analyze`, then:
+
+1. Upload a WAV or FLAC recording (at most 10 MB and 30 s).
+2. Choose the scope and confirm authorization.
+3. Click **Analyze Audio**.
+
+The page shows the 0–100 risk score, the existing severity level, the consensus
+decision, the detected acoustic events and language categories (never transcript
+text), and the per-branch rule points behind the score. **Is this audio dangerous?**
+reloads the integrity-verified final report and returns a deterministic, evidence-based
+answer with decision reasons and limitations. It never claims an emergency is
+confirmed. Silent input or missing evidence is reported as inconclusive.
+
+The upload is deleted right after analysis, and the endpoints are loopback-only.
+Real results require the pinned local YAMNet (plus VAD and Whisper for speech scope)
+models. Without them the page shows the loader error and no result. Endpoints,
+validation rules, the response schema, tests and limitations are documented in
+[the upload analysis guide](docs/audio-upload-analysis.md). The feature also fixes a
+scoring bug: scores capped at 100 previously failed final-report validation.
