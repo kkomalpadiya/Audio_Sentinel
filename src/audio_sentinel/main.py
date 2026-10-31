@@ -7,10 +7,12 @@ from audio_sentinel.api import router as evaluation_router
 from audio_sentinel.config import load_settings
 from audio_sentinel.demo import WEB_DIRECTORY, router as demo_router
 from audio_sentinel.health import check_project_health
+from audio_sentinel.upload_api import router as upload_router
 
 app = FastAPI(title="Audio Sentinel")
 app.include_router(evaluation_router)
 app.include_router(demo_router)
+app.include_router(upload_router)
 app.mount("/demo/assets", StaticFiles(directory=WEB_DIRECTORY), name="demo-assets")
 
 

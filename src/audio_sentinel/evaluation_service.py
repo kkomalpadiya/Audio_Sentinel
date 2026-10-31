@@ -30,7 +30,7 @@ from audio_sentinel.interfaces import InputAudio
 from audio_sentinel.preparation import Identifier
 from audio_sentinel.transcription import load_transcription_model
 from audio_sentinel.vad import load_silero_vad
-from audio_sentinel.final_report import save_final_report
+from audio_sentinel.final_report import FinalReportDocument, save_final_report
 
 
 class EvaluationServiceError(RuntimeError):
@@ -178,6 +178,20 @@ def run_evaluation(
 ) -> EvaluationResponse:
     """Run, report, and locally audit one validated authorized recording."""
 
+    return run_evaluation_with_report(settings, request)[0]
+
+
+def run_evaluation_with_report(
+    settings: AudioSentinelSettings,
+    request: EvaluationRequest,
+) -> tuple[EvaluationResponse, FinalReportDocument]:
+    """Run one evaluation and also return the verified, persisted final report.
+
+    The privacy-minimized response is identical to :func:`run_evaluation`; the
+    report is returned only for in-process callers (for example, the upload
+    explanation feature) that need the full evidence without re-reading disk.
+    """
+
     if not isinstance(settings, AudioSentinelSettings) or not isinstance(
         request, EvaluationRequest
     ):
@@ -222,7 +236,7 @@ def run_evaluation(
     report_relative = _relative_processed_path(settings, saved_report.report_path)
     saved_audit = save_alert_audit(settings.paths, report_relative)
 
-    return EvaluationResponse(
+    response = EvaluationResponse(
         clip_id=result.clip_id,
         processing_scope=request.processing_scope,
         outcome=result.decision.outcome.value,
@@ -243,3 +257,4 @@ def run_evaluation(
             else _relative_processed_path(settings, saved_audit.alert_path)
         ),
     )
+    return response, saved_report.report
