@@ -17,8 +17,8 @@ function setupCanvas(canvas) {
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
   const ctx = canvas.getContext("2d"); ctx.scale(ratio, ratio);
-  ctx.fillStyle = "#131d2c"; ctx.fillRect(0, 0, width, height);
-  ctx.font = "12px Segoe UI, sans-serif";
+  ctx.fillStyle = "#191d28"; ctx.fillRect(0, 0, width, height);
+  ctx.font = "12px Inter, Segoe UI, system-ui, sans-serif";
   return {ctx, width, height};
 }
 function drawWaveform() {
@@ -28,21 +28,21 @@ function drawWaveform() {
   const envelope = result.prepared.envelope;
   const peak = Math.max(.05, ...envelope.flat().map(Math.abs));
   const scale = (center - 10) / peak;
-  ctx.strokeStyle = "#304257"; ctx.lineWidth = 1;
+  ctx.strokeStyle = "#303644"; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(left, center); ctx.lineTo(right, center); ctx.stroke();
-  ctx.fillStyle = "#a2b3c8"; ctx.textAlign = "right";
+  ctx.fillStyle = "#a0a7b7"; ctx.textAlign = "right";
   ctx.fillText(peak.toFixed(2), left - 8, 14); ctx.fillText("0", left - 8, center + 4);
   ctx.fillText((-peak).toFixed(2), left - 8, center * 2 - 6);
-  ctx.strokeStyle = "#65e0e0"; ctx.lineWidth = Math.max(1, (right - left) / envelope.length);
+  const window = result.windows[activeWindow];
+  ctx.fillStyle = "rgba(150,115,232,.22)";
+  ctx.fillRect(left + window.start_seconds / result.prepared.duration_seconds * (right - left), 3,
+    (window.end_seconds - window.start_seconds) / result.prepared.duration_seconds * (right - left), center * 2 - 3);
+  ctx.strokeStyle = "#66d4cd"; ctx.lineWidth = Math.max(1, (right - left) / envelope.length);
   ctx.beginPath(); envelope.forEach(([low, high], i) => {
     const x = left + (i + .5) / envelope.length * (right - left);
     ctx.moveTo(x, center - high * scale); ctx.lineTo(x, center - low * scale);
   }); ctx.stroke();
-  const window = result.windows[activeWindow];
-  ctx.fillStyle = "rgba(195,238,131,.09)";
-  ctx.fillRect(left + window.start_seconds / result.prepared.duration_seconds * (right - left), 3,
-    (window.end_seconds - window.start_seconds) / result.prepared.duration_seconds * (right - left), center * 2 - 3);
-  ctx.fillStyle = "#a2b3c8";
+  ctx.fillStyle = "#a0a7b7";
   for (let i = 0; i <= 4; i++) {
     ctx.textAlign = i === 0 ? "left" : i === 4 ? "right" : "center";
     ctx.fillText(`${(i * result.prepared.duration_seconds / 4).toFixed(1)} s`, left + i / 4 * (right - left), height - 2);
@@ -72,8 +72,8 @@ function drawSpectrogram() {
   const imageWidth = columns * hopSeconds / window.duration_seconds * plotWidth;
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(bitmap, imageLeft, top, imageWidth, plotHeight);
-  ctx.strokeStyle = "#3e5269"; ctx.lineWidth = 1; ctx.strokeRect(left, top, plotWidth, plotHeight);
-  ctx.fillStyle = "#a2b3c8"; ctx.textAlign = "right";
+  ctx.strokeStyle = "#303644"; ctx.lineWidth = 1; ctx.strokeRect(left, top, plotWidth, plotHeight);
+  ctx.fillStyle = "#a0a7b7"; ctx.textAlign = "right";
   for (const band of [1,16,32,48,64]) {
     const y = top + (rows - band + .5) / rows * plotHeight;
     ctx.fillText(String(band), left - 9, y + 4);
@@ -88,15 +88,15 @@ function drawSpectrogram() {
   if (window.padding_seconds > 0) {
     const actualDuration = window.end_seconds - window.start_seconds;
     const x = left + actualDuration / window.duration_seconds * plotWidth;
-    ctx.setLineDash([4,4]); ctx.strokeStyle = "#edf4ff"; ctx.beginPath();
+    ctx.setLineDash([4,4]); ctx.strokeStyle = "#f1f3f7"; ctx.beginPath();
     ctx.moveTo(x, top); ctx.lineTo(x, top + plotHeight); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = "#edf4ff"; ctx.textAlign = "left"; ctx.fillText("Zero-padded tail", x + 8, top + 16);
+    ctx.fillStyle = "#f1f3f7"; ctx.textAlign = "left"; ctx.fillText("Zero-padded tail", x + 8, top + 16);
   }
   const barX = left + plotWidth + 16;
   for (let y = 0; y < plotHeight; y++) {
     ctx.fillStyle = `rgb(${color(1 - y / plotHeight).join(",")})`; ctx.fillRect(barX, top + y, 11, 1.5);
   }
-  ctx.fillStyle = "#a2b3c8"; ctx.textAlign = "left";
+  ctx.fillStyle = "#a0a7b7"; ctx.textAlign = "left";
   for (let i = 0; i <= 4; i++) ctx.fillText(String(Math.round(maximum - i / 4 * (maximum - minimum))),
     barX + 16, top + i / 4 * (plotHeight - 8) + 8);
   ctx.fillText("dB", barX - 1, top - 5);
@@ -116,7 +116,7 @@ async function runDemo(sample) {
   $("error").hidden = true;
   $("run-button").disabled = true; $("export-button").disabled = true; $("window-select").disabled = true;
   document.querySelectorAll('input[name="sample"]').forEach(input => {input.disabled = true; input.checked = input.value === sample;});
-  $("run-state").textContent = "Processing"; $("run-state").classList.add("busy");
+  $("run-state").textContent = "Processing"; $("run-state").classList.remove("fail"); $("run-state").classList.add("busy");
   $("status").textContent = `Processing ${sampleNames[sample].toLowerCase()} through the Python preparation and feature pipeline…${result ? " Previous result remains below." : " First run may take a moment."}`;
   $("spectrogram").setAttribute("aria-busy", "true");
   try {
@@ -151,7 +151,7 @@ async function runDemo(sample) {
     return {sample, feature_count: data.windows.length, shapes: data.windows.map(w => w.shape)};
   } catch (error) {
     $("error").textContent = `${error.message} Confirm the local server is running and select Generate spectrogram to retry.`;
-    $("error").hidden = false; $("run-state").textContent = "Could not complete";
+    $("error").hidden = false; $("run-state").textContent = "Could not complete"; $("run-state").classList.add("fail");
     $("status").textContent = result ? `Showing the previous successful result: ${sampleNames[result.sample]}.` : "No processing result is available yet.";
   } finally {
     running = false; $("run-button").disabled = false;
@@ -204,4 +204,100 @@ if (document.modelContext?.registerTool) {
   catch { /* Optional browser capability; the visible form remains available. */ }
   window.addEventListener("pagehide", () => lifecycle.abort(), {once: true});
 }
+
+// ---------------------------------------------------------------- views --
+const views = ["overview", "explorer", "pipeline", "evaluation", "methodology"];
+function showView() {
+  const requested = location.hash.replace("#", "");
+  const view = views.includes(requested) ? requested : "overview";
+  for (const name of views) $(`view-${name}`).hidden = name !== view;
+  document.querySelectorAll(".nav-link[data-view]").forEach(link => {
+    if (link.dataset.view === view) link.setAttribute("aria-current", "page"); else link.removeAttribute("aria-current");
+  });
+  const title = $(`view-${view}`).dataset.title;
+  $("crumb-current").textContent = title;
+  document.title = `Audio Sentinel · ${title}`;
+  if (view === "evaluation") loadEvaluation();
+  if (view === "explorer") { drawWaveform(); drawSpectrogram(); }
+}
+document.querySelectorAll(".nav-link").forEach(link => link.setAttribute("title", link.textContent.trim()));
+window.addEventListener("hashchange", () => { showView(); $("content").focus({preventScroll: true}); window.scrollTo(0, 0); });
+
+// --------------------------------------------------------- local status --
+function fact(label, value) {
+  const row = document.createElement("div"), dt = document.createElement("dt"), dd = document.createElement("dd");
+  dt.textContent = label; dd.textContent = value; row.append(dt, dd); return row;
+}
+fetch("/health").then(r => r.ok ? r.json() : Promise.reject()).then(data => {
+  const dirs = data.directories || {};
+  $("health-facts").replaceChildren(
+    fact("Server", data.status === "ok" ? "OK" : String(data.status)),
+    ...Object.entries(dirs).map(([name, present]) => fact(name.replace(/_/g, " "), present ? "present" : "missing")));
+}).catch(() => $("health-facts").replaceChildren(fact("Server", "Unreachable")));
+
+// ------------------------------------------------------ evaluation view --
+let evaluation = null, evaluationRequested = false, caseFilter = "all";
+const pct = (value) => value === null || value === undefined ? "n/a" : `${(value * 100).toFixed(1)} %`;
+async function loadEvaluation() {
+  if (evaluationRequested) return;
+  evaluationRequested = true;
+  try {
+    const response = await fetch("/demo/api/evaluation-run");
+    const data = await response.json();
+    if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "The stored run could not be loaded.");
+    evaluation = data;
+    renderEvaluation();
+    $("eval-state").textContent = data.decision_status === "complete" ? "Verified" : data.decision_status;
+  } catch (error) {
+    evaluationRequested = false;
+    $("eval-error").textContent = error.message; $("eval-error").hidden = false;
+    $("eval-state").textContent = "Unavailable"; $("eval-state").classList.add("fail");
+  }
+}
+function renderEvaluation() {
+  const m = evaluation.metrics.binary;
+  const cell = (id, value, label) => { const el = $(id); el.textContent = String(value); const s = document.createElement("small"); s.textContent = label; el.append(s); };
+  cell("cm-tp", m.true_positive, "true positive"); cell("cm-fn", m.false_negative, "false negative");
+  cell("cm-fp", m.false_positive, "false positive"); cell("cm-tn", m.true_negative, "true negative");
+  $("eval-metrics").replaceChildren(
+    fact("Completed cases", `${evaluation.metrics.completed_case_count} / ${evaluation.metrics.total_case_count}`),
+    fact("Balanced accuracy", pct(m.balanced_accuracy)),
+    fact("Recall (sensitivity)", `${pct(m.recall)} · ${m.true_positive}/${m.positive_count}`),
+    fact("Specificity", `${pct(m.specificity)} · ${m.true_negative}/${m.negative_count}`),
+    fact("Precision", `${pct(m.precision)} · ${m.true_positive}/${m.true_positive + m.false_positive}`),
+    fact("F1", m.f1 === null ? "n/a" : m.f1.toFixed(3)),
+    fact("Run ID", evaluation.run_id));
+  $("eval-source").textContent = evaluation.source_file;
+  $("eval-body").hidden = false; $("eval-cases").hidden = false;
+  renderCases();
+}
+function renderCases() {
+  const rows = evaluation.cases.filter(c => {
+    const correct = c.status === "completed" && c.observed_positive === c.expected_positive;
+    return caseFilter === "all" || (caseFilter === "errors" && !correct) ||
+      (caseFilter === "positive" && c.expected_positive) || (caseFilter === "negative" && !c.expected_positive);
+  });
+  $("cases-body").replaceChildren(...rows.map(c => {
+    const tr = document.createElement("tr");
+    const add = (text, cls) => { const td = document.createElement("td"); td.textContent = text; if (cls) td.className = cls; tr.append(td); return td; };
+    const label = (c.categories[1] || c.case_id).replace(/_/g, " ");
+    add(`${label}`).title = c.categories.join(" · ");
+    add(({esc50: "ESC-50", urbansound8k: "UrbanSound8K"})[c.categories[0]] || c.categories[0]);
+    add(c.expected_positive ? "Positive" : "Negative");
+    add(c.status === "completed" ? c.observed_outcome.replace(/_/g, " ") : `failed (${c.error_code})`);
+    add(c.risk_score === null ? "–" : c.risk_score.toFixed(0), "num");
+    const sev = add(""); const badge = document.createElement("span");
+    badge.className = `sev sev-${c.risk_severity || "none"}`; badge.textContent = c.risk_severity || "–"; sev.append(badge);
+    const correct = c.status === "completed" && c.observed_positive === c.expected_positive;
+    add(correct ? "Correct" : c.expected_positive ? "Missed (FN)" : "False alarm (FP)", correct ? "result-ok" : "result-bad");
+    return tr;
+  }));
+}
+document.querySelectorAll(".segmented button").forEach(button => button.addEventListener("click", () => {
+  caseFilter = button.dataset.filter;
+  document.querySelectorAll(".segmented button").forEach(b => b.setAttribute("aria-pressed", String(b === button)));
+  if (evaluation) renderCases();
+}));
+
+showView();
 runDemo("sweep");

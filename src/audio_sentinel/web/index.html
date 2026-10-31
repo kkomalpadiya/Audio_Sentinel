@@ -3,64 +3,211 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore real audio preparation and Log-Mel features in the local Audio Sentinel presentation demo.">
+  <meta name="description" content="Audio Sentinel local research workspace: audio preparation, Log-Mel features, processing pipeline and stored evaluation results.">
   <title>Audio Sentinel · Feature explorer</title>
   <link rel="stylesheet" href="/demo/assets/style.css">
   <script defer src="/demo/assets/app.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="/demo" aria-label="Audio Sentinel demo"><span class="brand-mark" aria-hidden="true">∿</span> AUDIO SENTINEL</a>
-    <span class="local-tag"><span aria-hidden="true">●</span> Local presentation demo</span>
-  </header>
-  <div class="workspace">
-    <aside class="sidebar">
-      <p class="eyebrow">INPUT SIGNAL</p>
-      <h1>Feature explorer</h1>
-      <p class="intro">Generate a sound. See how the pipeline represents it.</p>
-      <form id="demo-form">
-        <fieldset>
-          <legend>Choose a generated sample</legend>
-          <label class="sample"><input type="radio" name="sample" value="tone"><span><strong>Steady tone</strong><small>1,000 Hz · horizontal band</small></span></label>
-          <label class="sample"><input type="radio" name="sample" value="sweep" checked><span><strong>Frequency sweep</strong><small>250–6,000 Hz · rising band</small></span></label>
-          <label class="sample"><input type="radio" name="sample" value="pulses"><span><strong>Rhythmic pulses</strong><small>Broadband · vertical bursts</small></span></label>
-        </fieldset>
-        <button id="run-button" class="primary" type="submit">Generate spectrogram <span aria-hidden="true">↗</span></button>
-      </form>
-      <p class="input-note">1.6 seconds · synthetic audio<br>No microphone or dataset required.</p>
-      <div class="pipeline-note">
-        <p class="eyebrow">IMPLEMENTATION</p>
-        <p><span class="ready-dot"></span> Audio preparation <b>Ready</b></p>
-        <p><span class="ready-dot"></span> Log-Mel features <b>Ready</b></p>
-        <p><span class="pending-dot"></span> Acoustic inference <b>Next</b></p>
-      </div>
-      <a class="api-link" href="/docs" target="_blank" rel="noopener">Open backend API ↗</a>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Primary">
+      <a class="brand" href="#overview" aria-label="Audio Sentinel overview"><span class="brand-mark" aria-hidden="true">∿</span><span class="brand-name">Audio Sentinel</span></a>
+      <nav class="nav">
+        <p class="nav-label">Workspace</p>
+        <a class="nav-link" href="#overview" data-view="overview"><svg aria-hidden="true" viewBox="0 0 20 20"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg><span>Overview</span></a>
+        <a class="nav-link" href="#explorer" data-view="explorer"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M2 10h2l2-5 3 10 3-8 2 5 2-2h2"/></svg><span>Feature explorer</span></a>
+        <a class="nav-link" href="#pipeline" data-view="pipeline"><svg aria-hidden="true" viewBox="0 0 20 20"><circle cx="4" cy="10" r="2"/><circle cx="16" cy="4" r="2"/><circle cx="16" cy="16" r="2"/><path d="M6 10h4l4-5M10 10l4 5"/></svg><span>Processing pipeline</span></a>
+        <a class="nav-link" href="#evaluation" data-view="evaluation"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M3 17V9M8 17V4M13 17v-6M18 17H2"/></svg><span>Evaluation results</span></a>
+        <a class="nav-link" href="#methodology" data-view="methodology"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M5 3h8l3 3v11H5z"/><path d="M8 9h5M8 12h5"/></svg><span>Method &amp; limits</span></a>
+        <p class="nav-label">Developer</p>
+        <a class="nav-link" href="/docs" target="_blank" rel="noopener"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M7 6l-4 4 4 4M13 6l4 4-4 4"/></svg><span>Backend API ↗</span></a>
+      </nav>
+      <p class="sidebar-foot">Local research prototype<br>Offline · loopback only</p>
     </aside>
-    <main>
-      <div class="main-heading"><div><p class="eyebrow">AUDIO → PREPARATION → FEATURES</p><h2>From sound to spectrum</h2></div><span id="run-state" class="state">Preparing</span></div>
-      <p id="status" class="status" role="status" aria-live="polite">Preparing the first generated sample…</p>
-      <div id="error" class="error" role="alert" hidden></div>
-      <section class="metrics" aria-label="Processing result">
-        <div><span>Source → prepared</span><strong id="rate-value">—</strong><small>Sample rate</small></div>
-        <div><span>Channel conversion</span><strong id="channel-value">—</strong><small>Prepared audio</small></div>
-        <div><span>Output windows</span><strong id="window-value">—</strong><small>1 s / 5 s / 10 s contexts</small></div>
-        <div><span>Frequency bands</span><strong id="band-value">—</strong><small>Mel-scaled power features</small></div>
-      </section>
-      <section class="panel spectrum-panel" aria-labelledby="spectrum-title">
-        <div class="panel-heading"><div><h3 id="spectrum-title">Log-Mel spectrogram</h3><p id="sample-description">Feature values come from the Python pipeline.</p></div><button id="export-button" class="secondary" disabled>Save image ↓</button></div>
-        <div class="window-controls"><label for="window-select">Audio window</label><select id="window-select" disabled><option>Preparing windows…</option></select><span id="shape-label">—</span></div>
-        <canvas id="spectrogram" role="img" aria-label="Log-Mel spectrogram; time horizontally, Mel bands vertically, color indicates power in decibels"></canvas>
-        <p id="plot-detail" class="plot-detail">Move over the plot to inspect a feature value.</p>
-        <div class="recipe"><span>FFT <b id="fft-value">—</b></span><span>Hop <b id="hop-value">—</b></span><span>Scale <b>Power dB</b></span><span>Matrix <b>float32</b></span></div>
-      </section>
-      <section class="panel waveform-panel" aria-labelledby="wave-title">
-        <div class="panel-heading"><h3 id="wave-title">Prepared waveform</h3><span id="wave-meta">16 kHz · mono</span></div>
-        <canvas id="waveform" role="img" aria-label="Prepared waveform; amplitude over the 1.6-second recording"></canvas>
-        <div class="audio-row"><label>Original signal<audio id="source-audio" controls preload="metadata"></audio></label><label>Prepared signal<audio id="prepared-audio" controls preload="metadata"></audio></label></div>
-      </section>
-      <div id="checks" class="checks" aria-live="polite"></div>
-      <p class="scope-note">This view demonstrates real preparation and feature extraction. YAMNet is selected; recognition, threat scores, and alerts are not implemented yet.</p>
-    </main>
+
+    <div class="page">
+      <header class="topbar">
+        <p class="crumbs"><span>Audio Sentinel</span><span aria-hidden="true">/</span><b id="crumb-current">Feature explorer</b></p>
+        <span class="local-tag"><span class="dot" aria-hidden="true"></span>Running locally</span>
+      </header>
+
+      <main id="content" tabindex="-1">
+        <!-- ============================== OVERVIEW ============================== -->
+        <section class="view" id="view-overview" data-title="Overview" aria-labelledby="overview-title" hidden>
+          <div class="view-head"><div><p class="eyebrow">Overview</p><h1 id="overview-title">Multi-stage audio risk assessment, run locally</h1></div></div>
+          <p class="lede">Audio Sentinel prepares an authorized recording, extracts features, detects acoustic events with YAMNet, optionally transcribes speech and checks it against language rules, then combines the evidence into a 0–100 risk score and a consensus decision. Every result is saved as a verifiable local report. An alert is only a candidate for human review; nothing is ever sent.</p>
+          <div class="overview-grid">
+            <article class="panel">
+              <h2 class="panel-title">What you can explore here</h2>
+              <ol class="step-list">
+                <li><a href="#explorer">Feature explorer</a><span>Run a generated signal through the real preparation and Log-Mel pipeline; inspect windows, values and audio.</span></li>
+                <li><a href="#pipeline">Processing pipeline</a><span>Each implemented stage, its parameters and the module that runs it.</span></li>
+                <li><a href="#evaluation">Evaluation results</a><span>The stored 32-clip held-out run (ESC-50 + UrbanSound8K): confusion counts and every case.</span></li>
+                <li><a href="#methodology">Method &amp; limits</a><span>Scoring bands, review policy, and what the prototype does not claim.</span></li>
+              </ol>
+            </article>
+            <article class="panel">
+              <h2 class="panel-title">Fixed processing recipe</h2>
+              <dl class="facts">
+                <div><dt>Target audio</dt><dd>16 kHz · mono · RMS −20 dBFS</dd></div>
+                <div><dt>Accepted input</dt><dd>WAV, FLAC · ≤ 600 s</dd></div>
+                <div><dt>Analysis windows</dt><dd>1 s, 5 s, 10 s · 50 % overlap</dd></div>
+                <div><dt>Log-Mel features</dt><dd>64 bands · FFT 512 · hop 10 ms</dd></div>
+                <div><dt>Acoustic model</dt><dd>YAMNet v1 · 521 classes → 13 labels</dd></div>
+                <div><dt>Speech (if consented)</dt><dd>Silero VAD v6 · Whisper tiny.en</dd></div>
+                <div><dt>Risk score</dt><dd>Rule set v1 · 0–100 · 5 bands</dd></div>
+              </dl>
+            </article>
+            <article class="panel">
+              <h2 class="panel-title">Local status</h2>
+              <dl class="facts" id="health-facts"><div><dt>Server</dt><dd>Checking…</dd></div></dl>
+              <p class="note">From <code>/health</code>. Model weights are local files and are not downloaded by this page.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ============================ FEATURE EXPLORER ========================= -->
+        <section class="view" id="view-explorer" data-title="Feature explorer" aria-labelledby="explorer-title" hidden>
+          <div class="view-head">
+            <div><p class="eyebrow">Audio → preparation → features</p><h1 id="explorer-title">Feature explorer</h1></div>
+            <span id="run-state" class="state">Preparing</span>
+          </div>
+          <p id="status" class="status" role="status" aria-live="polite">Preparing the first generated sample…</p>
+          <div id="error" class="error" role="alert" hidden></div>
+
+          <form id="demo-form" class="panel sample-bar">
+            <fieldset>
+              <legend>Generated input signal <span>1.6 s · 48 kHz stereo · no microphone or dataset needed</span></legend>
+              <div class="samples">
+                <label class="sample"><input type="radio" name="sample" value="tone"><span><strong>Steady tone</strong><small>1,000 Hz · horizontal band</small></span></label>
+                <label class="sample"><input type="radio" name="sample" value="sweep" checked><span><strong>Frequency sweep</strong><small>250–6,000 Hz · rising band</small></span></label>
+                <label class="sample"><input type="radio" name="sample" value="pulses"><span><strong>Rhythmic pulses</strong><small>Broadband · vertical bursts</small></span></label>
+              </div>
+            </fieldset>
+            <button id="run-button" class="primary" type="submit">Generate spectrogram</button>
+          </form>
+
+          <section class="metrics" aria-label="Processing result">
+            <div><span>Source → prepared</span><strong id="rate-value">—</strong><small>Sample rate</small></div>
+            <div><span>Channel conversion</span><strong id="channel-value">—</strong><small>Prepared audio</small></div>
+            <div><span>Output windows</span><strong id="window-value">—</strong><small>1 s / 5 s / 10 s contexts</small></div>
+            <div><span>Frequency bands</span><strong id="band-value">—</strong><small>Mel-scaled power features</small></div>
+          </section>
+
+          <section class="panel spectrum-panel" aria-labelledby="spectrum-title">
+            <div class="panel-heading">
+              <div><h2 id="spectrum-title" class="panel-title">Log-Mel spectrogram</h2><p id="sample-description">Feature values come from the Python pipeline.</p></div>
+              <button id="export-button" class="secondary" type="button" disabled>Save image</button>
+            </div>
+            <div class="window-controls"><label for="window-select">Audio window</label><select id="window-select" disabled><option>Preparing windows…</option></select><span id="shape-label" class="mono">—</span></div>
+            <canvas id="spectrogram" role="img" aria-label="Log-Mel spectrogram; time horizontally, Mel bands vertically, color indicates power in decibels"></canvas>
+            <p id="plot-detail" class="plot-detail">Move over the plot to inspect a feature value.</p>
+            <div class="recipe"><span>FFT <b id="fft-value">—</b></span><span>Hop <b id="hop-value">—</b></span><span>Window <b>Hann · 25 ms</b></span><span>Scale <b>Power dB · top 80 dB</b></span><span>Matrix <b>float32</b></span></div>
+          </section>
+
+          <section class="panel waveform-panel" aria-labelledby="wave-title">
+            <div class="panel-heading"><h2 id="wave-title" class="panel-title">Prepared waveform</h2><span id="wave-meta" class="meta">16 kHz · mono</span></div>
+            <canvas id="waveform" role="img" aria-label="Prepared waveform; amplitude over the 1.6-second recording"></canvas>
+            <p class="legend-note"><span class="swatch" aria-hidden="true"></span>Shaded area = source span of the selected window</p>
+            <div class="audio-row"><label>Original signal <small>48 kHz stereo</small><audio id="source-audio" controls preload="metadata"></audio></label><label>Prepared signal <small>16 kHz mono</small><audio id="prepared-audio" controls preload="metadata"></audio></label></div>
+          </section>
+          <div id="checks" class="checks" aria-live="polite"></div>
+          <p class="scope-note">This view runs the real preparation and Log-Mel feature stages on generated signals. Acoustic inference, speech analysis, risk scoring and consensus are implemented in the backend and run through the CLI and <code>POST /api/v1/evaluations</code>; see <a href="#pipeline">Processing pipeline</a>.</p>
+        </section>
+
+        <!-- ============================ PIPELINE ================================= -->
+        <section class="view" id="view-pipeline" data-title="Processing pipeline" aria-labelledby="pipeline-title" hidden>
+          <div class="view-head"><div><p class="eyebrow">Implemented stages</p><h1 id="pipeline-title">Processing pipeline</h1></div></div>
+          <p class="lede">One evaluation runs these stages in order. Stages 1–4 are interactive in the <a href="#explorer">Feature explorer</a>; the rest run in the backend evaluator.</p>
+          <ol class="pipeline">
+            <li><span class="num">1</span><div><h3>Load &amp; validate <code>audio_loader.py</code></h3><p>Accepts WAV or FLAC inside <code>data/raw</code>, checks consent scope and expiry, size, duration, channels and finite samples.</p></div><span class="tag live">In explorer</span></li>
+            <li><span class="num">2</span><div><h3>Prepare <code>pipeline.py</code> · <code>audio_transforms.py</code></h3><p>Resample to 16 kHz, convert to mono, RMS-normalize to −20 dBFS with a −1 dBFS peak ceiling. Spectral-gate noise reduction exists but is off by default.</p></div><span class="tag live">In explorer</span></li>
+            <li><span class="num">3</span><div><h3>Segment <code>segmentation.py</code></h3><p>1 s, 5 s and 10 s windows with 50 % overlap; a short tail is zero-padded and marked.</p></div><span class="tag live">In explorer</span></li>
+            <li><span class="num">4</span><div><h3>Log-Mel features <code>log_mel.py</code></h3><p>Hann window 25 ms, FFT 512, hop 10 ms, 64 Slaney Mel bands to 8 kHz, power in dB (top 80 dB); saved and reloaded with integrity checks.</p></div><span class="tag live">In explorer</span></li>
+            <li><span class="num">5</span><div><h3>Acoustic events <code>acoustic_inference.py</code> · YAMNet v1</h3><p>Prepared waveform windows go to YAMNet (521 AudioSet classes), which are mapped to 13 project labels and aggregated above an explicit, uncalibrated threshold.</p></div><span class="tag">Backend</span></li>
+            <li><span class="num">6</span><div><h3>Speech <code>vad.py</code> · <code>transcription.py</code></h3><p>Only with acoustic + speech consent: Silero VAD finds speech segments; faster-whisper tiny.en transcribes them with reliability checks.</p></div><span class="tag">Backend</span></li>
+            <li><span class="num">7</span><div><h3>Language rules <code>language_analysis.py</code></h3><p>Distress, threat, weapon-reference and ambiguous categories; negated, quoted or hypothetical phrasing is suppressed. Transcript text is not written to reports or evidence files.</p></div><span class="tag">Backend</span></li>
+            <li><span class="num">8</span><div><h3>Risk score <code>risk_scoring.py</code></h3><p>Rule set v1: acoustic ≤ 60, speech ≤ 12, language ≤ 50 points, capped at 100 and mapped to none / low / medium / high / critical.</p></div><span class="tag">Backend</span></li>
+            <li><span class="num">9</span><div><h3>Consensus decision <code>consensus_service.py</code></h3><p>Chooses no action, log, review or alert. An alert needs a critical score and two agreeing branches, and is only a local candidate.</p></div><span class="tag">Backend</span></li>
+            <li><span class="num">10</span><div><h3>Report &amp; audit <code>final_report.py</code> · <code>alert_audit.py</code></h3><p>Hash-bound final report and immutable local audit record; notification delivery is permanently “not sent”.</p></div><span class="tag">Backend</span></li>
+          </ol>
+        </section>
+
+        <!-- ============================ EVALUATION =============================== -->
+        <section class="view" id="view-evaluation" data-title="Evaluation results" aria-labelledby="evaluation-title" hidden>
+          <div class="view-head"><div><p class="eyebrow">Stored held-out run · A9.1</p><h1 id="evaluation-title">Evaluation results</h1></div><span id="eval-state" class="state">Loading</span></div>
+          <p class="lede">Results of the checked-in acoustic-only run over 32 held-out clips (16 ESC-50, 16 UrbanSound8K). Values are read from <code id="eval-source">outputs/a9_1_evaluation/evaluation-run.json</code> after its content-ID check; nothing is recomputed. A clip counts as positive when the decision is log, review or alert.</p>
+          <div id="eval-error" class="error" role="alert" hidden></div>
+          <div class="eval-top" id="eval-body" hidden>
+            <section class="panel">
+              <h2 class="panel-title">Confusion matrix</h2>
+              <table class="confusion" aria-label="Confusion matrix">
+                <thead><tr><th></th><th scope="col">Flagged</th><th scope="col">Not flagged</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Expected positive</th><td class="ok" id="cm-tp">–</td><td class="bad" id="cm-fn">–</td></tr>
+                  <tr><th scope="row">Expected negative</th><td class="bad" id="cm-fp">–</td><td class="ok" id="cm-tn">–</td></tr>
+                </tbody>
+              </table>
+            </section>
+            <section class="panel">
+              <h2 class="panel-title">Metrics <span class="meta">with denominators</span></h2>
+              <dl class="facts" id="eval-metrics"></dl>
+            </section>
+          </div>
+          <section class="panel" id="eval-cases" hidden>
+            <div class="panel-heading">
+              <h2 class="panel-title">Cases</h2>
+              <div class="segmented" role="group" aria-label="Filter cases">
+                <button type="button" data-filter="all" aria-pressed="true">All</button>
+                <button type="button" data-filter="errors" aria-pressed="false">Errors</button>
+                <button type="button" data-filter="positive" aria-pressed="false">Expected positive</button>
+                <button type="button" data-filter="negative" aria-pressed="false">Expected negative</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="cases">
+                <thead><tr><th scope="col">Clip class</th><th scope="col">Dataset</th><th scope="col">Expected</th><th scope="col">Decision</th><th scope="col" class="num">Score</th><th scope="col">Severity</th><th scope="col">Result</th></tr></thead>
+                <tbody id="cases-body"></tbody>
+              </table>
+            </div>
+            <p class="note">Source audio comes from the ESC-50 and UrbanSound8K datasets and is not stored in the repository, so clips cannot be replayed here. Treat these figures as limited regression evidence, not a production accuracy claim.</p>
+          </section>
+        </section>
+
+        <!-- ============================ METHODOLOGY ============================== -->
+        <section class="view" id="view-methodology" data-title="Method & limits" aria-labelledby="method-title" hidden>
+          <div class="view-head"><div><p class="eyebrow">How to read a result</p><h1 id="method-title">Method &amp; limits</h1></div></div>
+          <div class="overview-grid two">
+            <article class="panel">
+              <h2 class="panel-title">Score bands and decisions</h2>
+              <table class="bands">
+                <thead><tr><th scope="col">Score</th><th scope="col">Severity</th><th scope="col">Typical decision</th></tr></thead>
+                <tbody>
+                  <tr><td class="num">0</td><td><span class="sev sev-none">None</span></td><td>No action</td></tr>
+                  <tr><td class="num">1–24</td><td><span class="sev sev-low">Low</span></td><td>Log</td></tr>
+                  <tr><td class="num">25–49</td><td><span class="sev sev-medium">Medium</span></td><td>Human review</td></tr>
+                  <tr><td class="num">50–74</td><td><span class="sev sev-high">High</span></td><td>Human review</td></tr>
+                  <tr><td class="num">75–100</td><td><span class="sev sev-critical">Critical</span></td><td>Alert candidate if two branches agree, otherwise review</td></tr>
+                </tbody>
+              </table>
+              <p class="note">Missing evidence, unreliable transcripts or ambiguous language force review regardless of score.</p>
+            </article>
+            <article class="panel">
+              <h2 class="panel-title">What the prototype does not claim</h2>
+              <ul class="plain">
+                <li>It does not confirm emergencies; every alert is a pending candidate for a person to review.</li>
+                <li>No notification is sent and no recipient can be configured.</li>
+                <li>The acoustic threshold and rule weights are experimental and uncalibrated.</li>
+                <li>The final deployment review recorded ten release blockers; the decision is <code>not_approved_for_production</code>.</li>
+                <li>Use is limited to authorized, consented recordings in a controlled local setting.</li>
+              </ul>
+              <p class="note">Details: <code>docs/authorized-use-and-limitations.md</code>, <code>docs/final-privacy-security-deployment-review.md</code>.</p>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 </body>
 </html>
