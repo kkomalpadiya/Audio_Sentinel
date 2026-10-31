@@ -442,9 +442,15 @@ def score_risk(
         validated_inputs.language, rules.language
     )
     missing_data, status_reasons = _missing_data(validated_inputs)
-    score = min(
-        rules.total_max_score,
-        acoustic_points + speech_points + language_points,
+    # Always a float: when the cap wins, ``min`` would otherwise return the int
+    # ``total_max_score`` (100). The identity hash would then serialize ``100``
+    # while the validated document stores ``100.0``, so any capped score failed
+    # final-report integrity validation.
+    score = float(
+        min(
+            rules.total_max_score,
+            acoustic_points + speech_points + language_points,
+        )
     )
     if not math.isfinite(score):
         raise RiskScoringError("invalid_score", "Risk rules produced a non-finite score.")
