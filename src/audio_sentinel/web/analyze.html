@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Upload a short recording and get an evidence-based Audio Sentinel risk assessment.">
+  <title>Audio Sentinel · Risk analyzer</title>
+  <link rel="stylesheet" href="/demo/assets/style.css">
+  <link rel="stylesheet" href="/demo/assets/analyze.css">
+  <script defer src="/demo/assets/analyze.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/analyze" aria-label="Audio Sentinel risk analyzer"><span class="brand-mark" aria-hidden="true">∿</span> AUDIO SENTINEL</a>
+    <nav class="top-links"><a href="/demo">Feature explorer</a><a href="/docs" target="_blank" rel="noopener">API</a></nav>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <p class="eyebrow">AUDIO UPLOAD</p>
+      <h1>Risk analyzer</h1>
+      <p class="intro">Upload a short recording. The existing pipeline scores it and explains the evidence.</p>
+
+      <form id="upload-form" novalidate>
+        <label class="drop" for="file-input">
+          <input id="file-input" name="file" type="file" accept=".wav,.flac,audio/wav,audio/x-wav,audio/flac">
+          <strong>Choose audio file</strong>
+          <small id="format-info">WAV or FLAC · up to 10 MB · up to 30 s</small>
+        </label>
+
+        <div id="file-details" class="file-details" hidden>
+          <p class="file-name" id="file-name"></p>
+          <p class="file-meta"><span id="file-size"></span><span id="file-duration"></span></p>
+          <audio id="preview" controls preload="metadata"></audio>
+        </div>
+
+        <label class="field" for="scope">Analysis scope
+          <select id="scope" name="processing_scope">
+            <option value="acoustic_only">Acoustic events only</option>
+            <option value="acoustic_and_speech">Acoustic + speech &amp; language</option>
+          </select>
+        </label>
+
+        <label class="consent"><input id="consent" type="checkbox" name="consent_confirmed">
+          <span>I am authorized to analyse this recording and everyone recorded has consented.</span></label>
+
+        <button id="analyze-button" class="primary" type="submit" disabled>Analyze Audio <span aria-hidden="true">↗</span></button>
+        <button id="reset-button" class="secondary full" type="button" hidden>Upload another file</button>
+      </form>
+
+      <p class="input-note">Runs locally. The uploaded audio is deleted right after analysis; only audio-free evidence JSON is kept.</p>
+    </aside>
+
+    <main>
+      <div class="main-heading"><div><p class="eyebrow">UPLOAD → PIPELINE → SCORE → EXPLANATION</p><h2>Assessment</h2></div><span id="run-state" class="state">Waiting for file</span></div>
+      <p id="status" class="status" role="status" aria-live="polite">Select a recording to begin.</p>
+      <div id="error" class="error" role="alert" hidden></div>
+
+      <div id="loading" class="loading" hidden><span class="spinner" aria-hidden="true"></span> Running preparation, acoustic inference and risk scoring…</div>
+
+      <section id="results" hidden>
+        <div class="score-row">
+          <div class="score-card">
+            <span>Risk score</span>
+            <strong id="score">–</strong>
+            <small id="score-range">range 0–100</small>
+            <div class="meter" aria-hidden="true"><div id="meter-fill"></div></div>
+          </div>
+          <div class="score-card"><span>Risk level</span><strong id="level">–</strong><small>existing severity bands</small></div>
+          <div class="score-card"><span>Decision</span><strong id="outcome">–</strong><small id="review-flag"></small></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading"><h3>Detected evidence</h3><span id="scope-label"></span></div>
+          <table class="evidence">
+            <thead><tr><th>Indicator</th><th>Time</th><th>Model peak score</th><th>Rule points</th></tr></thead>
+            <tbody id="events-body"></tbody>
+          </table>
+          <p class="sub" id="speech-summary"></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading"><h3>Why this score?</h3><span id="rule-set"></span></div>
+          <table class="evidence">
+            <thead><tr><th>Branch</th><th>Status</th><th>Points</th><th>Summary</th></tr></thead>
+            <tbody id="contrib-body"></tbody>
+          </table>
+          <ul id="reasons" class="reasons"></ul>
+        </div>
+
+        <div class="panel ask">
+          <div class="panel-heading"><h3>Is this audio dangerous?</h3>
+            <button id="ask-button" class="secondary" type="button">Ask: Is this audio dangerous?</button></div>
+          <div id="answer" hidden>
+            <p id="verdict" class="verdict"></p>
+            <p id="answer-text" class="answer"></p>
+            <p class="eyebrow">DECISION REASONS</p>
+            <ul id="decision-reasons" class="reasons"></ul>
+            <p class="eyebrow">LIMITATIONS</p>
+            <ul id="limitations" class="reasons muted"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
